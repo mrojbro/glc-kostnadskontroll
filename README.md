@@ -2,6 +2,12 @@
 
 Webbapplikation för att ladda upp fakturaunderlag (Excel), filtrera och formatera fakturarader, samt exportera resultatet till en ny Excel-fil.
 
+## Live site
+
+**https://mrojbro.github.io/glc-kostnadskontroll/**
+
+Enable Pages if needed: **Settings → Pages → Source: GitHub Actions**.
+
 ## Kom igång
 
 ```bash
@@ -15,11 +21,13 @@ npm run dev
 
 - Uppladdning via drag-and-drop eller filväljare
 - Validering av arbetsblad (`Invoice basis summary`, `Invoice basis`) och obligatoriska kolumner
-- Sammanfattning från cellerna C2, C10–C13 / E10–E13
-- Filtrering av Subtotal- och tilläggsrader
-- Sökbar och sorterbar tabell med svensk formatering
+- Sammanfattning, filtrering, sök/sortering och statusmarkering (OK / Kontroll)
 - Export till Excel (`Sammanfattning` + `Kostnadskontroll`)
 
 ## Stack
 
 Next.js, TypeScript, Tailwind CSS, shadcn/ui, SheetJS (`xlsx`), TanStack Table
+
+## Deploy
+
+Push to `master` builds a static export and deploys to GitHub Pages via `.github/workflows/deploy-pages.yml`.
