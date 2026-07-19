@@ -3,16 +3,23 @@ import {
   sanitizeFilename,
   todayIsoDate,
 } from "./formatters";
-import type { ParsedWorkbook } from "./types";
+import {
+  formatRowStatus,
+  type ParsedWorkbook,
+  type RowStatusMap,
+} from "./types";
 
 /**
  * Export processed cost-control data to a downloadable .xlsx file.
  */
-export function exportToExcel(data: ParsedWorkbook): void {
+export function exportToExcel(
+  data: ParsedWorkbook,
+  rowStatus: RowStatusMap = {}
+): void {
   const workbook = XLSX.utils.book_new();
 
-  const summarySheet = buildSummarySheet(data);
-  const detailSheet = buildDetailSheet(data);
+  const summarySheet = buildSummarySheet(data, rowStatus);
+  const detailSheet = buildDetailSheet(data, rowStatus);
 
   XLSX.utils.book_append_sheet(workbook, summarySheet, "Sammanfattning");
   XLSX.utils.book_append_sheet(workbook, detailSheet, "Kostnadskontroll");
@@ -23,13 +30,21 @@ export function exportToExcel(data: ParsedWorkbook): void {
   XLSX.writeFile(workbook, filename);
 }
 
-function buildSummarySheet(data: ParsedWorkbook): XLSX.WorkSheet {
+function buildSummarySheet(
+  data: ParsedWorkbook,
+  rowStatus: RowStatusMap
+): XLSX.WorkSheet {
   const { summary } = data;
   const summaryTotalSek =
     summary.freightByRpu.value +
     summary.shunting.value +
     summary.fuelSurcharge.value +
     summary.adjustment.value;
+
+  const okCount = Object.values(rowStatus).filter((s) => s === "ok").length;
+  const checkCount = Object.values(rowStatus).filter(
+    (s) => s === "check"
+  ).length;
 
   const rows: (string | number)[][] = [
     ["Referens", summary.reference],
@@ -42,20 +57,24 @@ function buildSummarySheet(data: ParsedWorkbook): XLSX.WorkSheet {
     [],
     ["Totalt SEK (fakturarader)", data.totalSek],
     ["Antal rader", data.rowCount],
+    ["OK", okCount],
+    ["Kontroll", checkCount],
   ];
 
   const sheet = XLSX.utils.aoa_to_sheet(rows);
 
   sheet["!cols"] = [{ wch: 32 }, { wch: 18 }];
 
-  // Header-style first row
   styleHeaderCell(sheet, "A1");
   styleHeaderCell(sheet, "B1");
 
   return sheet;
 }
 
-function buildDetailSheet(data: ParsedWorkbook): XLSX.WorkSheet {
+function buildDetailSheet(
+  data: ParsedWorkbook,
+  rowStatus: RowStatusMap
+): XLSX.WorkSheet {
   const headers = [
     "FO-Nummer",
     "Typ",
@@ -66,6 +85,7 @@ function buildDetailSheet(data: ParsedWorkbook): XLSX.WorkSheet {
     "Pall",
     "RPU",
     "SEK",
+    "Status",
   ];
 
   const body = data.rows.map((row) => [
@@ -78,6 +98,7 @@ function buildDetailSheet(data: ParsedWorkbook): XLSX.WorkSheet {
     row.pall ?? "",
     row.rpu ?? "",
     row.sek,
+    formatRowStatus(rowStatus[row.id]),
   ]);
 
   const sheet = XLSX.utils.aoa_to_sheet([headers, ...body]);
@@ -92,9 +113,9 @@ function buildDetailSheet(data: ParsedWorkbook): XLSX.WorkSheet {
     { wch: 8 },
     { wch: 8 },
     { wch: 14 },
+    { wch: 10 },
   ];
 
-  // Style header row
   for (let col = 0; col < headers.length; col++) {
     const address = XLSX.utils.encode_cell({ r: 0, c: col });
     styleHeaderCell(sheet, address);

@@ -11,7 +11,11 @@ import { SummaryCards } from "@/components/SummaryCards";
 import { SummaryHeader } from "@/components/SummaryHeader";
 import { Button } from "@/components/ui/button";
 import { parseExcelFile } from "@/lib/excelParser";
-import type { ParseError, ParsedWorkbook } from "@/lib/types";
+import type {
+  ParseError,
+  ParsedWorkbook,
+  RowStatusMap,
+} from "@/lib/types";
 
 type AppState =
   | { status: "idle" }
@@ -21,9 +25,11 @@ type AppState =
 
 export function CostControlApp() {
   const [state, setState] = useState<AppState>({ status: "idle" });
+  const [rowStatus, setRowStatus] = useState<RowStatusMap>({});
 
   const handleFile = useCallback(async (file: File) => {
     setState({ status: "loading" });
+    setRowStatus({});
 
     const result = await parseExcelFile(file);
 
@@ -41,6 +47,7 @@ export function CostControlApp() {
 
   const handleReset = useCallback(() => {
     setState({ status: "idle" });
+    setRowStatus({});
   }, []);
 
   return (
@@ -58,7 +65,7 @@ export function CostControlApp() {
 
         {state.status === "success" && (
           <div className="flex flex-wrap gap-2">
-            <ExportButton data={state.data} />
+            <ExportButton data={state.data} rowStatus={rowStatus} />
             <Button
               type="button"
               variant="outline"
@@ -116,6 +123,8 @@ export function CostControlApp() {
             rows={state.data.rows}
             totalSekFormatted={state.data.totalSekFormatted}
             rowCount={state.data.rowCount}
+            rowStatus={rowStatus}
+            onRowStatusChange={setRowStatus}
           />
         </div>
       )}

@@ -28,6 +28,16 @@ export interface CostControlRow {
   sekFormatted: string;
 }
 
+export type RowStatus = "ok" | "check";
+
+export type RowStatusMap = Record<string, RowStatus>;
+
+export function formatRowStatus(status: RowStatus | undefined): string {
+  if (status === "ok") return "OK";
+  if (status === "check") return "Kontroll";
+  return "";
+}
+
 export interface ParsedWorkbook {
   summary: InvoiceSummary;
   rows: CostControlRow[];

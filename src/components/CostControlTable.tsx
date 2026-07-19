@@ -19,10 +19,8 @@ import {
 import { EmptyState } from "@/components/EmptyState";
 import { TableFilters } from "@/components/TableFilters";
 import { formatSwedishCurrency } from "@/lib/formatters";
-import type { CostControlRow } from "@/lib/types";
+import type { CostControlRow, RowStatus, RowStatusMap } from "@/lib/types";
 import { cn } from "@/lib/utils";
-
-type RowStatus = "ok" | "check";
 
 type FilterableColumn = "datum" | "butiksnr" | "butiksnamn" | "postort";
 
@@ -30,6 +28,8 @@ interface CostControlTableProps {
   rows: CostControlRow[];
   totalSekFormatted: string;
   rowCount: number;
+  rowStatus: RowStatusMap;
+  onRowStatusChange: (next: RowStatusMap) => void;
 }
 
 const DEFAULT_SORTING: SortingState = [
@@ -78,29 +78,31 @@ export function CostControlTable({
   rows,
   totalSekFormatted,
   rowCount,
+  rowStatus,
+  onRowStatusChange,
 }: CostControlTableProps) {
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [rowStatus, setRowStatus] = useState<Record<string, RowStatus>>({});
 
   useEffect(() => {
-    setRowStatus({});
     setColumnFilters([]);
     setGlobalFilter("");
     setSorting(DEFAULT_SORTING);
   }, [rows]);
 
-  const setStatus = useCallback((rowId: string, status: RowStatus) => {
-    setRowStatus((prev) => {
-      if (prev[rowId] === status) {
-        const next = { ...prev };
+  const setStatus = useCallback(
+    (rowId: string, status: RowStatus) => {
+      const next = { ...rowStatus };
+      if (next[rowId] === status) {
         delete next[rowId];
-        return next;
+      } else {
+        next[rowId] = status;
       }
-      return { ...prev, [rowId]: status };
-    });
-  }, []);
+      onRowStatusChange(next);
+    },
+    [onRowStatusChange, rowStatus]
+  );
 
   const filterOptions = useMemo(
     () => ({
