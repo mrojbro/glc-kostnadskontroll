@@ -32,6 +32,8 @@ export type RowStatus = "ok" | "check";
 
 export type RowStatusMap = Record<string, RowStatus>;
 
+export type RowCommentMap = Record<string, string>;
+
 export function formatRowStatus(status: RowStatus | undefined): string {
   if (status === "ok") return "OK";
   if (status === "check") return "Kontroll";

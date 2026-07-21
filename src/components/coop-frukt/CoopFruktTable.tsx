@@ -16,22 +16,28 @@ import {
   ColumnFilterDropdown,
   EMPTY_VALUE,
 } from "@/components/ColumnFilterDropdown";
+import { CoopFruktFilters } from "@/components/coop-frukt/CoopFruktFilters";
 import { EmptyState } from "@/components/EmptyState";
-import { TableFilters } from "@/components/TableFilters";
 import { formatSwedishCurrency } from "@/lib/formatters";
-import type {
-  CostControlRow,
-  RowCommentMap,
-  RowStatus,
-  RowStatusMap,
-} from "@/lib/types";
+import type { CoopFruktRow } from "@/lib/coopFrukt/types";
+import type { RowCommentMap, RowStatus, RowStatusMap } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-type FilterableColumn = "datum" | "butiksnr" | "butiksnamn" | "postort";
+type FilterableColumn =
+  | "avgangsdatum"
+  | "vecka"
+  | "frs"
+  | "ekipage"
+  | "terminal"
+  | "butiksnamn"
+  | "postort"
+  | "vikt"
+  | "pris"
+  | "summa";
 
-interface CostControlTableProps {
-  rows: CostControlRow[];
-  totalSekFormatted: string;
+interface CoopFruktTableProps {
+  rows: CoopFruktRow[];
+  totalSummaFormatted: string;
   rowCount: number;
   rowStatus: RowStatusMap;
   onRowStatusChange: (next: RowStatusMap) => void;
@@ -40,56 +46,102 @@ interface CostControlTableProps {
 }
 
 const DEFAULT_SORTING: SortingState = [
-  { id: "datum", desc: false },
+  { id: "avgangsdatum", desc: false },
   { id: "butiksnamn", desc: false },
 ];
 
 const FILTERABLE_COLUMNS: FilterableColumn[] = [
-  "datum",
-  "butiksnr",
+  "avgangsdatum",
+  "vecka",
+  "frs",
+  "ekipage",
+  "terminal",
   "butiksnamn",
   "postort",
+  "vikt",
+  "pris",
+  "summa",
 ];
 
+const FILTER_LABELS: Record<FilterableColumn, string> = {
+  avgangsdatum: "Avgångsdatum",
+  vecka: "Vecka",
+  frs: "FRS",
+  ekipage: "Ekipage",
+  terminal: "Terminal",
+  butiksnamn: "Butiksnamn",
+  postort: "Postort",
+  vikt: "Vikt",
+  pris: "Pris",
+  summa: "Summa",
+};
+
 function multiSelectFilter(
-  row: { getValue: (columnId: string) => unknown },
+  row: { getValue: (columnId: string) => unknown; original: CoopFruktRow },
   columnId: string,
   filterValue: unknown
 ): boolean {
   const selected = filterValue as string[] | undefined;
   if (!selected || selected.length === 0) return true;
 
-  const raw = String(row.getValue(columnId) ?? "").trim();
-  const key = raw === "" ? EMPTY_VALUE : raw;
+  const key = getFilterDisplayValue(row.original, columnId as FilterableColumn);
   return selected.includes(key);
 }
 
+function getFilterDisplayValue(
+  row: CoopFruktRow,
+  columnId: FilterableColumn
+): string {
+  switch (columnId) {
+    case "avgangsdatum":
+      return row.avgangsdatum.trim() || EMPTY_VALUE;
+    case "vecka":
+      return row.vecka.trim() || EMPTY_VALUE;
+    case "frs":
+      return row.frs.trim() || EMPTY_VALUE;
+    case "ekipage":
+      return row.ekipage.trim() || EMPTY_VALUE;
+    case "terminal":
+      return row.terminal.trim() || EMPTY_VALUE;
+    case "butiksnamn":
+      return row.butiksnamn.trim() || EMPTY_VALUE;
+    case "postort":
+      return row.postort.trim() || EMPTY_VALUE;
+    case "vikt":
+      return row.viktFormatted.trim() || EMPTY_VALUE;
+    case "pris":
+      return row.prisFormatted.trim() || EMPTY_VALUE;
+    case "summa":
+      return row.summaFormatted.trim() || EMPTY_VALUE;
+    default:
+      return EMPTY_VALUE;
+  }
+}
+
 function uniqueColumnOptions(
-  rows: CostControlRow[],
+  rows: CoopFruktRow[],
   key: FilterableColumn
 ): string[] {
   const values = new Set<string>();
   for (const row of rows) {
-    const raw = String(row[key] ?? "").trim();
-    values.add(raw === "" ? EMPTY_VALUE : raw);
+    values.add(getFilterDisplayValue(row, key));
   }
-
   return Array.from(values).sort((a, b) => {
     if (a === EMPTY_VALUE) return -1;
     if (b === EMPTY_VALUE) return 1;
-    return a.localeCompare(b, "sv");
+    return a.localeCompare(b, "sv", { numeric: true });
   });
 }
 
-export function CostControlTable({
+export function CoopFruktTable({
   rows,
-  totalSekFormatted,
+  totalSummaFormatted,
   rowCount,
   rowStatus,
   onRowStatusChange,
   rowComments,
   onRowCommentsChange,
-}: CostControlTableProps) {
+}: CoopFruktTableProps) {
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -126,15 +178,13 @@ export function CostControlTable({
     [onRowCommentsChange, rowComments]
   );
 
-  const filterOptions = useMemo(
-    () => ({
-      datum: uniqueColumnOptions(rows, "datum"),
-      butiksnr: uniqueColumnOptions(rows, "butiksnr"),
-      butiksnamn: uniqueColumnOptions(rows, "butiksnamn"),
-      postort: uniqueColumnOptions(rows, "postort"),
-    }),
-    [rows]
-  );
+  const filterOptions = useMemo(() => {
+    const options = {} as Record<FilterableColumn, string[]>;
+    for (const key of FILTERABLE_COLUMNS) {
+      options[key] = uniqueColumnOptions(rows, key);
+    }
+    return options;
+  }, [rows]);
 
   const getSelected = useCallback(
     (columnId: FilterableColumn): string[] => {
@@ -155,46 +205,51 @@ export function CostControlTable({
     []
   );
 
-  const columns = useMemo<ColumnDef<CostControlRow>[]>(
+  const columns = useMemo<ColumnDef<CoopFruktRow>[]>(
     () => [
       {
-        accessorKey: "foNummer",
-        header: "FO-Nummer",
+        accessorKey: "avgangsdatum",
+        header: "Avgångsdatum",
+        filterFn: multiSelectFilter,
+        cell: (info) => info.getValue<string>(),
+      },
+      {
+        accessorKey: "vecka",
+        header: "Vecka",
+        filterFn: multiSelectFilter,
+        cell: (info) => info.getValue<string>(),
+      },
+      {
+        accessorKey: "frs",
+        header: "FRS",
+        filterFn: multiSelectFilter,
+        cell: (info) => info.getValue<string>(),
+      },
+      {
+        accessorKey: "ekipage",
+        header: "Ekipage",
+        filterFn: multiSelectFilter,
         cell: (info) => {
           const value = info.getValue<string>();
-          return (
-            <span className="block max-w-[5rem] truncate" title={value}>
-              {value}
-            </span>
+          return value ? (
+            value
+          ) : (
+            <span className="text-[#6a6a6a]">—</span>
           );
         },
       },
       {
-        accessorKey: "typ",
-        header: "Typ",
-        cell: (info) => info.getValue<string>(),
-      },
-      {
-        accessorKey: "datum",
-        header: "Datum",
+        accessorKey: "terminal",
+        header: "Terminal",
         filterFn: multiSelectFilter,
         cell: (info) => {
           const value = info.getValue<string>();
-          if (!value) {
-            return (
-              <span className="inline-block rounded-md bg-[#7f1d1d]/55 px-2 py-0.5 font-medium text-[#fca5a5] ring-1 ring-[#f87171]/40">
-                Saknas
-              </span>
-            );
-          }
-          return value;
+          return value ? (
+            value
+          ) : (
+            <span className="text-[#6a6a6a]">—</span>
+          );
         },
-      },
-      {
-        accessorKey: "butiksnr",
-        header: "Butiksnr",
-        filterFn: multiSelectFilter,
-        cell: (info) => info.getValue<string>(),
       },
       {
         accessorKey: "butiksnamn",
@@ -203,7 +258,7 @@ export function CostControlTable({
         cell: (info) => {
           const value = info.getValue<string>();
           return (
-            <span className="block max-w-[11rem] truncate" title={value}>
+            <span className="block max-w-[12rem] truncate" title={value}>
               {value}
             </span>
           );
@@ -213,42 +268,48 @@ export function CostControlTable({
         accessorKey: "postort",
         header: "Postort",
         filterFn: multiSelectFilter,
+        cell: (info) => info.getValue<string>(),
+      },
+      {
+        id: "vikt",
+        accessorFn: (row) => row.vikt ?? Number.NEGATIVE_INFINITY,
+        header: "Vikt",
+        filterFn: multiSelectFilter,
+        cell: (info) => (
+          <span className="tabular-nums">{info.row.original.viktFormatted}</span>
+        ),
+        sortingFn: "basic",
+      },
+      {
+        id: "pris",
+        accessorFn: (row) => row.pris ?? Number.NEGATIVE_INFINITY,
+        header: "Pris",
+        filterFn: multiSelectFilter,
+        cell: (info) => (
+          <span className="tabular-nums">{info.row.original.prisFormatted}</span>
+        ),
+        sortingFn: "basic",
+      },
+      {
+        id: "summa",
+        accessorKey: "summa",
+        header: "Summa",
+        filterFn: multiSelectFilter,
         cell: (info) => {
-          const value = info.getValue<string>();
+          const matches = info.row.original.summaMatches;
           return (
-            <span className="block max-w-[5.5rem] truncate" title={value}>
-              {value}
+            <span
+              className={cn(
+                "inline-block rounded-md px-2 py-0.5 font-medium tabular-nums",
+                matches
+                  ? "bg-[#22c55e]/20 text-[#4ade80] ring-1 ring-[#4ade80]/35"
+                  : "text-[#f0a35a]"
+              )}
+            >
+              {info.row.original.summaFormatted}
             </span>
           );
         },
-      },
-      {
-        id: "pall",
-        accessorFn: (row) => row.pall ?? Number.NEGATIVE_INFINITY,
-        header: "Pall",
-        cell: (info) => (
-          <span className="inline-block rounded-md bg-[#eb6e08]/18 px-2 py-0.5 font-medium tabular-nums text-[#f0a35a]">
-            {info.row.original.pallFormatted}
-          </span>
-        ),
-        sortingFn: "basic",
-      },
-      {
-        id: "rpu",
-        accessorFn: (row) => row.rpu ?? Number.NEGATIVE_INFINITY,
-        header: "RPU",
-        cell: (info) => (
-          <span className="tabular-nums">{info.row.original.rpuFormatted}</span>
-        ),
-        sortingFn: "basic",
-      },
-      {
-        id: "sek",
-        accessorKey: "sek",
-        header: "SEK",
-        cell: (info) => (
-          <span className="tabular-nums">{info.row.original.sekFormatted}</span>
-        ),
         sortingFn: "basic",
       },
       {
@@ -310,11 +371,7 @@ export function CostControlTable({
   const table = useReactTable({
     data: rows,
     columns,
-    state: {
-      sorting,
-      globalFilter,
-      columnFilters,
-    },
+    state: { sorting, globalFilter, columnFilters },
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
     onColumnFiltersChange: setColumnFilters,
@@ -328,15 +385,16 @@ export function CostControlTable({
       if (!query) return true;
 
       const values = [
-        row.original.foNummer,
-        row.original.typ,
-        row.original.datum,
-        row.original.butiksnr,
+        row.original.avgangsdatum,
+        row.original.vecka,
+        row.original.frs,
+        row.original.ekipage,
+        row.original.terminal,
         row.original.butiksnamn,
         row.original.postort,
-        row.original.pallFormatted,
-        row.original.rpuFormatted,
-        row.original.sekFormatted,
+        row.original.viktFormatted,
+        row.original.prisFormatted,
+        row.original.summaFormatted,
         rowComments[row.original.id] ?? "",
       ];
 
@@ -348,42 +406,18 @@ export function CostControlTable({
 
   const visibleRows = table.getRowModel().rows;
   const filteredRows = table.getFilteredRowModel().rows;
-  const filteredRowCount = filteredRows.length;
-  const filteredTotalSek = filteredRows.reduce(
-    (sum, row) => sum + row.original.sek,
+  const filteredSumma = filteredRows.reduce(
+    (sum, row) => sum + row.original.summa,
     0
   );
   const displayTotal =
     globalFilter.trim() === "" && columnFilters.length === 0
-      ? totalSekFormatted
-      : formatSwedishCurrency(filteredTotalSek);
+      ? totalSummaFormatted
+      : formatSwedishCurrency(filteredSumma);
   const displayCount =
     globalFilter.trim() === "" && columnFilters.length === 0
       ? rowCount
-      : filteredRowCount;
-
-  const typSummary = useMemo(() => {
-    const tracked = ["ZCDC1", "ZCDC3"] as const;
-    const counts: Record<(typeof tracked)[number], number> = {
-      ZCDC1: 0,
-      ZCDC3: 0,
-    };
-
-    for (const row of filteredRows) {
-      const typ = row.original.typ.trim().toUpperCase();
-      if (typ === "ZCDC1" || typ === "ZCDC3") {
-        counts[typ] += 1;
-      }
-    }
-
-    const total = filteredRowCount || 1;
-
-    return tracked.map((typ) => ({
-      typ,
-      count: counts[typ],
-      percent: (counts[typ] / total) * 100,
-    }));
-  }, [filteredRows, filteredRowCount]);
+      : filteredRows.length;
 
   const okCount = Object.values(rowStatus).filter((s) => s === "ok").length;
   const checkCount = Object.values(rowStatus).filter(
@@ -398,42 +432,44 @@ export function CostControlTable({
 
   return (
     <section className="space-y-4">
-      <TableFilters
+      <CoopFruktFilters
         search={globalFilter}
         onSearchChange={setGlobalFilter}
         onReset={handleReset}
-        typSummary={typSummary}
+        rowCount={displayCount}
+        totalCount={rowCount}
+        totalSummaFormatted={displayTotal}
         okCount={okCount}
         checkCount={checkCount}
-        statusTotal={filteredRowCount}
       />
 
       {rows.length === 0 ? (
         <EmptyState
-          title="Inga fakturarader"
-          description="Inga rader återstod efter filtrering. Kontrollera att arbetsboken innehåller giltiga fakturarader."
+          title="Inga rader"
+          description="Inga rader hittades i arbetsbladet Grunddata."
         />
       ) : visibleRows.length === 0 ? (
         <EmptyState
           title="Inga träffar"
-          description="Ingen rad matchar din sökning eller dina filter. Prova att rensa filtren."
+          description="Ingen rad matchar din sökning eller dina filter. Prova att återställa."
         />
       ) : (
         <div className="overflow-hidden rounded-2xl border border-[#3a3a3a] bg-[#242424] shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
           <div className="max-h-[min(70vh,720px)] overflow-x-auto overflow-y-scroll [scrollbar-gutter:stable]">
-            <table className="w-full min-w-[1100px] table-fixed border-collapse text-left text-sm">
+            <table className="w-full min-w-[1280px] table-fixed border-collapse text-left text-sm">
               <colgroup>
+                <col className="w-[7rem]" />
+                <col className="w-[4.5rem]" />
+                <col className="w-[6rem]" />
                 <col className="w-[5.5rem]" />
-                <col className="w-[3.5rem]" />
-                <col className="w-[6rem]" />
-                <col className="w-[4.5rem]" />
-                <col className="w-[10rem]" />
-                <col className="w-[6rem]" />
-                <col className="w-[4.5rem]" />
-                <col className="w-[4.5rem]" />
-                <col className="w-[6.5rem]" />
+                <col className="w-[5.5rem]" />
+                <col className="w-[11rem]" />
+                <col className="w-[7rem]" />
                 <col className="w-[5rem]" />
-                <col className="w-[12rem]" />
+                <col className="w-[5rem]" />
+                <col className="w-[7rem]" />
+                <col className="w-[5rem]" />
+                <col className="w-[11rem]" />
               </colgroup>
               <thead className="sticky top-0 z-10">
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -449,20 +485,13 @@ export function CostControlTable({
                         <th
                           key={header.id}
                           className="px-3 py-3 font-semibold text-white whitespace-nowrap"
-                          aria-sort={
-                            sorted === "asc"
-                              ? "ascending"
-                              : sorted === "desc"
-                                ? "descending"
-                                : "none"
-                          }
                         >
                           {header.isPlaceholder ? null : (
                             <div className="flex items-center gap-1">
                               {canSort ? (
                                 <button
                                   type="button"
-                                  className="inline-flex items-center gap-1 rounded-md py-0.5 -ml-0 cursor-pointer hover:bg-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                                  className="inline-flex items-center gap-1 rounded-md py-0.5 cursor-pointer hover:bg-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
                                   onClick={header.column.getToggleSortingHandler()}
                                 >
                                   {flexRender(
@@ -494,9 +523,7 @@ export function CostControlTable({
 
                               {isFilterable && (
                                 <ColumnFilterDropdown
-                                  label={String(
-                                    header.column.columnDef.header ?? columnId
-                                  )}
+                                  label={FILTER_LABELS[columnId]}
                                   options={filterOptions[columnId]}
                                   selected={getSelected(columnId)}
                                   onChange={(selected) =>
@@ -514,7 +541,6 @@ export function CostControlTable({
               </thead>
               <tbody>
                 {visibleRows.map((row, index) => {
-                  const missingDatum = !row.original.datum;
                   const status = rowStatus[row.original.id];
                   return (
                     <tr
@@ -522,14 +548,11 @@ export function CostControlTable({
                       className={cn(
                         "border-t border-[#3a3a3a]",
                         status === "ok" && "bg-[#1a2e22] hover:bg-[#203528]",
-                        status === "check" && "bg-[#2e2a18] hover:bg-[#35301c]",
+                        status === "check" &&
+                          "bg-[#2e2a18] hover:bg-[#35301c]",
                         !status &&
-                          missingDatum &&
-                          "bg-[#2a1818] hover:bg-[#321c1c]",
-                        !status &&
-                          !missingDatum &&
                           (index % 2 === 0 ? "bg-[#242424]" : "bg-[#202020]"),
-                        !status && !missingDatum && "hover:bg-[#2a2218]"
+                        !status && "hover:bg-[#2a2218]"
                       )}
                     >
                       {row.getVisibleCells().map((cell) => (
@@ -554,21 +577,15 @@ export function CostControlTable({
             <p className="text-sm text-[#b8b8b8]">
               Visar{" "}
               <span className="font-medium text-white">{displayCount}</span>{" "}
-              av{" "}
-              <span className="font-medium text-white">{rowCount}</span>{" "}
+              av <span className="font-medium text-white">{rowCount}</span>{" "}
               rader
               {" · "}
-              <span className="text-[#4ade80]">
-                OK {Object.values(rowStatus).filter((s) => s === "ok").length}
-              </span>
+              <span className="text-[#4ade80]">OK {okCount}</span>
               {" · "}
-              <span className="text-[#eab308]">
-                Kontroll{" "}
-                {Object.values(rowStatus).filter((s) => s === "check").length}
-              </span>
+              <span className="text-[#eab308]">Kontroll {checkCount}</span>
             </p>
             <p className="text-sm">
-              <span className="text-[#b8b8b8]">Totalt SEK: </span>
+              <span className="text-[#b8b8b8]">Totalt Summa: </span>
               <span className="font-semibold tabular-nums text-[#eb6e08]">
                 {displayTotal}
               </span>

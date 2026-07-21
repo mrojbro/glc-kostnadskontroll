@@ -108,6 +108,21 @@ export function formatSwedishDecimal2(value: unknown): string {
 }
 
 /**
+ * Format a number with exactly three decimals (Swedish): `0,750`
+ */
+export function formatSwedishDecimal3(value: unknown): string {
+  const num = parseNumericValue(value);
+  if (num === null) {
+    return "";
+  }
+
+  return new Intl.NumberFormat("sv-SE", {
+    minimumFractionDigits: 3,
+    maximumFractionDigits: 3,
+  }).format(num);
+}
+
+/**
  * Preserve identifiers as strings, keeping leading zeroes when present.
  */
 export function formatIdentifier(value: unknown): string {

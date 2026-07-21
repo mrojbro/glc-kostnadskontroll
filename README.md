@@ -1,6 +1,6 @@
 # GLC Kostnadskontroll
 
-Webbapplikation för att ladda upp fakturaunderlag (Excel), filtrera och formatera fakturarader, samt exportera resultatet till en ny Excel-fil.
+Portal för kostnadskontroll per distribution. Ladda upp fakturaunderlag (Excel), filtrera och formatera fakturarader, och exportera resultatet.
 
 ## Live site
 
@@ -17,12 +17,17 @@ npm run dev
 
 Öppna [http://localhost:3000](http://localhost:3000).
 
-## Funktioner
+## Distributioner
 
-- Uppladdning via drag-and-drop eller filväljare
-- Validering av arbetsblad (`Invoice basis summary`, `Invoice basis`) och obligatoriska kolumner
-- Sammanfattning, filtrering, sök/sortering och statusmarkering (OK / Kontroll)
-- Export till Excel (`Sammanfattning` + `Kostnadskontroll`)
+| Portal | Status |
+|--------|--------|
+| HLP Distribution | Kommer snart |
+| Coop Distribution | Aktiv |
+| Coop Frukt | Aktiv |
+| 3054 Davies | Kommer snart |
+| 3058 Boxmover | Kommer snart |
+| 3028 Närkefrakt | Kommer snart |
+| 2215 Krickos | Kommer snart |
 
 ## Stack
 

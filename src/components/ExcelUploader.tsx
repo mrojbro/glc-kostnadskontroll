@@ -1,18 +1,23 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, type ReactNode } from "react";
 import { FileSpreadsheet, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ExcelUploaderProps {
   onFileSelected: (file: File) => void;
   disabled?: boolean;
+  hint?: ReactNode;
 }
 
 const ACCEPTED =
   ".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel";
 
-export function ExcelUploader({ onFileSelected, disabled }: ExcelUploaderProps) {
+export function ExcelUploader({
+  onFileSelected,
+  disabled,
+  hint,
+}: ExcelUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -90,10 +95,14 @@ export function ExcelUploader({ onFileSelected, disabled }: ExcelUploaderProps) 
             : "Ladda upp Excel-arbetsbok"}
         </p>
         <p className="text-sm text-[#b8b8b8]">
-          Dra och släpp en fil här, eller klicka för att välja. Kräver
-          arbetsbladen{" "}
-          <span className="text-white">Invoice basis summary</span> och{" "}
-          <span className="text-white">Invoice basis</span>.
+          {hint ?? (
+            <>
+              Dra och släpp en fil här, eller klicka för att välja. Kräver
+              arbetsbladen{" "}
+              <span className="text-white">Invoice basis summary</span> och{" "}
+              <span className="text-white">Invoice basis</span>.
+            </>
+          )}
         </p>
       </div>
 

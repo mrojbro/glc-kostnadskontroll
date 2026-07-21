@@ -6,6 +6,7 @@ import {
 import {
   formatRowStatus,
   type ParsedWorkbook,
+  type RowCommentMap,
   type RowStatusMap,
 } from "./types";
 
@@ -14,12 +15,13 @@ import {
  */
 export function exportToExcel(
   data: ParsedWorkbook,
-  rowStatus: RowStatusMap = {}
+  rowStatus: RowStatusMap = {},
+  rowComments: RowCommentMap = {}
 ): void {
   const workbook = XLSX.utils.book_new();
 
   const summarySheet = buildSummarySheet(data, rowStatus);
-  const detailSheet = buildDetailSheet(data, rowStatus);
+  const detailSheet = buildDetailSheet(data, rowStatus, rowComments);
 
   XLSX.utils.book_append_sheet(workbook, summarySheet, "Sammanfattning");
   XLSX.utils.book_append_sheet(workbook, detailSheet, "Kostnadskontroll");
@@ -73,7 +75,8 @@ function buildSummarySheet(
 
 function buildDetailSheet(
   data: ParsedWorkbook,
-  rowStatus: RowStatusMap
+  rowStatus: RowStatusMap,
+  rowComments: RowCommentMap
 ): XLSX.WorkSheet {
   const headers = [
     "FO-Nummer",
@@ -86,6 +89,7 @@ function buildDetailSheet(
     "RPU",
     "SEK",
     "Status",
+    "Kommentar",
   ];
 
   const body = data.rows.map((row) => [
@@ -99,21 +103,23 @@ function buildDetailSheet(
     row.rpu ?? "",
     row.sek,
     formatRowStatus(rowStatus[row.id]),
+    rowComments[row.id] ?? "",
   ]);
 
   const sheet = XLSX.utils.aoa_to_sheet([headers, ...body]);
 
   sheet["!cols"] = [
-    { wch: 12 },
-    { wch: 8 },
-    { wch: 12 },
-    { wch: 10 },
+    { wch: 11 },
+    { wch: 7 },
+    { wch: 11 },
+    { wch: 9 },
     { wch: 18 },
-    { wch: 14 },
+    { wch: 12 },
     { wch: 8 },
     { wch: 8 },
     { wch: 14 },
     { wch: 10 },
+    { wch: 28 },
   ];
 
   for (let col = 0; col < headers.length; col++) {

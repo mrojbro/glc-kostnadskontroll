@@ -2,38 +2,27 @@
 
 import { useCallback, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Loader2, Upload } from "lucide-react";
-import { CostControlTable } from "@/components/CostControlTable";
+import { ArrowLeft, Download, Loader2, Upload } from "lucide-react";
+import { CoopFruktTable } from "@/components/coop-frukt/CoopFruktTable";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { ExcelUploader } from "@/components/ExcelUploader";
-import { ExportButton } from "@/components/ExportButton";
-import { SummaryCards } from "@/components/SummaryCards";
-import { SummaryHeader } from "@/components/SummaryHeader";
 import { Button } from "@/components/ui/button";
-import { parseExcelFile } from "@/lib/excelParser";
+import { exportCoopFruktToExcel } from "@/lib/coopFrukt/exporter";
+import { parseCoopFruktFile } from "@/lib/coopFrukt/parser";
 import type {
-  ParseError,
-  ParsedWorkbook,
-  RowCommentMap,
-  RowStatusMap,
-} from "@/lib/types";
+  CoopFruktParseError,
+  CoopFruktWorkbook,
+} from "@/lib/coopFrukt/types";
+import type { RowCommentMap, RowStatusMap } from "@/lib/types";
 
 type AppState =
   | { status: "idle" }
   | { status: "loading" }
-  | { status: "error"; error: ParseError }
-  | { status: "success"; data: ParsedWorkbook; fileName: string };
+  | { status: "error"; error: CoopFruktParseError }
+  | { status: "success"; data: CoopFruktWorkbook; fileName: string };
 
-interface CostControlAppProps {
-  title: string;
-  description?: string;
-}
-
-export function CostControlApp({
-  title,
-  description = "Ladda upp en fakturaunderlagsfil, granska sammanfattning och fakturarader, och exportera resultatet till Excel.",
-}: CostControlAppProps) {
+export function CoopFruktApp() {
   const [state, setState] = useState<AppState>({ status: "idle" });
   const [rowStatus, setRowStatus] = useState<RowStatusMap>({});
   const [rowComments, setRowComments] = useState<RowCommentMap>({});
@@ -43,7 +32,7 @@ export function CostControlApp({
     setRowStatus({});
     setRowComments({});
 
-    const result = await parseExcelFile(file);
+    const result = await parseCoopFruktFile(file);
 
     if (!result.success) {
       setState({ status: "error", error: result.error });
@@ -79,18 +68,27 @@ export function CostControlApp({
             GLC Kostnadskontroll
           </p>
           <h1 className="text-3xl font-bold tracking-tight text-[#eb6e08] sm:text-4xl">
-            {title}
+            Coop Frukt
           </h1>
-          <p className="max-w-2xl text-[#b8b8b8]">{description}</p>
+          <p className="max-w-2xl text-[#b8b8b8]">
+            Ladda upp Excel-fil med arbetsbladet Grunddata för att granska
+            fraktunderlag.
+          </p>
         </div>
 
         {state.status === "success" && (
           <div className="flex flex-wrap gap-2">
-            <ExportButton
-              data={state.data}
-              rowStatus={rowStatus}
-              rowComments={rowComments}
-            />
+            <Button
+              type="button"
+              size="lg"
+              className="h-10 gap-2 rounded-lg bg-[#eb6e08] px-4 text-white hover:bg-[#d46207] focus-visible:border-[#eb6e08] focus-visible:ring-[#eb6e08]/40"
+              onClick={() =>
+                exportCoopFruktToExcel(state.data, rowStatus, rowComments)
+              }
+            >
+              <Download className="size-4" aria-hidden />
+              Exportera Excel
+            </Button>
             <Button
               type="button"
               variant="outline"
@@ -106,7 +104,16 @@ export function CostControlApp({
       </div>
 
       {state.status === "idle" && (
-        <ExcelUploader onFileSelected={handleFile} />
+        <ExcelUploader
+          onFileSelected={handleFile}
+          hint={
+            <>
+              Dra och släpp en fil här, eller klicka för att välja. Kräver
+              arbetsbladet <span className="text-white">Grunddata</span> (blad
+              2).
+            </>
+          }
+        />
       )}
 
       {state.status === "loading" && (
@@ -117,7 +124,7 @@ export function CostControlApp({
           />
           <p className="text-white">Bearbetar Excel-fil…</p>
           <p className="text-sm text-[#b8b8b8]">
-            Validerar arbetsblad och kolumner
+            Läser arbetsbladet Grunddata
           </p>
         </div>
       )}
@@ -128,25 +135,34 @@ export function CostControlApp({
             message={state.error.message}
             details={state.error.details}
           />
-          <ExcelUploader onFileSelected={handleFile} />
+          <ExcelUploader
+            onFileSelected={handleFile}
+            hint={
+              <>
+                Dra och släpp en fil här, eller klicka för att välja. Kräver
+                arbetsbladet <span className="text-white">Grunddata</span>{" "}
+                (blad 2).
+              </>
+            }
+          />
         </div>
       )}
 
       {state.status === "success" && (
-        <div className="space-y-10">
+        <div className="space-y-6">
           <div className="space-y-1">
-            <SummaryHeader reference={state.data.summary.reference} />
             <p className="text-sm text-[#b8b8b8]">
-              Fil:{" "}
-              <span className="text-white">{state.fileName}</span>
+              Fil: <span className="text-white">{state.fileName}</span>
+            </p>
+            <p className="text-sm text-[#b8b8b8]">
+              Arbetsblad:{" "}
+              <span className="text-white">{state.data.sheetName}</span>
             </p>
           </div>
 
-          <SummaryCards summary={state.data.summary} />
-
-          <CostControlTable
+          <CoopFruktTable
             rows={state.data.rows}
-            totalSekFormatted={state.data.totalSekFormatted}
+            totalSummaFormatted={state.data.totalSummaFormatted}
             rowCount={state.data.rowCount}
             rowStatus={rowStatus}
             onRowStatusChange={setRowStatus}
@@ -159,7 +175,7 @@ export function CostControlApp({
       {state.status === "idle" && (
         <EmptyState
           title="Ingen fil uppladdad"
-          description="Ladda upp en Excel-arbetsbok för att visa sammanfattning och kostnadskontroll."
+          description="Ladda upp en Excel-arbetsbok med Grunddata för att visa Coop Frukt."
         />
       )}
     </div>
