@@ -24,7 +24,7 @@ npm run dev
 | HLP Distribution | Aktiv |
 | Coop Distribution | Aktiv |
 | Coop Frukt | Aktiv |
-| 3054 Davies | Kommer snart |
+| 3054 Davies | Aktiv |
 | 3058 Boxmover | Kommer snart |
 | 3028 Närkefrakt | Kommer snart |
 | 2215 Krickos | Kommer snart |

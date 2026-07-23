@@ -27,7 +27,8 @@ export const PORTALS: PortalItem[] = [
   {
     id: "3054-davies",
     name: "3054 Davies",
-    enabled: false,
+    href: "/3054-davies/",
+    enabled: true,
   },
   {
     id: "3058-boxmover",
