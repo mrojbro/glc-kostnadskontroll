@@ -21,7 +21,7 @@ npm run dev
 
 | Portal | Status |
 |--------|--------|
-| HLP Distribution | Kommer snart |
+| HLP Distribution | Aktiv |
 | Coop Distribution | Aktiv |
 | Coop Frukt | Aktiv |
 | 3054 Davies | Kommer snart |

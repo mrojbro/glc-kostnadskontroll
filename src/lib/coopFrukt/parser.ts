@@ -14,6 +14,7 @@ import {
   isEmptyRow,
   normalizeHeader,
 } from "@/lib/validation";
+import { lookupButikByName } from "./butikLookup";
 import {
   COOP_FRUKT_REQUIRED_HEADERS,
   COOP_FRUKT_SHEET_NAME,
@@ -160,6 +161,7 @@ function parseGrunddataSheet(
     const pris = parseNumericValue(row[col.krKg]);
     const summa = parseNumericValue(row[col.totalKr]) ?? 0;
     const summaMatches = doesViktPrisMatchSumma(vikt, pris, summa);
+    const butik = lookupButikByName(butiksnamn);
 
     if (!frs && !butiksnamn && !avgangsdatum && vikt === null && summa === 0) {
       continue;
@@ -171,8 +173,8 @@ function parseGrunddataSheet(
       avgangsdatum,
       vecka,
       frs,
-      ekipage: "",
-      terminal: "",
+      ekipage: butik?.ekipage ?? "",
+      terminal: butik?.tur ?? "",
       butiksnamn,
       postort,
       vikt,

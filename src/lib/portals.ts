@@ -9,7 +9,8 @@ export const PORTALS: PortalItem[] = [
   {
     id: "hlp-distribution",
     name: "HLP Distribution",
-    enabled: false,
+    href: "/hlp-distribution/",
+    enabled: true,
   },
   {
     id: "coop-distribution",

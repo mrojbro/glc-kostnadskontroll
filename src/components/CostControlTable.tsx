@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -17,6 +17,10 @@ import {
   EMPTY_VALUE,
 } from "@/components/ColumnFilterDropdown";
 import { EmptyState } from "@/components/EmptyState";
+import {
+  RowCommentInput,
+  RowStatusButtons,
+} from "@/components/RowReviewControls";
 import { TableFilters } from "@/components/TableFilters";
 import { formatSwedishCurrency } from "@/lib/formatters";
 import type {
@@ -28,6 +32,13 @@ import type {
 import { cn } from "@/lib/utils";
 
 type FilterableColumn = "datum" | "butiksnr" | "butiksnamn" | "postort";
+
+type ReviewTableMeta = {
+  rowStatus: RowStatusMap;
+  rowComments: RowCommentMap;
+  setStatus: (rowId: string, status: RowStatus) => void;
+  setComment: (rowId: string, value: string) => void;
+};
 
 interface CostControlTableProps {
   rows: CostControlRow[];
@@ -100,9 +111,14 @@ export function CostControlTable({
     setSorting(DEFAULT_SORTING);
   }, [rows]);
 
+  const rowStatusRef = useRef(rowStatus);
+  const rowCommentsRef = useRef(rowComments);
+  rowStatusRef.current = rowStatus;
+  rowCommentsRef.current = rowComments;
+
   const setStatus = useCallback(
     (rowId: string, status: RowStatus) => {
-      const next = { ...rowStatus };
+      const next = { ...rowStatusRef.current };
       if (next[rowId] === status) {
         delete next[rowId];
       } else {
@@ -110,12 +126,12 @@ export function CostControlTable({
       }
       onRowStatusChange(next);
     },
-    [onRowStatusChange, rowStatus]
+    [onRowStatusChange]
   );
 
   const setComment = useCallback(
     (rowId: string, value: string) => {
-      const next = { ...rowComments };
+      const next = { ...rowCommentsRef.current };
       if (value.trim() === "") {
         delete next[rowId];
       } else {
@@ -123,7 +139,7 @@ export function CostControlTable({
       }
       onRowCommentsChange(next);
     },
-    [onRowCommentsChange, rowComments]
+    [onRowCommentsChange]
   );
 
   const filterOptions = useMemo(
@@ -255,37 +271,14 @@ export function CostControlTable({
         id: "status",
         header: "Status",
         enableSorting: false,
-        cell: ({ row }) => {
-          const status = rowStatus[row.original.id];
+        cell: ({ row, table }) => {
+          const meta = table.options.meta as ReviewTableMeta;
           return (
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                title="OK"
-                aria-label="Markera som OK"
-                aria-pressed={status === "ok"}
-                onClick={() => setStatus(row.original.id, "ok")}
-                className={cn(
-                  "size-7 rounded-full border-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#eb6e08]",
-                  status === "ok"
-                    ? "border-[#4ade80] bg-[#22c55e] shadow-[0_0_0_2px_rgba(34,197,94,0.35)]"
-                    : "border-[#3a3a3a] bg-[#1a3a24] hover:border-[#4ade80] hover:bg-[#22c55e]/40"
-                )}
-              />
-              <button
-                type="button"
-                title="Kontrollera"
-                aria-label="Markera för kontroll"
-                aria-pressed={status === "check"}
-                onClick={() => setStatus(row.original.id, "check")}
-                className={cn(
-                  "size-7 rounded-full border-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#eb6e08]",
-                  status === "check"
-                    ? "border-[#facc15] bg-[#eab308] shadow-[0_0_0_2px_rgba(234,179,8,0.35)]"
-                    : "border-[#3a3a3a] bg-[#3a3218] hover:border-[#facc15] hover:bg-[#eab308]/40"
-                )}
-              />
-            </div>
+            <RowStatusButtons
+              rowId={row.original.id}
+              status={meta.rowStatus[row.original.id]}
+              onChange={meta.setStatus}
+            />
           );
         },
       },
@@ -293,23 +286,30 @@ export function CostControlTable({
         id: "kommentar",
         header: "Kommentar",
         enableSorting: false,
-        cell: ({ row }) => (
-          <input
-            type="text"
-            value={rowComments[row.original.id] ?? ""}
-            onChange={(e) => setComment(row.original.id, e.target.value)}
-            placeholder="Skriv kommentar…"
-            className="h-8 w-full min-w-[8rem] rounded-md border border-[#3a3a3a] bg-[#202020] px-2 text-xs text-white placeholder:text-[#6a6a6a] outline-none focus:border-[#eb6e08] focus:ring-1 focus:ring-[#eb6e08]/40"
-          />
-        ),
+        cell: ({ row, table }) => {
+          const meta = table.options.meta as ReviewTableMeta;
+          return (
+            <RowCommentInput
+              rowId={row.original.id}
+              value={meta.rowComments[row.original.id] ?? ""}
+              onChange={meta.setComment}
+            />
+          );
+        },
       },
     ],
-    [rowComments, rowStatus, setComment, setStatus]
+    []
   );
 
   const table = useReactTable({
     data: rows,
     columns,
+    meta: {
+      rowStatus,
+      rowComments,
+      setStatus,
+      setComment,
+    } satisfies ReviewTableMeta,
     state: {
       sorting,
       globalFilter,

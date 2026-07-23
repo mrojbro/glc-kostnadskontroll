@@ -16,27 +16,27 @@ import {
   ColumnFilterDropdown,
   EMPTY_VALUE,
 } from "@/components/ColumnFilterDropdown";
-import { CoopFruktFilters } from "@/components/coop-frukt/CoopFruktFilters";
+import { HlpDistributionFilters } from "@/components/hlp-distribution/HlpDistributionFilters";
 import { EmptyState } from "@/components/EmptyState";
 import {
   RowCommentInput,
   RowStatusButtons,
 } from "@/components/RowReviewControls";
 import { formatSwedishCurrency } from "@/lib/formatters";
-import type { CoopFruktRow } from "@/lib/coopFrukt/types";
+import type { HlpDistributionRow } from "@/lib/hlpDistribution/types";
 import type { RowCommentMap, RowStatus, RowStatusMap } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 type FilterableColumn =
   | "avgangsdatum"
-  | "vecka"
-  | "frs"
-  | "ekipage"
+  | "fraktsedeln"
+  | "ordernr"
+  | "avsandare"
   | "terminal"
-  | "butiksnamn"
-  | "postort"
+  | "mottagare"
+  | "pall"
+  | "flm"
   | "vikt"
-  | "pris"
   | "summa";
 
 type ReviewTableMeta = {
@@ -46,8 +46,8 @@ type ReviewTableMeta = {
   setComment: (rowId: string, value: string) => void;
 };
 
-interface CoopFruktTableProps {
-  rows: CoopFruktRow[];
+interface HlpDistributionTableProps {
+  rows: HlpDistributionRow[];
   totalSummaFormatted: string;
   rowCount: number;
   rowStatus: RowStatusMap;
@@ -58,86 +58,78 @@ interface CoopFruktTableProps {
 
 const DEFAULT_SORTING: SortingState = [
   { id: "avgangsdatum", desc: false },
-  { id: "butiksnamn", desc: false },
+  { id: "mottagare", desc: false },
 ];
 
 const FILTERABLE_COLUMNS: FilterableColumn[] = [
   "avgangsdatum",
-  "vecka",
-  "frs",
-  "ekipage",
+  "fraktsedeln",
+  "ordernr",
+  "avsandare",
   "terminal",
-  "butiksnamn",
-  "postort",
+  "mottagare",
+  "pall",
+  "flm",
   "vikt",
-  "pris",
   "summa",
 ];
 
 const FILTER_LABELS: Record<FilterableColumn, string> = {
   avgangsdatum: "Avgångsdatum",
-  vecka: "Vecka",
-  frs: "FRS",
-  ekipage: "Ekipage",
+  fraktsedeln: "Fraktsedeln",
+  ordernr: "Ordernr",
+  avsandare: "Avsändare",
   terminal: "Terminal",
-  butiksnamn: "Butiksnamn",
-  postort: "Postort",
+  mottagare: "Mottagare",
+  pall: "Pall",
+  flm: "FLM",
   vikt: "Vikt",
-  pris: "Pris",
   summa: "Summa",
 };
 
 function multiSelectFilter(
-  row: { getValue: (columnId: string) => unknown; original: CoopFruktRow },
+  row: { getValue: (columnId: string) => unknown; original: HlpDistributionRow },
   columnId: string,
   filterValue: unknown
 ): boolean {
   const selected = filterValue as string[] | undefined;
   if (!selected || selected.length === 0) return true;
 
-  const key = getFilterDisplayValue(row.original, columnId as FilterableColumn);
+  const key = getFilterDisplayValue(
+    row.original,
+    columnId as FilterableColumn
+  );
   return selected.includes(key);
 }
 
 function getFilterDisplayValue(
-  row: CoopFruktRow,
+  row: HlpDistributionRow,
   columnId: FilterableColumn
 ): string {
   switch (columnId) {
     case "avgangsdatum":
       return row.avgangsdatum.trim() || EMPTY_VALUE;
-    case "vecka":
-      return row.vecka.trim() || EMPTY_VALUE;
-    case "frs":
-      return row.frs.trim() || EMPTY_VALUE;
-    case "ekipage":
-      return row.ekipage.trim() || EMPTY_VALUE;
+    case "fraktsedeln":
+      return row.fraktsedeln.trim() || EMPTY_VALUE;
+    case "ordernr":
+      return row.ordernr.trim() || EMPTY_VALUE;
+    case "avsandare":
+      return row.avsandare.trim() || EMPTY_VALUE;
     case "terminal":
       return row.terminal.trim() || EMPTY_VALUE;
-    case "butiksnamn":
-      return row.butiksnamn.trim() || EMPTY_VALUE;
-    case "postort":
-      return row.postort.trim() || EMPTY_VALUE;
+    case "mottagare":
+      return row.mottagare.trim() || EMPTY_VALUE;
+    case "pall":
+      return row.pallFormatted.trim() || EMPTY_VALUE;
+    case "flm":
+      return row.flmFormatted.trim() || EMPTY_VALUE;
     case "vikt":
       return row.viktFormatted.trim() || EMPTY_VALUE;
-    case "pris":
-      return row.prisFormatted.trim() || EMPTY_VALUE;
     case "summa":
       return row.summaFormatted.trim() || EMPTY_VALUE;
     default:
       return EMPTY_VALUE;
   }
-}
-
-function uniqueColumnOptions(
-  rows: CoopFruktRow[],
-  key: FilterableColumn
-): string[] {
-  const values = new Set<string>();
-  for (const row of rows) {
-    values.add(getFilterDisplayValue(row, key));
-  }
-  return sortFilterOptions(Array.from(values));
 }
 
 function sortFilterOptions(values: string[]): string[] {
@@ -148,8 +140,19 @@ function sortFilterOptions(values: string[]): string[] {
   });
 }
 
+function uniqueColumnOptions(
+  rows: HlpDistributionRow[],
+  key: FilterableColumn
+): string[] {
+  const values = new Set<string>();
+  for (const row of rows) {
+    values.add(getFilterDisplayValue(row, key));
+  }
+  return sortFilterOptions(Array.from(values));
+}
+
 function rowMatchesGlobalSearch(
-  row: CoopFruktRow,
+  row: HlpDistributionRow,
   query: string,
   comments: RowCommentMap
 ): boolean {
@@ -158,14 +161,14 @@ function rowMatchesGlobalSearch(
 
   const values = [
     row.avgangsdatum,
-    row.vecka,
-    row.frs,
-    row.ekipage,
+    row.fraktsedeln,
+    row.ordernr,
+    row.avsandare,
     row.terminal,
-    row.butiksnamn,
-    row.postort,
+    row.mottagare,
+    row.pallFormatted,
+    row.flmFormatted,
     row.viktFormatted,
-    row.prisFormatted,
     row.summaFormatted,
     comments[row.id] ?? "",
   ];
@@ -175,9 +178,8 @@ function rowMatchesGlobalSearch(
   );
 }
 
-/** Apply all column filters except the one whose options we are building. */
 function rowMatchesOtherColumnFilters(
-  row: CoopFruktRow,
+  row: HlpDistributionRow,
   filters: ColumnFiltersState,
   excludeColumnId: FilterableColumn
 ): boolean {
@@ -191,7 +193,7 @@ function rowMatchesOtherColumnFilters(
   return true;
 }
 
-export function CoopFruktTable({
+export function HlpDistributionTable({
   rows,
   totalSummaFormatted,
   rowCount,
@@ -199,7 +201,7 @@ export function CoopFruktTable({
   onRowStatusChange,
   rowComments,
   onRowCommentsChange,
-}: CoopFruktTableProps) {
+}: HlpDistributionTableProps) {
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -254,7 +256,6 @@ export function CoopFruktTable({
         (columnFilters.find((item) => item.id === key)?.value as
           | string[]
           | undefined) ?? [];
-      // Keep current selections visible even if they no longer appear in scoped data.
       options[key] = sortFilterOptions(
         Array.from(new Set([...available, ...selected]))
       );
@@ -281,7 +282,7 @@ export function CoopFruktTable({
     []
   );
 
-  const columns = useMemo<ColumnDef<CoopFruktRow>[]>(
+  const columns = useMemo<ColumnDef<HlpDistributionRow>[]>(
     () => [
       {
         accessorKey: "avgangsdatum",
@@ -290,27 +291,45 @@ export function CoopFruktTable({
         cell: (info) => info.getValue<string>(),
       },
       {
-        accessorKey: "vecka",
-        header: "Vecka",
-        filterFn: multiSelectFilter,
-        cell: (info) => info.getValue<string>(),
-      },
-      {
-        accessorKey: "frs",
-        header: "FRS",
-        filterFn: multiSelectFilter,
-        cell: (info) => info.getValue<string>(),
-      },
-      {
-        accessorKey: "ekipage",
-        header: "Ekipage",
+        accessorKey: "fraktsedeln",
+        header: "Fraktsedeln",
         filterFn: multiSelectFilter,
         cell: (info) => {
           const value = info.getValue<string>();
-          return value ? (
-            value
-          ) : (
-            <span className="text-[#6a6a6a]">—</span>
+          const highlight = info.row.original.highlightFraktsedel;
+          return (
+            <span
+              title={
+                highlight ? "Delar Fraktsedel med Tillägg" : undefined
+              }
+              className={cn(
+                "inline-block rounded-md px-2 py-0.5",
+                highlight
+                  ? "bg-[#eb6e08]/25 font-medium text-[#f0a35a] ring-1 ring-[#eb6e08]/40"
+                  : "text-white"
+              )}
+            >
+              {value}
+            </span>
+          );
+        },
+      },
+      {
+        accessorKey: "ordernr",
+        header: "Ordernr",
+        filterFn: multiSelectFilter,
+        cell: (info) => info.getValue<string>(),
+      },
+      {
+        accessorKey: "avsandare",
+        header: "Avsändare",
+        filterFn: multiSelectFilter,
+        cell: (info) => {
+          const value = info.getValue<string>();
+          return (
+            <span className="block max-w-[11rem] truncate" title={value}>
+              {value || <span className="text-[#6a6a6a]">—</span>}
+            </span>
           );
         },
       },
@@ -328,23 +347,44 @@ export function CoopFruktTable({
         },
       },
       {
-        accessorKey: "butiksnamn",
-        header: "Butiksnamn",
+        accessorKey: "mottagare",
+        header: "Mottagare",
         filterFn: multiSelectFilter,
         cell: (info) => {
           const value = info.getValue<string>();
+          if (value === "Tillägg") {
+            return (
+              <span className="inline-block rounded-md bg-[#eab308]/20 px-2 py-0.5 font-medium text-[#facc15] ring-1 ring-[#eab308]/40">
+                Tillägg
+              </span>
+            );
+          }
           return (
-            <span className="block max-w-[12rem] truncate" title={value}>
-              {value}
+            <span className="block max-w-[11rem] truncate" title={value}>
+              {value || <span className="text-[#6a6a6a]">—</span>}
             </span>
           );
         },
       },
       {
-        accessorKey: "postort",
-        header: "Postort",
+        id: "pall",
+        accessorFn: (row) => row.pall ?? Number.NEGATIVE_INFINITY,
+        header: "Pall",
         filterFn: multiSelectFilter,
-        cell: (info) => info.getValue<string>(),
+        cell: (info) => (
+          <span className="tabular-nums">{info.row.original.pallFormatted}</span>
+        ),
+        sortingFn: "basic",
+      },
+      {
+        id: "flm",
+        accessorFn: (row) => row.flm ?? Number.NEGATIVE_INFINITY,
+        header: "FLM",
+        filterFn: multiSelectFilter,
+        cell: (info) => (
+          <span className="tabular-nums">{info.row.original.flmFormatted}</span>
+        ),
+        sortingFn: "basic",
       },
       {
         id: "vikt",
@@ -357,35 +397,15 @@ export function CoopFruktTable({
         sortingFn: "basic",
       },
       {
-        id: "pris",
-        accessorFn: (row) => row.pris ?? Number.NEGATIVE_INFINITY,
-        header: "Pris",
-        filterFn: multiSelectFilter,
-        cell: (info) => (
-          <span className="tabular-nums">{info.row.original.prisFormatted}</span>
-        ),
-        sortingFn: "basic",
-      },
-      {
         id: "summa",
         accessorKey: "summa",
         header: "Summa",
         filterFn: multiSelectFilter,
-        cell: (info) => {
-          const matches = info.row.original.summaMatches;
-          return (
-            <span
-              className={cn(
-                "inline-block rounded-md px-2 py-0.5 font-medium tabular-nums",
-                matches
-                  ? "bg-[#22c55e]/20 text-[#4ade80] ring-1 ring-[#4ade80]/35"
-                  : "text-[#f0a35a]"
-              )}
-            >
-              {info.row.original.summaFormatted}
-            </span>
-          );
-        },
+        cell: (info) => (
+          <span className="inline-block rounded-md bg-[#22c55e]/20 px-2 py-0.5 font-medium tabular-nums text-[#4ade80] ring-1 ring-[#4ade80]/35">
+            {info.row.original.summaFormatted}
+          </span>
+        ),
         sortingFn: "basic",
       },
       {
@@ -440,28 +460,12 @@ export function CoopFruktTable({
     getSortedRowModel: getSortedRowModel(),
     enableSorting: true,
     enableMultiSort: true,
-    globalFilterFn: (row, _columnId, filterValue) => {
-      const query = String(filterValue).trim().toLowerCase();
-      if (!query) return true;
-
-      const values = [
-        row.original.avgangsdatum,
-        row.original.vecka,
-        row.original.frs,
-        row.original.ekipage,
-        row.original.terminal,
-        row.original.butiksnamn,
-        row.original.postort,
-        row.original.viktFormatted,
-        row.original.prisFormatted,
-        row.original.summaFormatted,
-        rowComments[row.original.id] ?? "",
-      ];
-
-      return values.some((value) =>
-        String(value).toLowerCase().includes(query)
-      );
-    },
+    globalFilterFn: (row, _columnId, filterValue) =>
+      rowMatchesGlobalSearch(
+        row.original,
+        String(filterValue),
+        rowComments
+      ),
   });
 
   const visibleRows = table.getRowModel().rows;
@@ -492,7 +496,7 @@ export function CoopFruktTable({
 
   return (
     <section className="space-y-4">
-      <CoopFruktFilters
+      <HlpDistributionFilters
         search={globalFilter}
         onSearchChange={setGlobalFilter}
         onReset={handleReset}
@@ -506,7 +510,7 @@ export function CoopFruktTable({
       {rows.length === 0 ? (
         <EmptyState
           title="Inga rader"
-          description="Inga rader hittades i arbetsbladet Grunddata."
+          description="Inga rader hittades i Excel-filen."
         />
       ) : (
         <div className="overflow-hidden rounded-2xl border border-[#3a3a3a] bg-[#242424] shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
@@ -514,13 +518,13 @@ export function CoopFruktTable({
             <table className="w-full min-w-[1360px] table-fixed border-collapse text-left text-xs">
               <colgroup>
                 <col className="w-[7.5rem]" />
-                <col className="w-[5rem]" />
-                <col className="w-[6.5rem]" />
-                <col className="w-[6.5rem]" />
-                <col className="w-[6rem]" />
-                <col className="w-[11rem]" />
                 <col className="w-[7rem]" />
-                <col className="w-[5rem]" />
+                <col className="w-[6.5rem]" />
+                <col className="w-[10rem]" />
+                <col className="w-[6.5rem]" />
+                <col className="w-[10rem]" />
+                <col className="w-[4.5rem]" />
+                <col className="w-[4.5rem]" />
                 <col className="w-[5rem]" />
                 <col className="w-[7rem]" />
                 <col className="w-[5rem]" />
@@ -556,10 +560,7 @@ export function CoopFruktTable({
                                   {sorted === "asc" ? (
                                     <ArrowUp className="size-3" aria-hidden />
                                   ) : sorted === "desc" ? (
-                                    <ArrowDown
-                                      className="size-3"
-                                      aria-hidden
-                                    />
+                                    <ArrowDown className="size-3" aria-hidden />
                                   ) : (
                                     <ArrowUpDown
                                       className="size-3 opacity-70"

@@ -1,0 +1,667 @@
+[
+  {
+    "consignee": "Coop Borås Byttorp",
+    "butiksnr": 136023,
+    "butiksnamn": "COOP BORÅS BYTTORP",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Borås Sjöbotorg",
+    "butiksnr": 136022,
+    "butiksnamn": "COOP BORÅS SJÖBOTORG",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Brastad",
+    "butiksnr": 136594,
+    "butiksnamn": "COOP BRASTAD",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Bäckefors",
+    "butiksnr": 136690,
+    "butiksnamn": "COOP BÄCKEFORS",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Ed",
+    "butiksnr": 136896,
+    "butiksnamn": "COOP ED",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Fjällbacka",
+    "butiksnr": 136741,
+    "butiksnamn": "COOP FJÄLLBACKA",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Färgelanda",
+    "butiksnr": 136141,
+    "butiksnamn": "COOP FÄRGELANDA",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Gamla Riksvägen",
+    "butiksnr": 136033,
+    "butiksnamn": "COOP GAMLA RIKSVÄGEN",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Gastorp",
+    "butiksnr": 126540,
+    "butiksnamn": "COOP GASTORP",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Grebbestad",
+    "butiksnr": 136601,
+    "butiksnamn": "COOP GREBBESTAD",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Hajom",
+    "butiksnr": 146487,
+    "butiksnamn": "COOP HAJOM",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Hunnebostrand",
+    "butiksnr": 136251,
+    "butiksnamn": "COOP HUNNEBOSTRAND",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Håsten",
+    "butiksnr": 116574,
+    "butiksnamn": "COOP HÅSTEN",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Högsäter",
+    "butiksnr": 136152,
+    "butiksnamn": "COOP HÖGSÄTER",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Hörngatan",
+    "butiksnr": 136775,
+    "butiksnamn": "COOP HÖRNGATAN",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Karlstadsvägen",
+    "butiksnr": 136272,
+    "butiksnamn": "COOP KARLSTADSVÄGEN",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Kolla Parkstad",
+    "butiksnr": 126400,
+    "butiksnamn": "COOP KOLLA PARKSTAD",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Konsum Frillesås",
+    "butiksnr": 116527,
+    "butiksnamn": "COOP KONSUM FRILLESÅS",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Kungshamn",
+    "butiksnr": 135220,
+    "butiksnamn": "COOP KUNGSHAMN",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Lysekil",
+    "butiksnr": 135030,
+    "butiksnamn": "COOP LYSEKIL",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Munkedal",
+    "butiksnr": 136641,
+    "butiksnamn": "COOP MUNKEDAL",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Mustadfors",
+    "butiksnr": 136895,
+    "butiksnamn": "COOP MUSTADFORS",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Mölndal Åby Katrinebergsgatan",
+    "butiksnr": 136042,
+    "butiksnamn": "COOP MÖLNDAL ÅBY KATRINEBERGSGATAN",
+    "ekipage": "Avlastning",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Rosviksgatan",
+    "butiksnr": 135010,
+    "butiksnamn": "COOP ROSVIKSGATAN",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Skene",
+    "butiksnr": 146922,
+    "butiksnamn": "COOP SKENE",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Skogslyckan",
+    "butiksnr": 136121,
+    "butiksnamn": "COOP SKOGSLYCKAN",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Söder",
+    "butiksnr": 116572,
+    "butiksnamn": "COOP SÖDER",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Uddevalla Göteborgsvägen",
+    "butiksnr": 136041,
+    "butiksnamn": "COOP UDDEVALLA GÖTEBORGSVÄGEN",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Västra Vallgatan",
+    "butiksnr": 116570,
+    "butiksnamn": "COOP VÄSTRA VALLGATAN",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Åmål Mellanbrogatan",
+    "butiksnr": 135120,
+    "butiksnamn": "COOP ÅMÅL MELLANBROGATAN",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Åsensbruk",
+    "butiksnr": 136104,
+    "butiksnamn": "COOP ÅSENSBRUK",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Stora Coop Borås",
+    "butiksnr": 252200,
+    "butiksnamn": "STORA COOP BORÅS",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Stora Coop Borås Online",
+    "butiksnr": 252200,
+    "butiksnamn": "STORA COOP BORÅS",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Tanumshede",
+    "butiksnr": 135060,
+    "butiksnamn": "STORA COOP TANUMSHEDE",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Stora Coop Tanumshede",
+    "butiksnr": 135060,
+    "butiksnamn": "STORA COOP TANUMSHEDE",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Stora Coop Varberg",
+    "butiksnr": 112000,
+    "butiksnamn": "STORA COOP VARBERG",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "X:-TRA Borås",
+    "butiksnr": 136021,
+    "butiksnamn": "X:-TRA BORÅS",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "X:-TRA Ljungskile",
+    "butiksnr": 136635,
+    "butiksnamn": "X:-TRA LJUNGSKILE",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "X:-TRA Trollhättan",
+    "butiksnr": 136039,
+    "butiksnamn": "X:-TRA TROLLHÄTTAN",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "X:-TRA Vänersborg",
+    "butiksnr": 136059,
+    "butiksnamn": "X:-TRA VÄNERSBORG",
+    "ekipage": "Avlastning",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Alingsås",
+    "butiksnr": 126500,
+    "butiksnamn": "COOP ALINGSÅS",
+    "ekipage": "Ekipage 2",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Avenyn",
+    "butiksnr": 125600,
+    "butiksnamn": "COOP AVENYN",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Backaplan",
+    "butiksnr": 126308,
+    "butiksnamn": "COOP BACKAPLAN",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Bohus",
+    "butiksnr": 136044,
+    "butiksnamn": "COOP BOHUS",
+    "ekipage": "Ekipage 2",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Dalsjöfors",
+    "butiksnr": 146475,
+    "butiksnamn": "COOP DALSJÖFORS",
+    "ekipage": "Ekipage 2",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Dr Bex Gata",
+    "butiksnr": 126314,
+    "butiksnamn": "COOP DR BEX GATA",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Friggagatan",
+    "butiksnr": 126310,
+    "butiksnamn": "COOP FRIGGAGATAN",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Gamlestaden",
+    "butiksnr": 126406,
+    "butiksnamn": "COOP GAMLESTADEN",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Göteborg Andra Långgatan",
+    "butiksnr": 136034,
+    "butiksnamn": "COOP GÖTEBORG ANDRA LÅNGGATAN",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Högsbo",
+    "butiksnr": 136027,
+    "butiksnamn": "COOP GÖTEBORG MARKLANDSGATAN",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Göteborg Mölndalsvägen",
+    "butiksnr": 136030,
+    "butiksnamn": "COOP GÖTEBORG MÖLNDALSVÄGEN",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Kallebäck",
+    "butiksnr": 136031,
+    "butiksnamn": "COOP KALLEBÄCK",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Kyrkbytorget",
+    "butiksnr": 126822,
+    "butiksnamn": "COOP KYRKBYTORGET",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Käringberget",
+    "butiksnr": 126380,
+    "butiksnamn": "COOP KÄRINGBERGET",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Landala",
+    "butiksnr": 126307,
+    "butiksnamn": "COOP LANDALA",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Lundby",
+    "butiksnr": 121100,
+    "butiksnamn": "COOP LUNDBY",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Mariagatan",
+    "butiksnr": 126398,
+    "butiksnamn": "COOP MARIAGATAN",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Marstrand",
+    "butiksnr": 126436,
+    "butiksnamn": "COOP MARSTRAND",
+    "ekipage": "Ekipage 2",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Mjörnbotorget",
+    "butiksnr": 136045,
+    "butiksnamn": "COOP MJÖRNBOTORGET",
+    "ekipage": "Ekipage 2",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Munkebäckstorg",
+    "butiksnr": 126326,
+    "butiksnamn": "COOP MUNKEBÄCKSTORG",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Mölnlycke",
+    "butiksnr": 125200,
+    "butiksnamn": "COOP MÖLNLYCKE",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Odinsgatan",
+    "butiksnr": 136035,
+    "butiksnamn": "COOP ODINSGATAN",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Partille",
+    "butiksnr": 123200,
+    "butiksnamn": "COOP PARTILLE",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Sjuntorp",
+    "butiksnr": 136769,
+    "butiksnamn": "COOP SJUNTORP",
+    "ekipage": "Ekipage 2",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Skånegatan",
+    "butiksnr": 136026,
+    "butiksnamn": "COOP SKÅNEGATAN",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Stenungsund",
+    "butiksnr": 123000,
+    "butiksnamn": "COOP STENUNGSUND",
+    "ekipage": "Ekipage 2",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Strömslund.",
+    "butiksnr": 136762,
+    "butiksnamn": "COOP STRÖMSLUND",
+    "ekipage": "Ekipage 2",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Styrsö",
+    "butiksnr": 136671,
+    "butiksnamn": "COOP STYRSÖ",
+    "ekipage": "Ekipage 2",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Surte",
+    "butiksnr": 126541,
+    "butiksnamn": "COOP SURTE",
+    "ekipage": "Ekipage 2",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Trätorget",
+    "butiksnr": 126367,
+    "butiksnamn": "COOP TRÄTORGET",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Öjersjö",
+    "butiksnr": 123300,
+    "butiksnamn": "COOP ÖJERSJÖ",
+    "ekipage": "Ekipage 2",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "X:-TRA Hisingen",
+    "butiksnr": 136029,
+    "butiksnamn": "X:-TRA HISINGEN",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "Coop Hisings Backa Backa Kyrkogata",
+    "butiksnr": 136043,
+    "butiksnamn": "X:-TRA HISINGS BACKA",
+    "ekipage": "Ekipage 2",
+    "tur": "Flytten"
+  },
+  {
+    "consignee": "X-:tra Lilla Edet",
+    "butiksnr": 136040,
+    "butiksnamn": "X:-TRA LILLA EDET",
+    "ekipage": "Ekipage 2",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "X:tra Svenljunga",
+    "butiksnr": 136028,
+    "butiksnamn": "X:-TRA SVENLJUNGA",
+    "ekipage": "Ekipage 2",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Eriksberg",
+    "butiksnr": 126350,
+    "butiksnamn": "COOP ERIKSBERG",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Coop Kongahälla",
+    "butiksnr": 122000,
+    "butiksnamn": "COOP KONGAHÄLLA",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Coop Kronhjorten",
+    "butiksnr": 133700,
+    "butiksnamn": "COOP KRONHJORTEN",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Coop Älvängen",
+    "butiksnr": 135040,
+    "butiksnamn": "COOP ÄLVÄNGEN",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Stora Coop Backaplan",
+    "butiksnr": 252600,
+    "butiksnamn": "STORA COOP BACKAPLAN",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Stora Coop Bäckebol",
+    "butiksnr": 252500,
+    "butiksnamn": "STORA COOP BÄCKEBOL",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Stora Coop Bäckebol Online",
+    "butiksnr": 252500,
+    "butiksnamn": "STORA COOP BÄCKEBOL",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Sc Bäckebol restaurang",
+    "butiksnr": 252500,
+    "butiksnamn": "STORA COOP BÄCKEBOL",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Stora Coop Kungsbacka",
+    "butiksnr": 255900,
+    "butiksnamn": "STORA COOP KUNGSBACKA",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Coop Kållered",
+    "butiksnr": 1837,
+    "butiksnamn": "STORA COOP KÅLLERED",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Stora Coop Kållered",
+    "butiksnr": 133900,
+    "butiksnamn": "STORA COOP KÅLLERED",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "CF Sisjön Online",
+    "butiksnr": 255500,
+    "butiksnamn": "STORA COOP SISJÖN",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Stora Coop Sisjön",
+    "butiksnr": 255500,
+    "butiksnamn": "STORA COOP SISJÖN",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Stora Coop Torp",
+    "butiksnr": 133800,
+    "butiksnamn": "STORA COOP TORP",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Sc Torp Restaurang",
+    "butiksnr": 133800,
+    "butiksnamn": "STORA COOP TORP",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Stora Coop Överby",
+    "butiksnr": 133100,
+    "butiksnamn": "STORA COOP ÖVERBY",
+    "ekipage": "Ekipage 3",
+    "tur": "Direkt"
+  },
+  {
+    "consignee": "Coop Bengtsfors",
+    "butiksnr": 135110,
+    "butiksnamn": "COOP BENGTSFORS",
+    "ekipage": "Lars-Göran",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Malmön",
+    "butiksnr": 136621,
+    "butiksnamn": "COOP MALMÖN",
+    "ekipage": "Lars-Göran",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Mellerud",
+    "butiksnr": 136000,
+    "butiksnamn": "COOP MELLERUD",
+    "ekipage": "Lars-Göran",
+    "tur": "GLC"
+  },
+  {
+    "consignee": "Coop Strömstad",
+    "butiksnr": 131800,
+    "butiksnamn": "COOP STRÖMSTAD",
+    "ekipage": "Lars-Göran",
+    "tur": "GLC"
+  }
+]
