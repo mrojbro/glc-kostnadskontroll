@@ -16,6 +16,7 @@ import {
   ColumnFilterDropdown,
   EMPTY_VALUE,
 } from "@/components/ColumnFilterDropdown";
+import { HlpColorLegend } from "@/components/hlp-distribution/HlpColorLegend";
 import { HlpDistributionFilters } from "@/components/hlp-distribution/HlpDistributionFilters";
 import { EmptyState } from "@/components/EmptyState";
 import {
@@ -86,6 +87,10 @@ const FILTER_LABELS: Record<FilterableColumn, string> = {
   vikt: "Vikt",
   summa: "Summa",
 };
+
+function isPartnerMottagare(value: string): boolean {
+  return /glc|dagab|hlp/i.test(value);
+}
 
 function multiSelectFilter(
   row: { getValue: (columnId: string) => unknown; original: HlpDistributionRow },
@@ -352,15 +357,22 @@ export function HlpDistributionTable({
         filterFn: multiSelectFilter,
         cell: (info) => {
           const value = info.getValue<string>();
-          if (value === "Tillägg") {
-            return (
-              <span className="inline-block rounded-md bg-[#eab308]/20 px-2 py-0.5 font-medium text-[#facc15] ring-1 ring-[#eab308]/40">
-                Tillägg
-              </span>
-            );
-          }
+          const isTillagg = value === "Tillägg";
+          const isPartner = isPartnerMottagare(value);
+
           return (
-            <span className="block max-w-[11rem] truncate" title={value}>
+            <span
+              title={value || undefined}
+              className={cn(
+                "inline-block max-w-[11rem] truncate rounded-md px-2 py-0.5",
+                isTillagg &&
+                  "bg-[#eab308]/20 font-medium text-[#facc15] ring-1 ring-[#eab308]/40",
+                isPartner &&
+                  !isTillagg &&
+                  "bg-[#38bdf8]/20 font-medium text-[#7dd3fc] ring-1 ring-[#38bdf8]/40",
+                !isTillagg && !isPartner && "text-white"
+              )}
+            >
               {value || <span className="text-[#6a6a6a]">—</span>}
             </span>
           );
@@ -506,6 +518,8 @@ export function HlpDistributionTable({
         okCount={okCount}
         checkCount={checkCount}
       />
+
+      <HlpColorLegend />
 
       {rows.length === 0 ? (
         <EmptyState

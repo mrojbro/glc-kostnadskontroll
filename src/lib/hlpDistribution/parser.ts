@@ -182,11 +182,13 @@ function tryParseSheet(
       row[col.ordernummer]
     );
     const avsandare = formatIdentifier(row[col.kundnamn]);
-    const terminal = normalizeTerminal(formatIdentifier(row[col.avsandare1]));
+    const terminal = shortenIfContainsHlp(formatIdentifier(row[col.avsandare1]));
     let mottagare = formatIdentifier(row[col.mottagare1]);
     // Blank Mottagare 1 on a row with Fraktsedel → Tillägg
     if (!mottagare.trim()) {
       mottagare = "Tillägg";
+    } else {
+      mottagare = shortenIfContainsHlp(mottagare);
     }
     const pall = parseNumericValue(row[col.pallplats]);
     const flm = parseNumericValue(row[col.flm]);
@@ -266,7 +268,7 @@ function pickCompactIdentifier(formatted: unknown, raw: unknown): string {
   return pickIdentifier(formatted, raw).replace(/\s+/g, "");
 }
 
-/** If Avsändare 1 contains "HLP", show Terminal as "HLP". */
-function normalizeTerminal(value: string): string {
+/** If a name contains "HLP", shorten it to "HLP". */
+function shortenIfContainsHlp(value: string): string {
   return /hlp/i.test(value) ? "HLP" : value;
 }
