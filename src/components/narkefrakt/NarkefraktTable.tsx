@@ -17,19 +17,20 @@ import {
   EMPTY_VALUE,
 } from "@/components/ColumnFilterDropdown";
 import {
-  DaviesColorLegend,
-  rowMatchesDaviesLegend,
-  type DaviesLegendCounts,
-  type DaviesLegendFilterKey,
-} from "@/components/davies/DaviesColorLegend";
-import { DaviesFilters } from "@/components/davies/DaviesFilters";
-import { StatusPill } from "@/components/davies/StatusPill";
+  NarkefraktColorLegend,
+  rowMatchesNarkefraktLegend,
+  type NarkefraktLegendCounts,
+  type NarkefraktLegendFilterKey,
+} from "@/components/narkefrakt/NarkefraktColorLegend";
+import { NarkefraktFilters } from "@/components/narkefrakt/NarkefraktFilters";
+import { StatusPill } from "@/components/narkefrakt/StatusPill";
 import { EmptyState } from "@/components/EmptyState";
 import { formatSwedishCurrency } from "@/lib/formatters";
-import type { DaviesRow } from "@/lib/davies/types";
+import type { NarkefraktRow } from "@/lib/narkefrakt/types";
 import { cn } from "@/lib/utils";
 
 type FilterableColumn =
+  | "sourceLabel"
   | "datum"
   | "ordernr"
   | "betalare"
@@ -44,8 +45,8 @@ type FilterableColumn =
   | "mottOrt"
   | "gods";
 
-interface DaviesTableProps {
-  rows: DaviesRow[];
+interface NarkefraktTableProps {
+  rows: NarkefraktRow[];
   totalIntakterFormatted: string;
   rowCount: number;
 }
@@ -56,6 +57,7 @@ const DEFAULT_SORTING: SortingState = [
 ];
 
 const FILTERABLE_COLUMNS: FilterableColumn[] = [
+  "sourceLabel",
   "datum",
   "ordernr",
   "betalare",
@@ -72,6 +74,7 @@ const FILTERABLE_COLUMNS: FilterableColumn[] = [
 ];
 
 const FILTER_LABELS: Record<FilterableColumn, string> = {
+  sourceLabel: "Källa",
   datum: "Datum",
   ordernr: "Ordernr",
   betalare: "Betalare",
@@ -95,7 +98,7 @@ function isNyOrderstatus(orderstatus: string): boolean {
 
 /** When Orderstatus is Ny, force related review columns to red. */
 function toneForReviewColumn(
-  row: DaviesRow,
+  row: NarkefraktRow,
   tone: StatusTone
 ): StatusTone {
   if (isNyOrderstatus(row.orderstatus)) return "bad";
@@ -103,7 +106,7 @@ function toneForReviewColumn(
 }
 
 function multiSelectFilter(
-  row: { original: DaviesRow },
+  row: { original: NarkefraktRow },
   columnId: string,
   filterValue: unknown
 ): boolean {
@@ -115,10 +118,12 @@ function multiSelectFilter(
 }
 
 function getFilterDisplayValue(
-  row: DaviesRow,
+  row: NarkefraktRow,
   columnId: FilterableColumn
 ): string {
   switch (columnId) {
+    case "sourceLabel":
+      return row.sourceLabel.trim() || EMPTY_VALUE;
     case "datum":
       return row.datum.trim() || EMPTY_VALUE;
     case "ordernr":
@@ -159,7 +164,7 @@ function sortFilterOptions(values: string[]): string[] {
 }
 
 function uniqueColumnOptions(
-  rows: DaviesRow[],
+  rows: NarkefraktRow[],
   key: FilterableColumn
 ): string[] {
   const values = new Set<string>();
@@ -167,10 +172,11 @@ function uniqueColumnOptions(
   return sortFilterOptions(Array.from(values));
 }
 
-function rowMatchesGlobalSearch(row: DaviesRow, query: string): boolean {
+function rowMatchesGlobalSearch(row: NarkefraktRow, query: string): boolean {
   const normalized = query.trim().toLowerCase();
   if (!normalized) return true;
   const values = [
+    row.sourceLabel,
     row.datum,
     row.ordernr,
     row.betalare,
@@ -192,7 +198,7 @@ function rowMatchesGlobalSearch(row: DaviesRow, query: string): boolean {
 }
 
 function rowMatchesOtherColumnFilters(
-  row: DaviesRow,
+  row: NarkefraktRow,
   filters: ColumnFiltersState,
   excludeColumnId: FilterableColumn
 ): boolean {
@@ -206,16 +212,16 @@ function rowMatchesOtherColumnFilters(
   return true;
 }
 
-export function DaviesTable({
+export function NarkefraktTable({
   rows,
   totalIntakterFormatted,
   rowCount,
-}: DaviesTableProps) {
+}: NarkefraktTableProps) {
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [legendFilter, setLegendFilter] =
-    useState<DaviesLegendFilterKey | null>(null);
+    useState<NarkefraktLegendFilterKey | null>(null);
 
   useEffect(() => {
     setColumnFilters([]);
@@ -226,7 +232,7 @@ export function DaviesTable({
 
   const tableRows = useMemo(() => {
     if (!legendFilter) return rows;
-    return rows.filter((row) => rowMatchesDaviesLegend(row, legendFilter));
+    return rows.filter((row) => rowMatchesNarkefraktLegend(row, legendFilter));
   }, [rows, legendFilter]);
 
   const filterOptions = useMemo(() => {
@@ -268,8 +274,14 @@ export function DaviesTable({
     []
   );
 
-  const columns = useMemo<ColumnDef<DaviesRow>[]>(
+  const columns = useMemo<ColumnDef<NarkefraktRow>[]>(
     () => [
+      {
+        accessorKey: "sourceLabel",
+        header: "Källa",
+        filterFn: multiSelectFilter,
+        cell: (info) => info.getValue<string>(),
+      },
       {
         accessorKey: "datum",
         header: "Datum",
@@ -481,8 +493,8 @@ export function DaviesTable({
     : formatSwedishCurrency(filteredIntakter);
   const displayCount = !hasActiveFilters ? rowCount : filteredRows.length;
 
-  const legendCounts = useMemo((): DaviesLegendCounts => {
-    const counts: DaviesLegendCounts = {
+  const legendCounts = useMemo((): NarkefraktLegendCounts => {
+    const counts: NarkefraktLegendCounts = {
       klarFaktJa: 0,
       klarFaktNej: 0,
       orderstatusOk: 0,
@@ -521,7 +533,7 @@ export function DaviesTable({
 
   return (
     <section className="space-y-4">
-      <DaviesFilters
+      <NarkefraktFilters
         search={globalFilter}
         onSearchChange={setGlobalFilter}
         onReset={handleReset}
@@ -530,7 +542,7 @@ export function DaviesTable({
         totalIntakterFormatted={displayTotal}
       />
 
-      <DaviesColorLegend
+      <NarkefraktColorLegend
         counts={legendCounts}
         activeFilter={legendFilter}
         onFilterChange={setLegendFilter}
@@ -544,8 +556,9 @@ export function DaviesTable({
       ) : (
         <div className="overflow-hidden rounded-2xl border border-[#3a3a3a] bg-[#242424] shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
           <div className="h-[min(70vh,720px)] overflow-x-auto overflow-y-auto [scrollbar-gutter:stable]">
-            <table className="w-full min-w-[1400px] table-fixed border-collapse text-left text-xs">
+            <table className="w-full min-w-[1500px] table-fixed border-collapse text-left text-xs">
               <colgroup>
+                <col className="w-[5rem]" />
                 <col className="w-[5.5rem]" />
                 <col className="w-[5rem]" />
                 <col className="w-[6.5rem]" />

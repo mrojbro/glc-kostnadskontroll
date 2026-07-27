@@ -21,7 +21,7 @@ import {
   RowCommentInput,
   RowStatusButtons,
 } from "@/components/RowReviewControls";
-import { TableFilters } from "@/components/TableFilters";
+import { TableFilters, type StatusFilterKey } from "@/components/TableFilters";
 import { formatSwedishCurrency } from "@/lib/formatters";
 import type {
   CostControlRow,
@@ -104,11 +104,15 @@ export function CostControlTable({
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [statusFilter, setStatusFilter] = useState<StatusFilterKey | null>(
+    null
+  );
 
   useEffect(() => {
     setColumnFilters([]);
     setGlobalFilter("");
     setSorting(DEFAULT_SORTING);
+    setStatusFilter(null);
   }, [rows]);
 
   const rowStatusRef = useRef(rowStatus);
@@ -171,6 +175,15 @@ export function CostControlTable({
     []
   );
 
+  const tableRows = useMemo(() => {
+    if (!statusFilter) return rows;
+    return rows.filter((row) => {
+      const status = rowStatus[row.id];
+      if (statusFilter === "unset") return !status;
+      return status === statusFilter;
+    });
+  }, [rows, rowStatus, statusFilter]);
+
   const columns = useMemo<ColumnDef<CostControlRow>[]>(
     () => [
       {
@@ -179,7 +192,7 @@ export function CostControlTable({
         cell: (info) => {
           const value = info.getValue<string>();
           return (
-            <span className="block max-w-[5rem] truncate" title={value}>
+            <span className="block max-w-[5.5rem] truncate" title={value}>
               {value}
             </span>
           );
@@ -232,7 +245,7 @@ export function CostControlTable({
         cell: (info) => {
           const value = info.getValue<string>();
           return (
-            <span className="block max-w-[5.5rem] truncate" title={value}>
+            <span className="block max-w-[9rem] truncate" title={value}>
               {value}
             </span>
           );
@@ -302,7 +315,7 @@ export function CostControlTable({
   );
 
   const table = useReactTable({
-    data: rows,
+    data: tableRows,
     columns,
     meta: {
       rowStatus,
@@ -354,24 +367,29 @@ export function CostControlTable({
     0
   );
   const displayTotal =
-    globalFilter.trim() === "" && columnFilters.length === 0
+    globalFilter.trim() === "" &&
+    columnFilters.length === 0 &&
+    statusFilter === null
       ? totalSekFormatted
       : formatSwedishCurrency(filteredTotalSek);
   const displayCount =
-    globalFilter.trim() === "" && columnFilters.length === 0
+    globalFilter.trim() === "" &&
+    columnFilters.length === 0 &&
+    statusFilter === null
       ? rowCount
       : filteredRowCount;
 
   const typSummary = useMemo(() => {
-    const tracked = ["ZCDC1", "ZCDC3"] as const;
+    const tracked = ["ZCDC1", "ZCDC3", "ZDEL1"] as const;
     const counts: Record<(typeof tracked)[number], number> = {
       ZCDC1: 0,
       ZCDC3: 0,
+      ZDEL1: 0,
     };
 
     for (const row of filteredRows) {
       const typ = row.original.typ.trim().toUpperCase();
-      if (typ === "ZCDC1" || typ === "ZCDC3") {
+      if (typ === "ZCDC1" || typ === "ZCDC3" || typ === "ZDEL1") {
         counts[typ] += 1;
       }
     }
@@ -385,14 +403,14 @@ export function CostControlTable({
     }));
   }, [filteredRows, filteredRowCount]);
 
-  const okCount = Object.values(rowStatus).filter((s) => s === "ok").length;
-  const checkCount = Object.values(rowStatus).filter(
-    (s) => s === "check"
-  ).length;
+  const okCount = rows.filter((row) => rowStatus[row.id] === "ok").length;
+  const checkCount = rows.filter((row) => rowStatus[row.id] === "check").length;
+  const unsetCount = rows.filter((row) => !rowStatus[row.id]).length;
 
   const handleReset = () => {
     setGlobalFilter("");
     setColumnFilters([]);
+    setStatusFilter(null);
     setSorting(DEFAULT_SORTING);
   };
 
@@ -405,7 +423,10 @@ export function CostControlTable({
         typSummary={typSummary}
         okCount={okCount}
         checkCount={checkCount}
-        statusTotal={filteredRowCount}
+        unsetCount={unsetCount}
+        statusTotal={rowCount}
+        activeStatusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
       />
 
       {rows.length === 0 ? (
@@ -421,19 +442,19 @@ export function CostControlTable({
       ) : (
         <div className="overflow-hidden rounded-2xl border border-[#3a3a3a] bg-[#242424] shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
           <div className="max-h-[min(70vh,720px)] overflow-x-auto overflow-y-scroll [scrollbar-gutter:stable]">
-            <table className="w-full min-w-[1100px] table-fixed border-collapse text-left text-sm">
+            <table className="w-full min-w-[1000px] table-fixed border-collapse text-left text-sm">
               <colgroup>
-                <col className="w-[5.5rem]" />
+                <col className="w-[5.75rem]" />
                 <col className="w-[3.5rem]" />
                 <col className="w-[6rem]" />
                 <col className="w-[4.5rem]" />
-                <col className="w-[10rem]" />
-                <col className="w-[6rem]" />
+                <col className="w-[11rem]" />
+                <col className="w-[9.5rem]" />
                 <col className="w-[4.5rem]" />
                 <col className="w-[4.5rem]" />
                 <col className="w-[6.5rem]" />
-                <col className="w-[5rem]" />
-                <col className="w-[12rem]" />
+                <col className="w-[4rem]" />
+                <col className="w-[8rem]" />
               </colgroup>
               <thead className="sticky top-0 z-10">
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -448,7 +469,7 @@ export function CostControlTable({
                       return (
                         <th
                           key={header.id}
-                          className="px-3 py-3 font-semibold text-white whitespace-nowrap"
+                          className="px-3 py-2 font-semibold text-white whitespace-nowrap"
                           aria-sort={
                             sorted === "asc"
                               ? "ascending"
@@ -535,7 +556,7 @@ export function CostControlTable({
                       {row.getVisibleCells().map((cell) => (
                         <td
                           key={cell.id}
-                          className="px-3 py-2.5 whitespace-nowrap text-white"
+                          className="px-3 py-1.5 whitespace-nowrap text-white"
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
@@ -558,14 +579,11 @@ export function CostControlTable({
               <span className="font-medium text-white">{rowCount}</span>{" "}
               rader
               {" · "}
-              <span className="text-[#4ade80]">
-                OK {Object.values(rowStatus).filter((s) => s === "ok").length}
-              </span>
+              <span className="text-[#4ade80]">OK {okCount}</span>
               {" · "}
-              <span className="text-[#eab308]">
-                Kontroll{" "}
-                {Object.values(rowStatus).filter((s) => s === "check").length}
-              </span>
+              <span className="text-[#eab308]">Kontroll {checkCount}</span>
+              {" · "}
+              <span className="text-[#b8b8b8]">Ej satt {unsetCount}</span>
             </p>
             <p className="text-sm">
               <span className="text-[#b8b8b8]">Totalt SEK: </span>

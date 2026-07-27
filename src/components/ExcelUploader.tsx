@@ -8,6 +8,8 @@ interface ExcelUploaderProps {
   onFileSelected: (file: File) => void;
   disabled?: boolean;
   hint?: ReactNode;
+  title?: string;
+  selectedFileName?: string | null;
 }
 
 const ACCEPTED =
@@ -17,6 +19,8 @@ export function ExcelUploader({
   onFileSelected,
   disabled,
   hint,
+  title,
+  selectedFileName,
 }: ExcelUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -92,8 +96,13 @@ export function ExcelUploader({
         <p className="text-lg font-semibold text-white">
           {isDragging
             ? "Släpp Excel-filen här"
-            : "Ladda upp Excel-arbetsbok"}
+            : (title ?? "Ladda upp Excel-arbetsbok")}
         </p>
+        {selectedFileName && (
+          <p className="truncate text-sm text-[#4ade80]" title={selectedFileName}>
+            Vald: {selectedFileName}
+          </p>
+        )}
         <p className="text-sm text-[#b8b8b8]">
           {hint ?? (
             <>

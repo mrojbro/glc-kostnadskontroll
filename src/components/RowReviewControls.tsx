@@ -38,7 +38,7 @@ export function RowCommentInput({
         onChange(rowId, next);
       }}
       placeholder="Skriv kommentar…"
-      className="h-8 w-full min-w-[8rem] rounded-md border border-[#3a3a3a] bg-[#202020] px-2 text-xs text-white placeholder:text-[#6a6a6a] outline-none focus:border-[#eb6e08] focus:ring-1 focus:ring-[#eb6e08]/40"
+      className="h-8 w-full min-w-0 rounded-md border border-[#3a3a3a] bg-[#202020] px-2 text-xs text-white placeholder:text-[#6a6a6a] outline-none focus:border-[#eb6e08] focus:ring-1 focus:ring-[#eb6e08]/40"
     />
   );
 }
@@ -53,7 +53,7 @@ export function RowStatusButtons({
   onChange: (rowId: string, status: RowStatus) => void;
 }) {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex items-center gap-1">
       <button
         type="button"
         title="OK"
@@ -61,7 +61,7 @@ export function RowStatusButtons({
         aria-pressed={status === "ok"}
         onClick={() => onChange(rowId, "ok")}
         className={cn(
-          "size-7 rounded-full border-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#eb6e08]",
+          "size-6 rounded-full border-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#eb6e08]",
           status === "ok"
             ? "border-[#4ade80] bg-[#22c55e] shadow-[0_0_0_2px_rgba(34,197,94,0.35)]"
             : "border-[#3a3a3a] bg-[#1a3a24] hover:border-[#4ade80] hover:bg-[#22c55e]/40"
@@ -74,7 +74,7 @@ export function RowStatusButtons({
         aria-pressed={status === "check"}
         onClick={() => onChange(rowId, "check")}
         className={cn(
-          "size-7 rounded-full border-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#eb6e08]",
+          "size-6 rounded-full border-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#eb6e08]",
           status === "check"
             ? "border-[#facc15] bg-[#eab308] shadow-[0_0_0_2px_rgba(234,179,8,0.35)]"
             : "border-[#3a3a3a] bg-[#3a3218] hover:border-[#facc15] hover:bg-[#eab308]/40"

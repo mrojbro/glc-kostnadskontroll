@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
-import type { DaviesRow } from "@/lib/davies/types";
+import type { NarkefraktRow } from "@/lib/narkefrakt/types";
 
-export type DaviesLegendCounts = {
+export type NarkefraktLegendCounts = {
   klarFaktJa: number;
   klarFaktNej: number;
   orderstatusOk: number;
@@ -12,11 +12,11 @@ export type DaviesLegendCounts = {
   tgTbBad: number;
 };
 
-export type DaviesLegendFilterKey = keyof DaviesLegendCounts;
+export type NarkefraktLegendFilterKey = keyof NarkefraktLegendCounts;
 
-export function rowMatchesDaviesLegend(
-  row: DaviesRow,
-  key: DaviesLegendFilterKey
+export function rowMatchesNarkefraktLegend(
+  row: NarkefraktRow,
+  key: NarkefraktLegendFilterKey
 ): boolean {
   const tgNegative = row.tg !== null && row.tg < 0;
   const tbNegative = row.tb !== null && row.tb < 0;
@@ -46,7 +46,7 @@ const LEGEND_GROUPS: {
   sampleClass: string;
   sampleText: string;
   description: string;
-  countKey: DaviesLegendFilterKey;
+  countKey: NarkefraktLegendFilterKey;
 }[][] = [
   [
     {
@@ -106,17 +106,17 @@ const LEGEND_GROUPS: {
   ],
 ];
 
-interface DaviesColorLegendProps {
-  counts: DaviesLegendCounts;
-  activeFilter: DaviesLegendFilterKey | null;
-  onFilterChange: (key: DaviesLegendFilterKey | null) => void;
+interface NarkefraktColorLegendProps {
+  counts: NarkefraktLegendCounts;
+  activeFilter: NarkefraktLegendFilterKey | null;
+  onFilterChange: (key: NarkefraktLegendFilterKey | null) => void;
 }
 
-export function DaviesColorLegend({
+export function NarkefraktColorLegend({
   counts,
   activeFilter,
   onFilterChange,
-}: DaviesColorLegendProps) {
+}: NarkefraktColorLegendProps) {
   return (
     <div className="rounded-2xl border border-[#3a3a3a] bg-[#242424] px-4 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
       <p className="mb-2.5 text-xs font-medium uppercase tracking-wider text-[#b8b8b8]">

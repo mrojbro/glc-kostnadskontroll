@@ -18,7 +18,6 @@ import {
 } from "@/components/ColumnFilterDropdown";
 import { CoopFruktFilters } from "@/components/coop-frukt/CoopFruktFilters";
 import { CoopFruktGroupSummary } from "@/components/coop-frukt/CoopFruktGroupSummary";
-import { buildDateEkipageSummaries } from "@/lib/coopFrukt/aggregates";
 import { EmptyState } from "@/components/EmptyState";
 import {
   RowCommentInput,
@@ -487,9 +486,8 @@ export function CoopFruktTable({
   const checkCount = Object.values(rowStatus).filter(
     (s) => s === "check"
   ).length;
-  const groupSummaries = useMemo(
-    () =>
-      buildDateEkipageSummaries(filteredRows.map((row) => row.original)),
+  const summaryRows = useMemo(
+    () => filteredRows.map((row) => row.original),
     [filteredRows]
   );
 
@@ -514,10 +512,7 @@ export function CoopFruktTable({
       />
 
       {rows.length > 0 && (
-        <CoopFruktGroupSummary
-          key={summaryResetKey}
-          summaries={groupSummaries}
-        />
+        <CoopFruktGroupSummary key={summaryResetKey} rows={summaryRows} />
       )}
 
       {rows.length === 0 ? (
@@ -526,9 +521,11 @@ export function CoopFruktTable({
           description="Inga rader hittades i arbetsbladet Grunddata."
         />
       ) : (
+        // Main detail table kept but hidden while trying summary-first layout.
+        <div className="hidden" aria-hidden="true">
         <div className="overflow-hidden rounded-2xl border border-[#3a3a3a] bg-[#242424] shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
           <div className="h-[min(70vh,720px)] overflow-x-auto overflow-y-auto [scrollbar-gutter:stable]">
-            <table className="w-full min-w-[1360px] table-fixed border-collapse text-left text-xs">
+            <table className="w-full min-w-[1360px] table-fixed border-collapse text-left text-sm">
               <colgroup>
                 <col className="w-[7.5rem]" />
                 <col className="w-[5rem]" />
@@ -675,6 +672,7 @@ export function CoopFruktTable({
               </span>
             </p>
           </div>
+        </div>
         </div>
       )}
     </section>

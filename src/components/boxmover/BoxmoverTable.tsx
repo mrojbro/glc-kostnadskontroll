@@ -18,7 +18,9 @@ import {
 } from "@/components/ColumnFilterDropdown";
 import {
   BoxmoverColorLegend,
+  rowMatchesBoxmoverLegend,
   type BoxmoverLegendCounts,
+  type BoxmoverLegendFilterKey,
 } from "@/components/boxmover/BoxmoverColorLegend";
 import { BoxmoverFilters } from "@/components/boxmover/BoxmoverFilters";
 import { StatusPill } from "@/components/boxmover/StatusPill";
@@ -84,6 +86,21 @@ const FILTER_LABELS: Record<FilterableColumn, string> = {
   mottOrt: "Mott Ort",
   gods: "Gods",
 };
+
+type StatusTone = "ok" | "bad" | "neutral";
+
+function isNyOrderstatus(orderstatus: string): boolean {
+  return orderstatus.trim().toLowerCase() === "ny";
+}
+
+/** When Orderstatus is Ny, force related review columns to red. */
+function toneForReviewColumn(
+  row: BoxmoverRow,
+  tone: StatusTone
+): StatusTone {
+  if (isNyOrderstatus(row.orderstatus)) return "bad";
+  return tone;
+}
 
 function multiSelectFilter(
   row: { original: BoxmoverRow },
@@ -197,17 +214,25 @@ export function BoxmoverTable({
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [legendFilter, setLegendFilter] =
+    useState<BoxmoverLegendFilterKey | null>(null);
 
   useEffect(() => {
     setColumnFilters([]);
     setGlobalFilter("");
     setSorting(DEFAULT_SORTING);
+    setLegendFilter(null);
   }, [rows]);
+
+  const tableRows = useMemo(() => {
+    if (!legendFilter) return rows;
+    return rows.filter((row) => rowMatchesBoxmoverLegend(row, legendFilter));
+  }, [rows, legendFilter]);
 
   const filterOptions = useMemo(() => {
     const options = {} as Record<FilterableColumn, string[]>;
     for (const key of FILTERABLE_COLUMNS) {
-      const scopedRows = rows.filter(
+      const scopedRows = tableRows.filter(
         (row) =>
           rowMatchesGlobalSearch(row, globalFilter) &&
           rowMatchesOtherColumnFilters(row, columnFilters, key)
@@ -222,7 +247,7 @@ export function BoxmoverTable({
       );
     }
     return options;
-  }, [rows, columnFilters, globalFilter]);
+  }, [tableRows, columnFilters, globalFilter]);
 
   const getSelected = useCallback(
     (columnId: FilterableColumn): string[] => {
@@ -282,7 +307,12 @@ export function BoxmoverTable({
         header: "KlarFakt",
         filterFn: multiSelectFilter,
         cell: (info) => (
-          <StatusPill tone={info.row.original.klarFakturering ? "ok" : "bad"}>
+          <StatusPill
+            tone={toneForReviewColumn(
+              info.row.original,
+              info.row.original.klarFakturering ? "ok" : "bad"
+            )}
+          >
             {info.row.original.klarFaktureringLabel}
           </StatusPill>
         ),
@@ -310,7 +340,10 @@ export function BoxmoverTable({
         filterFn: multiSelectFilter,
         cell: (info) => (
           <StatusPill
-            tone={info.row.original.intakterOk ? "ok" : "bad"}
+            tone={toneForReviewColumn(
+              info.row.original,
+              info.row.original.intakterOk ? "ok" : "bad"
+            )}
             className="tabular-nums"
           >
             {info.row.original.intakterFormatted}
@@ -324,12 +357,16 @@ export function BoxmoverTable({
         header: "TG",
         filterFn: multiSelectFilter,
         cell: (info) => {
-          const value = info.row.original.tg;
-          const tone =
+          const row = info.row.original;
+          const value = row.tg;
+          const tone: StatusTone =
             value === null ? "neutral" : value >= 0 ? "ok" : "bad";
           return (
-            <StatusPill tone={tone} className="tabular-nums">
-              {info.row.original.tgFormatted || "—"}
+            <StatusPill
+              tone={toneForReviewColumn(row, tone)}
+              className="tabular-nums"
+            >
+              {row.tgFormatted || "—"}
             </StatusPill>
           );
         },
@@ -341,12 +378,16 @@ export function BoxmoverTable({
         header: "TB",
         filterFn: multiSelectFilter,
         cell: (info) => {
-          const value = info.row.original.tb;
-          const tone =
+          const row = info.row.original;
+          const value = row.tb;
+          const tone: StatusTone =
             value === null ? "neutral" : value >= 0 ? "ok" : "bad";
           return (
-            <StatusPill tone={tone} className="tabular-nums">
-              {info.row.original.tbFormatted || "—"}
+            <StatusPill
+              tone={toneForReviewColumn(row, tone)}
+              className="tabular-nums"
+            >
+              {row.tbFormatted || "—"}
             </StatusPill>
           );
         },
@@ -357,11 +398,20 @@ export function BoxmoverTable({
         accessorFn: (row) => row.resurs,
         header: "Resurs",
         filterFn: multiSelectFilter,
-        cell: (info) => (
-          <span className="tabular-nums">
-            {info.row.original.resursFormatted}
-          </span>
-        ),
+        cell: (info) => {
+          const row = info.row.original;
+          return (
+            <StatusPill
+              tone={toneForReviewColumn(
+                row,
+                row.resurs >= 0 ? "ok" : "bad"
+              )}
+              className="tabular-nums"
+            >
+              {row.resursFormatted}
+            </StatusPill>
+          );
+        },
         sortingFn: "basic",
       },
       {
@@ -401,7 +451,7 @@ export function BoxmoverTable({
   );
 
   const table = useReactTable({
-    data: rows,
+    data: tableRows,
     columns,
     state: { sorting, globalFilter, columnFilters },
     onSortingChange: setSorting,
@@ -422,14 +472,14 @@ export function BoxmoverTable({
     (sum, row) => sum + row.original.intakter,
     0
   );
-  const displayTotal =
-    globalFilter.trim() === "" && columnFilters.length === 0
-      ? totalIntakterFormatted
-      : formatSwedishCurrency(filteredIntakter);
-  const displayCount =
-    globalFilter.trim() === "" && columnFilters.length === 0
-      ? rowCount
-      : filteredRows.length;
+  const hasActiveFilters =
+    globalFilter.trim() !== "" ||
+    columnFilters.length > 0 ||
+    legendFilter !== null;
+  const displayTotal = !hasActiveFilters
+    ? totalIntakterFormatted
+    : formatSwedishCurrency(filteredIntakter);
+  const displayCount = !hasActiveFilters ? rowCount : filteredRows.length;
 
   const legendCounts = useMemo((): BoxmoverLegendCounts => {
     const counts: BoxmoverLegendCounts = {
@@ -443,7 +493,7 @@ export function BoxmoverTable({
       tgTbBad: 0,
     };
 
-    for (const { original: row } of filteredRows) {
+    for (const row of rows) {
       if (row.klarFakturering) counts.klarFaktJa += 1;
       else counts.klarFaktNej += 1;
 
@@ -460,11 +510,12 @@ export function BoxmoverTable({
     }
 
     return counts;
-  }, [filteredRows]);
+  }, [rows]);
 
   const handleReset = () => {
     setGlobalFilter("");
     setColumnFilters([]);
+    setLegendFilter(null);
     setSorting(DEFAULT_SORTING);
   };
 
@@ -479,7 +530,11 @@ export function BoxmoverTable({
         totalIntakterFormatted={displayTotal}
       />
 
-      <BoxmoverColorLegend counts={legendCounts} />
+      <BoxmoverColorLegend
+        counts={legendCounts}
+        activeFilter={legendFilter}
+        onFilterChange={setLegendFilter}
+      />
 
       {rows.length === 0 ? (
         <EmptyState

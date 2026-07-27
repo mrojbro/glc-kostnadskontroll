@@ -39,7 +39,8 @@ export const PORTALS: PortalItem[] = [
   {
     id: "3028-narkefrakt",
     name: "3028 Närkefrakt",
-    enabled: false,
+    href: "/3028-narkefrakt/",
+    enabled: true,
   },
   {
     id: "2215-krickos",

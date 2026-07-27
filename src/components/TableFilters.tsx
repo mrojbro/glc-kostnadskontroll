@@ -2,12 +2,15 @@
 
 import { RotateCcw, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 export interface TypSummaryItem {
   typ: string;
   count: number;
   percent: number;
 }
+
+export type StatusFilterKey = "ok" | "check" | "unset";
 
 interface TableFiltersProps {
   search: string;
@@ -16,7 +19,10 @@ interface TableFiltersProps {
   typSummary: TypSummaryItem[];
   okCount: number;
   checkCount: number;
+  unsetCount: number;
   statusTotal: number;
+  activeStatusFilter: StatusFilterKey | null;
+  onStatusFilterChange: (key: StatusFilterKey | null) => void;
 }
 
 function formatPercent(value: number): string {
@@ -36,11 +42,45 @@ export function TableFilters({
   typSummary,
   okCount,
   checkCount,
+  unsetCount,
   statusTotal,
+  activeStatusFilter,
+  onStatusFilterChange,
 }: TableFiltersProps) {
   const divisor = statusTotal > 0 ? statusTotal : 1;
   const okPercent = (okCount / divisor) * 100;
   const checkPercent = (checkCount / divisor) * 100;
+  const unsetPercent = (unsetCount / divisor) * 100;
+
+  const statusItems: {
+    key: StatusFilterKey;
+    label: string;
+    count: number;
+    percent: number;
+    labelClass: string;
+  }[] = [
+    {
+      key: "ok",
+      label: "OK",
+      count: okCount,
+      percent: okPercent,
+      labelClass: "text-[#4ade80]",
+    },
+    {
+      key: "check",
+      label: "Kontroll",
+      count: checkCount,
+      percent: checkPercent,
+      labelClass: "text-[#eab308]",
+    },
+    {
+      key: "unset",
+      label: "Ej satt",
+      count: unsetCount,
+      percent: unsetPercent,
+      labelClass: "text-[#b8b8b8]",
+    },
+  ];
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -62,7 +102,7 @@ export function TableFilters({
       </div>
 
       {/* 2 — Typ summary, one deck split in half */}
-      <div className={`${deckClass} grid grid-cols-2 divide-x divide-[#3a3a3a]`}>
+      <div className={`${deckClass} grid grid-cols-3 divide-x divide-[#3a3a3a]`}>
         {typSummary.map((item) => (
           <article key={item.typ} className="flex flex-col justify-center p-4">
             <p className="text-sm font-medium text-[#eb6e08]">{item.typ}</p>
@@ -77,28 +117,39 @@ export function TableFilters({
         ))}
       </div>
 
-      {/* 3 — OK + Kontroll counts */}
-      <div className={`${deckClass} grid grid-cols-2 divide-x divide-[#3a3a3a]`}>
-        <article className="flex flex-col justify-center p-4">
-          <p className="text-sm font-medium text-[#4ade80]">OK</p>
-          <p className="mt-2 text-xl font-semibold tabular-nums text-white">
-            {okCount}
-            <span className="ml-1 text-sm font-normal text-[#b8b8b8]">st</span>
-          </p>
-          <p className="mt-0.5 text-sm tabular-nums text-[#b8b8b8]">
-            {formatPercent(okPercent)}%
-          </p>
-        </article>
-        <article className="flex flex-col justify-center p-4">
-          <p className="text-sm font-medium text-[#eab308]">Kontroll</p>
-          <p className="mt-2 text-xl font-semibold tabular-nums text-white">
-            {checkCount}
-            <span className="ml-1 text-sm font-normal text-[#b8b8b8]">st</span>
-          </p>
-          <p className="mt-0.5 text-sm tabular-nums text-[#b8b8b8]">
-            {formatPercent(checkPercent)}%
-          </p>
-        </article>
+      {/* 3 — OK / Kontroll / Ej satt — clickable */}
+      <div className={`${deckClass} grid grid-cols-3 divide-x divide-[#3a3a3a]`}>
+        {statusItems.map((item) => {
+          const isActive = activeStatusFilter === item.key;
+          return (
+            <button
+              key={item.key}
+              type="button"
+              aria-pressed={isActive}
+              onClick={() =>
+                onStatusFilterChange(isActive ? null : item.key)
+              }
+              className={cn(
+                "flex flex-col justify-center p-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#eb6e08]",
+                isActive ? "bg-[#2a2218]" : "hover:bg-[#2a2a2a]",
+                !isActive && activeStatusFilter !== null && "opacity-50"
+              )}
+            >
+              <p className={cn("text-sm font-medium", item.labelClass)}>
+                {item.label}
+              </p>
+              <p className="mt-2 text-xl font-semibold tabular-nums text-white">
+                {item.count}
+                <span className="ml-1 text-sm font-normal text-[#b8b8b8]">
+                  st
+                </span>
+              </p>
+              <p className="mt-0.5 text-sm tabular-nums text-[#b8b8b8]">
+                {formatPercent(item.percent)}%
+              </p>
+            </button>
+          );
+        })}
       </div>
 
       {/* 4 — Reset */}
