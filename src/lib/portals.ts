@@ -33,7 +33,8 @@ export const PORTALS: PortalItem[] = [
   {
     id: "3058-boxmover",
     name: "3058 Boxmover",
-    enabled: false,
+    href: "/3058-boxmover/",
+    enabled: true,
   },
   {
     id: "3028-narkefrakt",

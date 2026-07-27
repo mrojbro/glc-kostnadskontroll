@@ -1,5 +1,5 @@
 import ExcelJS from "exceljs";
-import type { DaviesWorkbook } from "./types";
+import type { BoxmoverWorkbook } from "./types";
 
 const HEADER_FILL: ExcelJS.Fill = {
   type: "pattern",
@@ -15,9 +15,11 @@ const HEADER_FONT: Partial<ExcelJS.Font> = {
 };
 
 /**
- * Export Davies rows to a single styled sheet with a frozen header row.
+ * Export Boxmover rows to a single styled sheet with a frozen header row.
  */
-export async function exportDaviesToExcel(data: DaviesWorkbook): Promise<void> {
+export async function exportBoxmoverToExcel(
+  data: BoxmoverWorkbook
+): Promise<void> {
   const exportedAt = new Date();
   const timestampLabel = formatExportTimestamp(exportedAt);
   const timestampFile = formatExportTimestampForFilename(exportedAt);
@@ -28,7 +30,7 @@ export async function exportDaviesToExcel(data: DaviesWorkbook): Promise<void> {
   workbook.created = exportedAt;
   workbook.modified = exportedAt;
 
-  const sheet = workbook.addWorksheet("3054 Davies", {
+  const sheet = workbook.addWorksheet("3058 Boxmover", {
     views: [{ state: "frozen", ySplit: 1, activeCell: "A2" }],
   });
 
@@ -81,7 +83,7 @@ export async function exportDaviesToExcel(data: DaviesWorkbook): Promise<void> {
   };
 
   const buffer = await workbook.xlsx.writeBuffer();
-  downloadWorkbook(buffer, `GLC_3054_Davies_${timestampFile}.xlsx`);
+  downloadWorkbook(buffer, `GLC_3058_Boxmover_${timestampFile}.xlsx`);
 }
 
 function formatExportTimestamp(date: Date): string {
@@ -96,12 +98,13 @@ function formatExportTimestamp(date: Date): string {
   }).format(date);
 }
 
-/** Safe for filenames, e.g. 2026-07-23_18-57-00 */
 function formatExportTimestampForFilename(date: Date): string {
   return formatExportTimestamp(date).replace(/:/g, "-").replace(/\s+/g, "_");
 }
 
-function sortRowsForExport(rows: DaviesWorkbook["rows"]): DaviesWorkbook["rows"] {
+function sortRowsForExport(
+  rows: BoxmoverWorkbook["rows"]
+): BoxmoverWorkbook["rows"] {
   return [...rows].sort((a, b) => {
     const byDatum = a.datum.localeCompare(b.datum, "sv");
     if (byDatum !== 0) return byDatum;

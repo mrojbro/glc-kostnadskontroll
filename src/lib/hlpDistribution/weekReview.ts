@@ -1,7 +1,7 @@
 import type { HlpDistributionRow } from "./types";
 import type { RowCommentMap, RowStatusMap } from "@/lib/types";
 
-const OLDER_WEEK_COMMENT = "rättningar?";
+const OLDER_WEEK_COMMENT = "Gamla rättningar?";
 
 interface IsoWeek {
   /** ISO week-year */
