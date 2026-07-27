@@ -17,6 +17,8 @@ import {
   EMPTY_VALUE,
 } from "@/components/ColumnFilterDropdown";
 import { CoopFruktFilters } from "@/components/coop-frukt/CoopFruktFilters";
+import { CoopFruktGroupSummary } from "@/components/coop-frukt/CoopFruktGroupSummary";
+import { buildDateEkipageSummaries } from "@/lib/coopFrukt/aggregates";
 import { EmptyState } from "@/components/EmptyState";
 import {
   RowCommentInput,
@@ -203,11 +205,13 @@ export function CoopFruktTable({
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [summaryResetKey, setSummaryResetKey] = useState(0);
 
   useEffect(() => {
     setColumnFilters([]);
     setGlobalFilter("");
     setSorting(DEFAULT_SORTING);
+    setSummaryResetKey((key) => key + 1);
   }, [rows]);
 
   const rowStatusRef = useRef(rowStatus);
@@ -483,11 +487,17 @@ export function CoopFruktTable({
   const checkCount = Object.values(rowStatus).filter(
     (s) => s === "check"
   ).length;
+  const groupSummaries = useMemo(
+    () =>
+      buildDateEkipageSummaries(filteredRows.map((row) => row.original)),
+    [filteredRows]
+  );
 
   const handleReset = () => {
     setGlobalFilter("");
     setColumnFilters([]);
     setSorting(DEFAULT_SORTING);
+    setSummaryResetKey((key) => key + 1);
   };
 
   return (
@@ -502,6 +512,13 @@ export function CoopFruktTable({
         okCount={okCount}
         checkCount={checkCount}
       />
+
+      {rows.length > 0 && (
+        <CoopFruktGroupSummary
+          key={summaryResetKey}
+          summaries={groupSummaries}
+        />
+      )}
 
       {rows.length === 0 ? (
         <EmptyState

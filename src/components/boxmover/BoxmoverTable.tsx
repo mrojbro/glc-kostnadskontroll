@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -16,120 +16,118 @@ import {
   ColumnFilterDropdown,
   EMPTY_VALUE,
 } from "@/components/ColumnFilterDropdown";
-import { HlpColorLegend } from "@/components/hlp-distribution/HlpColorLegend";
-import { HlpDistributionFilters } from "@/components/hlp-distribution/HlpDistributionFilters";
-import { EmptyState } from "@/components/EmptyState";
 import {
-  RowCommentInput,
-  RowStatusButtons,
-} from "@/components/RowReviewControls";
+  BoxmoverColorLegend,
+  type BoxmoverLegendCounts,
+} from "@/components/boxmover/BoxmoverColorLegend";
+import { BoxmoverFilters } from "@/components/boxmover/BoxmoverFilters";
+import { StatusPill } from "@/components/boxmover/StatusPill";
+import { EmptyState } from "@/components/EmptyState";
 import { formatSwedishCurrency } from "@/lib/formatters";
-import { isPartnerMottagare } from "@/lib/hlpDistribution/partnerMottagare";
-import type { HlpDistributionRow } from "@/lib/hlpDistribution/types";
-import type { RowCommentMap, RowStatus, RowStatusMap } from "@/lib/types";
+import type { BoxmoverRow } from "@/lib/boxmover/types";
 import { cn } from "@/lib/utils";
 
 type FilterableColumn =
-  | "avgangsdatum"
-  | "fraktsedeln"
+  | "datum"
   | "ordernr"
-  | "avsandare"
-  | "terminal"
-  | "mottagare"
-  | "pall"
-  | "flm"
-  | "vikt"
-  | "summa";
+  | "betalare"
+  | "fraktsedelsnummer"
+  | "klarFakturering"
+  | "orderstatus"
+  | "intakter"
+  | "tg"
+  | "tb"
+  | "resurs"
+  | "mottNamn"
+  | "mottOrt"
+  | "gods";
 
-type ReviewTableMeta = {
-  rowStatus: RowStatusMap;
-  rowComments: RowCommentMap;
-  setStatus: (rowId: string, status: RowStatus) => void;
-  setComment: (rowId: string, value: string) => void;
-};
-
-interface HlpDistributionTableProps {
-  rows: HlpDistributionRow[];
-  totalSummaFormatted: string;
+interface BoxmoverTableProps {
+  rows: BoxmoverRow[];
+  totalIntakterFormatted: string;
   rowCount: number;
-  rowStatus: RowStatusMap;
-  onRowStatusChange: (next: RowStatusMap) => void;
-  rowComments: RowCommentMap;
-  onRowCommentsChange: (next: RowCommentMap) => void;
 }
 
 const DEFAULT_SORTING: SortingState = [
-  { id: "avgangsdatum", desc: false },
-  { id: "fraktsedeln", desc: false },
-  { id: "mottagare", desc: false },
+  { id: "datum", desc: false },
+  { id: "ordernr", desc: false },
 ];
 
 const FILTERABLE_COLUMNS: FilterableColumn[] = [
-  "avgangsdatum",
-  "fraktsedeln",
+  "datum",
   "ordernr",
-  "avsandare",
-  "terminal",
-  "mottagare",
-  "pall",
-  "flm",
-  "vikt",
-  "summa",
+  "betalare",
+  "fraktsedelsnummer",
+  "klarFakturering",
+  "orderstatus",
+  "intakter",
+  "tg",
+  "tb",
+  "resurs",
+  "mottNamn",
+  "mottOrt",
+  "gods",
 ];
 
 const FILTER_LABELS: Record<FilterableColumn, string> = {
-  avgangsdatum: "Avgångsdatum",
-  fraktsedeln: "Fraktsedeln",
+  datum: "Datum",
   ordernr: "Ordernr",
-  avsandare: "Avsändare",
-  terminal: "Terminal",
-  mottagare: "Mottagare",
-  pall: "Pall",
-  flm: "FLM",
-  vikt: "Vikt",
-  summa: "Summa",
+  betalare: "Betalare",
+  fraktsedelsnummer: "FRS",
+  klarFakturering: "KlarFakt",
+  orderstatus: "Orderstatus",
+  intakter: "Intäkter",
+  tg: "TG",
+  tb: "TB",
+  resurs: "Resurs",
+  mottNamn: "Mott namn",
+  mottOrt: "Mott Ort",
+  gods: "Gods",
 };
 
 function multiSelectFilter(
-  row: { getValue: (columnId: string) => unknown; original: HlpDistributionRow },
+  row: { original: BoxmoverRow },
   columnId: string,
   filterValue: unknown
 ): boolean {
   const selected = filterValue as string[] | undefined;
   if (!selected || selected.length === 0) return true;
-
-  const key = getFilterDisplayValue(
-    row.original,
-    columnId as FilterableColumn
+  return selected.includes(
+    getFilterDisplayValue(row.original, columnId as FilterableColumn)
   );
-  return selected.includes(key);
 }
 
 function getFilterDisplayValue(
-  row: HlpDistributionRow,
+  row: BoxmoverRow,
   columnId: FilterableColumn
 ): string {
   switch (columnId) {
-    case "avgangsdatum":
-      return row.avgangsdatum.trim() || EMPTY_VALUE;
-    case "fraktsedeln":
-      return row.fraktsedeln.trim() || EMPTY_VALUE;
+    case "datum":
+      return row.datum.trim() || EMPTY_VALUE;
     case "ordernr":
       return row.ordernr.trim() || EMPTY_VALUE;
-    case "avsandare":
-      return row.avsandare.trim() || EMPTY_VALUE;
-    case "terminal":
-      return row.terminal.trim() || EMPTY_VALUE;
-    case "mottagare":
-      return row.mottagare.trim() || EMPTY_VALUE;
-    case "pall":
-      return row.pallFormatted.trim() || EMPTY_VALUE;
-    case "flm":
-      return row.flmFormatted.trim() || EMPTY_VALUE;
-    case "vikt":
-      return row.viktFormatted.trim() || EMPTY_VALUE;
-    case "summa":
-      return row.summaFormatted.trim() || EMPTY_VALUE;
+    case "betalare":
+      return row.betalare.trim() || EMPTY_VALUE;
+    case "fraktsedelsnummer":
+      return row.fraktsedelsnummer.trim() || EMPTY_VALUE;
+    case "klarFakturering":
+      return row.klarFaktureringLabel;
+    case "orderstatus":
+      return row.orderstatus.trim() || EMPTY_VALUE;
+    case "intakter":
+      return row.intakterFormatted.trim() || EMPTY_VALUE;
+    case "tg":
+      return row.tgFormatted.trim() || EMPTY_VALUE;
+    case "tb":
+      return row.tbFormatted.trim() || EMPTY_VALUE;
+    case "resurs":
+      return row.resursFormatted.trim() || EMPTY_VALUE;
+    case "mottNamn":
+      return row.mottNamn.trim() || EMPTY_VALUE;
+    case "mottOrt":
+      return row.mottOrt.trim() || EMPTY_VALUE;
+    case "gods":
+      return row.gods.trim() || EMPTY_VALUE;
     default:
       return EMPTY_VALUE;
   }
@@ -144,45 +142,40 @@ function sortFilterOptions(values: string[]): string[] {
 }
 
 function uniqueColumnOptions(
-  rows: HlpDistributionRow[],
+  rows: BoxmoverRow[],
   key: FilterableColumn
 ): string[] {
   const values = new Set<string>();
-  for (const row of rows) {
-    values.add(getFilterDisplayValue(row, key));
-  }
+  for (const row of rows) values.add(getFilterDisplayValue(row, key));
   return sortFilterOptions(Array.from(values));
 }
 
-function rowMatchesGlobalSearch(
-  row: HlpDistributionRow,
-  query: string,
-  comments: RowCommentMap
-): boolean {
+function rowMatchesGlobalSearch(row: BoxmoverRow, query: string): boolean {
   const normalized = query.trim().toLowerCase();
   if (!normalized) return true;
-
   const values = [
-    row.avgangsdatum,
-    row.fraktsedeln,
+    row.datum,
     row.ordernr,
-    row.avsandare,
-    row.terminal,
-    row.mottagare,
-    row.pallFormatted,
-    row.flmFormatted,
-    row.viktFormatted,
-    row.summaFormatted,
-    comments[row.id] ?? "",
+    row.betalare,
+    row.littera,
+    row.fraktsedelsnummer,
+    row.klarFaktureringLabel,
+    row.orderstatus,
+    row.intakterFormatted,
+    row.tgFormatted,
+    row.tbFormatted,
+    row.resursFormatted,
+    row.mottNamn,
+    row.mottOrt,
+    row.gods,
   ];
-
   return values.some((value) =>
     String(value).toLowerCase().includes(normalized)
   );
 }
 
 function rowMatchesOtherColumnFilters(
-  row: HlpDistributionRow,
+  row: BoxmoverRow,
   filters: ColumnFiltersState,
   excludeColumnId: FilterableColumn
 ): boolean {
@@ -196,15 +189,11 @@ function rowMatchesOtherColumnFilters(
   return true;
 }
 
-export function HlpDistributionTable({
+export function BoxmoverTable({
   rows,
-  totalSummaFormatted,
+  totalIntakterFormatted,
   rowCount,
-  rowStatus,
-  onRowStatusChange,
-  rowComments,
-  onRowCommentsChange,
-}: HlpDistributionTableProps) {
+}: BoxmoverTableProps) {
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -215,43 +204,12 @@ export function HlpDistributionTable({
     setSorting(DEFAULT_SORTING);
   }, [rows]);
 
-  const rowStatusRef = useRef(rowStatus);
-  const rowCommentsRef = useRef(rowComments);
-  rowStatusRef.current = rowStatus;
-  rowCommentsRef.current = rowComments;
-
-  const setStatus = useCallback(
-    (rowId: string, status: RowStatus) => {
-      const next = { ...rowStatusRef.current };
-      if (next[rowId] === status) {
-        delete next[rowId];
-      } else {
-        next[rowId] = status;
-      }
-      onRowStatusChange(next);
-    },
-    [onRowStatusChange]
-  );
-
-  const setComment = useCallback(
-    (rowId: string, value: string) => {
-      const next = { ...rowCommentsRef.current };
-      if (value.trim() === "") {
-        delete next[rowId];
-      } else {
-        next[rowId] = value;
-      }
-      onRowCommentsChange(next);
-    },
-    [onRowCommentsChange]
-  );
-
   const filterOptions = useMemo(() => {
     const options = {} as Record<FilterableColumn, string[]>;
     for (const key of FILTERABLE_COLUMNS) {
       const scopedRows = rows.filter(
         (row) =>
-          rowMatchesGlobalSearch(row, globalFilter, rowComments) &&
+          rowMatchesGlobalSearch(row, globalFilter) &&
           rowMatchesOtherColumnFilters(row, columnFilters, key)
       );
       const available = uniqueColumnOptions(scopedRows, key);
@@ -264,7 +222,7 @@ export function HlpDistributionTable({
       );
     }
     return options;
-  }, [rows, columnFilters, globalFilter, rowComments]);
+  }, [rows, columnFilters, globalFilter]);
 
   const getSelected = useCallback(
     (columnId: FilterableColumn): string[] => {
@@ -285,37 +243,13 @@ export function HlpDistributionTable({
     []
   );
 
-  const columns = useMemo<ColumnDef<HlpDistributionRow>[]>(
+  const columns = useMemo<ColumnDef<BoxmoverRow>[]>(
     () => [
       {
-        accessorKey: "avgangsdatum",
-        header: "Avgångsdatum",
+        accessorKey: "datum",
+        header: "Datum",
         filterFn: multiSelectFilter,
         cell: (info) => info.getValue<string>(),
-      },
-      {
-        accessorKey: "fraktsedeln",
-        header: "Fraktsedeln",
-        filterFn: multiSelectFilter,
-        cell: (info) => {
-          const value = info.getValue<string>();
-          const highlight = info.row.original.highlightFraktsedel;
-          return (
-            <span
-              title={
-                highlight ? "Delar Fraktsedel med Tillägg" : undefined
-              }
-              className={cn(
-                "inline-block rounded-md px-2 py-0.5",
-                highlight
-                  ? "bg-[#eb6e08]/25 font-medium text-[#f0a35a] ring-1 ring-[#eb6e08]/40"
-                  : "text-white"
-              )}
-            >
-              {value}
-            </span>
-          );
-        },
       },
       {
         accessorKey: "ordernr",
@@ -324,141 +258,141 @@ export function HlpDistributionTable({
         cell: (info) => info.getValue<string>(),
       },
       {
-        accessorKey: "avsandare",
-        header: "Avsändare",
+        accessorKey: "betalare",
+        header: "Betalare",
         filterFn: multiSelectFilter,
         cell: (info) => {
           const value = info.getValue<string>();
           return (
-            <span className="block max-w-[11rem] truncate" title={value}>
-              {value || <span className="text-[#6a6a6a]">—</span>}
+            <span className="block max-w-[6rem] truncate" title={value}>
+              {value}
             </span>
           );
         },
       },
       {
-        accessorKey: "terminal",
-        header: "Terminal",
+        accessorKey: "fraktsedelsnummer",
+        header: "FRS",
         filterFn: multiSelectFilter,
-        cell: (info) => {
-          const value = info.getValue<string>();
-          return value ? (
-            value
-          ) : (
-            <span className="text-[#6a6a6a]">—</span>
-          );
-        },
+        cell: (info) => info.getValue<string>(),
       },
       {
-        accessorKey: "mottagare",
-        header: "Mottagare",
+        id: "klarFakturering",
+        accessorFn: (row) => row.klarFaktureringLabel,
+        header: "KlarFakt",
+        filterFn: multiSelectFilter,
+        cell: (info) => (
+          <StatusPill tone={info.row.original.klarFakturering ? "ok" : "bad"}>
+            {info.row.original.klarFaktureringLabel}
+          </StatusPill>
+        ),
+      },
+      {
+        accessorKey: "orderstatus",
+        header: "Orderstatus",
         filterFn: multiSelectFilter,
         cell: (info) => {
-          const value = info.getValue<string>();
-          const isTillagg = value === "Tillägg";
-          const isPartner = isPartnerMottagare(value);
-          const highlightFraktsedel = info.row.original.highlightFraktsedel;
-
+          const row = info.row.original;
           return (
-            <span
-              title={
-                isTillagg
-                  ? value
-                  : highlightFraktsedel
-                    ? "Delar Fraktsedel med Tillägg"
-                    : value || undefined
-              }
-              className={cn(
-                "inline-block max-w-[11rem] truncate rounded-md px-2 py-0.5",
-                isTillagg &&
-                  "bg-[#eab308]/20 font-medium text-[#facc15] ring-1 ring-[#eab308]/40",
-                isPartner &&
-                  !isTillagg &&
-                  "bg-[#38bdf8]/20 font-medium text-[#7dd3fc] ring-1 ring-[#38bdf8]/40",
-                highlightFraktsedel &&
-                  !isTillagg &&
-                  !isPartner &&
-                  "bg-[#eab308]/20 font-medium text-[#facc15] ring-1 ring-[#eab308]/40",
-                !isTillagg &&
-                  !isPartner &&
-                  !highlightFraktsedel &&
-                  "text-white"
-              )}
+            <StatusPill
+              tone={row.orderstatusOk ? "ok" : "bad"}
+              title={row.orderstatus}
             >
-              {value || <span className="text-[#6a6a6a]">—</span>}
-            </span>
+              {row.orderstatus || "—"}
+            </StatusPill>
           );
         },
       },
       {
-        id: "pall",
-        accessorFn: (row) => row.pall ?? Number.NEGATIVE_INFINITY,
-        header: "Pall",
+        id: "intakter",
+        accessorFn: (row) => row.intakter,
+        header: "Intäkter",
         filterFn: multiSelectFilter,
         cell: (info) => (
-          <span className="tabular-nums">{info.row.original.pallFormatted}</span>
+          <StatusPill
+            tone={info.row.original.intakterOk ? "ok" : "bad"}
+            className="tabular-nums"
+          >
+            {info.row.original.intakterFormatted}
+          </StatusPill>
         ),
         sortingFn: "basic",
       },
       {
-        id: "flm",
-        accessorFn: (row) => row.flm ?? Number.NEGATIVE_INFINITY,
-        header: "FLM",
+        id: "tg",
+        accessorFn: (row) => row.tg ?? Number.NEGATIVE_INFINITY,
+        header: "TG",
         filterFn: multiSelectFilter,
-        cell: (info) => (
-          <span className="tabular-nums">{info.row.original.flmFormatted}</span>
-        ),
+        cell: (info) => {
+          const value = info.row.original.tg;
+          const tone =
+            value === null ? "neutral" : value >= 0 ? "ok" : "bad";
+          return (
+            <StatusPill tone={tone} className="tabular-nums">
+              {info.row.original.tgFormatted || "—"}
+            </StatusPill>
+          );
+        },
         sortingFn: "basic",
       },
       {
-        id: "vikt",
-        accessorFn: (row) => row.vikt ?? Number.NEGATIVE_INFINITY,
-        header: "Vikt",
+        id: "tb",
+        accessorFn: (row) => row.tb ?? Number.NEGATIVE_INFINITY,
+        header: "TB",
         filterFn: multiSelectFilter,
-        cell: (info) => (
-          <span className="tabular-nums">{info.row.original.viktFormatted}</span>
-        ),
+        cell: (info) => {
+          const value = info.row.original.tb;
+          const tone =
+            value === null ? "neutral" : value >= 0 ? "ok" : "bad";
+          return (
+            <StatusPill tone={tone} className="tabular-nums">
+              {info.row.original.tbFormatted || "—"}
+            </StatusPill>
+          );
+        },
         sortingFn: "basic",
       },
       {
-        id: "summa",
-        accessorKey: "summa",
-        header: "Summa",
+        id: "resurs",
+        accessorFn: (row) => row.resurs,
+        header: "Resurs",
         filterFn: multiSelectFilter,
         cell: (info) => (
-          <span className="inline-block rounded-md bg-[#22c55e]/20 px-2 py-0.5 font-medium tabular-nums text-[#4ade80] ring-1 ring-[#4ade80]/35">
-            {info.row.original.summaFormatted}
+          <span className="tabular-nums">
+            {info.row.original.resursFormatted}
           </span>
         ),
         sortingFn: "basic",
       },
       {
-        id: "status",
-        header: "Status",
-        enableSorting: false,
-        cell: ({ row, table }) => {
-          const meta = table.options.meta as ReviewTableMeta;
+        accessorKey: "mottNamn",
+        header: "Mott namn",
+        filterFn: multiSelectFilter,
+        cell: (info) => {
+          const value = info.getValue<string>();
           return (
-            <RowStatusButtons
-              rowId={row.original.id}
-              status={meta.rowStatus[row.original.id]}
-              onChange={meta.setStatus}
-            />
+            <span className="block max-w-[13rem] truncate" title={value}>
+              {value}
+            </span>
           );
         },
       },
       {
-        id: "kommentar",
-        header: "Kommentar",
-        enableSorting: false,
-        cell: ({ row, table }) => {
-          const meta = table.options.meta as ReviewTableMeta;
+        accessorKey: "mottOrt",
+        header: "Mott Ort",
+        filterFn: multiSelectFilter,
+        cell: (info) => info.getValue<string>(),
+      },
+      {
+        accessorKey: "gods",
+        header: "Gods",
+        filterFn: multiSelectFilter,
+        cell: (info) => {
+          const value = info.getValue<string>();
           return (
-            <RowCommentInput
-              rowId={row.original.id}
-              value={meta.rowComments[row.original.id] ?? ""}
-              onChange={meta.setComment}
-            />
+            <span className="block max-w-[8rem] truncate" title={value}>
+              {value}
+            </span>
           );
         },
       },
@@ -469,12 +403,6 @@ export function HlpDistributionTable({
   const table = useReactTable({
     data: rows,
     columns,
-    meta: {
-      rowStatus,
-      rowComments,
-      setStatus,
-      setComment,
-    } satisfies ReviewTableMeta,
     state: { sorting, globalFilter, columnFilters },
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
@@ -485,32 +413,54 @@ export function HlpDistributionTable({
     enableSorting: true,
     enableMultiSort: true,
     globalFilterFn: (row, _columnId, filterValue) =>
-      rowMatchesGlobalSearch(
-        row.original,
-        String(filterValue),
-        rowComments
-      ),
+      rowMatchesGlobalSearch(row.original, String(filterValue)),
   });
 
   const visibleRows = table.getRowModel().rows;
   const filteredRows = table.getFilteredRowModel().rows;
-  const filteredSumma = filteredRows.reduce(
-    (sum, row) => sum + row.original.summa,
+  const filteredIntakter = filteredRows.reduce(
+    (sum, row) => sum + row.original.intakter,
     0
   );
   const displayTotal =
     globalFilter.trim() === "" && columnFilters.length === 0
-      ? totalSummaFormatted
-      : formatSwedishCurrency(filteredSumma);
+      ? totalIntakterFormatted
+      : formatSwedishCurrency(filteredIntakter);
   const displayCount =
     globalFilter.trim() === "" && columnFilters.length === 0
       ? rowCount
       : filteredRows.length;
 
-  const okCount = Object.values(rowStatus).filter((s) => s === "ok").length;
-  const checkCount = Object.values(rowStatus).filter(
-    (s) => s === "check"
-  ).length;
+  const legendCounts = useMemo((): BoxmoverLegendCounts => {
+    const counts: BoxmoverLegendCounts = {
+      klarFaktJa: 0,
+      klarFaktNej: 0,
+      orderstatusOk: 0,
+      orderstatusBad: 0,
+      intakterOk: 0,
+      intakterBad: 0,
+      tgTbOk: 0,
+      tgTbBad: 0,
+    };
+
+    for (const { original: row } of filteredRows) {
+      if (row.klarFakturering) counts.klarFaktJa += 1;
+      else counts.klarFaktNej += 1;
+
+      if (row.orderstatusOk) counts.orderstatusOk += 1;
+      else counts.orderstatusBad += 1;
+
+      if (row.intakterOk) counts.intakterOk += 1;
+      else counts.intakterBad += 1;
+
+      const tgNegative = row.tg !== null && row.tg < 0;
+      const tbNegative = row.tb !== null && row.tb < 0;
+      if (tgNegative || tbNegative) counts.tgTbBad += 1;
+      else counts.tgTbOk += 1;
+    }
+
+    return counts;
+  }, [filteredRows]);
 
   const handleReset = () => {
     setGlobalFilter("");
@@ -520,18 +470,16 @@ export function HlpDistributionTable({
 
   return (
     <section className="space-y-4">
-      <HlpDistributionFilters
+      <BoxmoverFilters
         search={globalFilter}
         onSearchChange={setGlobalFilter}
         onReset={handleReset}
         rowCount={displayCount}
         totalCount={rowCount}
-        totalSummaFormatted={displayTotal}
-        okCount={okCount}
-        checkCount={checkCount}
+        totalIntakterFormatted={displayTotal}
       />
 
-      <HlpColorLegend />
+      <BoxmoverColorLegend counts={legendCounts} />
 
       {rows.length === 0 ? (
         <EmptyState
@@ -541,20 +489,21 @@ export function HlpDistributionTable({
       ) : (
         <div className="overflow-hidden rounded-2xl border border-[#3a3a3a] bg-[#242424] shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
           <div className="h-[min(70vh,720px)] overflow-x-auto overflow-y-auto [scrollbar-gutter:stable]">
-            <table className="w-full min-w-[1360px] table-fixed border-collapse text-left text-xs">
+            <table className="w-full min-w-[1400px] table-fixed border-collapse text-left text-xs">
               <colgroup>
-                <col className="w-[7.5rem]" />
+                <col className="w-[5.5rem]" />
+                <col className="w-[5rem]" />
+                <col className="w-[6.5rem]" />
+                <col className="w-[6.5rem]" />
+                <col className="w-[4.5rem]" />
                 <col className="w-[7rem]" />
-                <col className="w-[6.5rem]" />
-                <col className="w-[10rem]" />
-                <col className="w-[6.5rem]" />
-                <col className="w-[10rem]" />
+                <col className="w-[7rem]" />
                 <col className="w-[4.5rem]" />
                 <col className="w-[4.5rem]" />
-                <col className="w-[5rem]" />
-                <col className="w-[7rem]" />
-                <col className="w-[5rem]" />
-                <col className="w-[11rem]" />
+                <col className="w-[6rem]" />
+                <col className="w-[14rem]" />
+                <col className="w-[5.5rem]" />
+                <col className="w-[5.5rem]" />
               </colgroup>
               <thead className="sticky top-0 z-10">
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -602,7 +551,6 @@ export function HlpDistributionTable({
                                   )}
                                 </span>
                               )}
-
                               {isFilterable && (
                                 <ColumnFilterDropdown
                                   label={FILTER_LABELS[columnId]}
@@ -625,7 +573,7 @@ export function HlpDistributionTable({
                 {visibleRows.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={12}
+                      colSpan={13}
                       className="px-4 py-16 text-center text-sm text-[#b8b8b8]"
                     >
                       Ingen rad matchar din sökning eller dina filter. Prova att
@@ -633,25 +581,19 @@ export function HlpDistributionTable({
                     </td>
                   </tr>
                 ) : (
-                  visibleRows.map((row, index) => {
-                    const status = rowStatus[row.original.id];
-                    return (
+                  visibleRows.map((row, index) => (
                       <tr
                         key={row.id}
                         className={cn(
                           "border-t border-[#3a3a3a]",
-                          status === "ok" && "bg-[#1a2e22] hover:bg-[#203528]",
-                          status === "check" &&
-                            "bg-[#2e2a18] hover:bg-[#35301c]",
-                          !status &&
-                            (index % 2 === 0 ? "bg-[#242424]" : "bg-[#202020]"),
-                          !status && "hover:bg-[#2a2218]"
+                          index % 2 === 0 ? "bg-[#242424]" : "bg-[#202020]",
+                          "hover:bg-[#2a2218]"
                         )}
                       >
                         {row.getVisibleCells().map((cell) => (
                           <td
                             key={cell.id}
-                            className="px-2 py-2 whitespace-nowrap text-white"
+                            className="px-2 py-2 text-left align-middle whitespace-nowrap text-white"
                           >
                             {flexRender(
                               cell.column.columnDef.cell,
@@ -660,8 +602,7 @@ export function HlpDistributionTable({
                           </td>
                         ))}
                       </tr>
-                    );
-                  })
+                    ))
                 )}
               </tbody>
             </table>
@@ -673,13 +614,9 @@ export function HlpDistributionTable({
               <span className="font-medium text-white">{displayCount}</span>{" "}
               av <span className="font-medium text-white">{rowCount}</span>{" "}
               rader
-              {" · "}
-              <span className="text-[#4ade80]">OK {okCount}</span>
-              {" · "}
-              <span className="text-[#eab308]">Kontroll {checkCount}</span>
             </p>
             <p className="text-sm">
-              <span className="text-[#b8b8b8]">Totalt Summa: </span>
+              <span className="text-[#b8b8b8]">Totalt Intäkter: </span>
               <span className="font-semibold tabular-nums text-[#eb6e08]">
                 {displayTotal}
               </span>
