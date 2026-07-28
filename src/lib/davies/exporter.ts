@@ -52,12 +52,14 @@ export async function exportDaviesToExcel(data: DaviesWorkbook): Promise<void> {
   });
 
   for (const row of sortRowsForExport(data.rows)) {
+    const ersattning =
+      row.resursFormatted === "Samtax" ? "Samtax" : row.resurs;
     const excelRow = sheet.addRow({
       datum: row.datum,
       frs: row.fraktsedelsnummer,
       betalare: row.betalare,
       littera: row.littera,
-      ersattning: row.resurs,
+      ersattning,
       mottNamn: row.mottNamn,
       mottOrt: row.mottOrt,
       gods: row.gods,
@@ -65,7 +67,7 @@ export async function exportDaviesToExcel(data: DaviesWorkbook): Promise<void> {
 
     excelRow.eachCell((cell, colNumber) => {
       cell.alignment = { horizontal: "left", vertical: "middle" };
-      if (colNumber === 5) {
+      if (colNumber === 5 && row.resursFormatted !== "Samtax") {
         cell.numFmt = "0.00";
       }
     });

@@ -97,6 +97,8 @@ function buildResursPivot(rows: NarkefraktRow[]): {
   const totals = new Map<string, number>();
 
   for (const row of rows) {
+    if (row.resursFormatted === "Samtax") continue;
+
     const datum = normalizeNarkefraktExportDate(row.datum);
     const mottNamn = row.mottNamn.trim();
     if (!datum || !mottNamn) continue;

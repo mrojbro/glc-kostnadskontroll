@@ -13,8 +13,13 @@ import {
   normalizeHeader,
 } from "@/lib/validation";
 import {
+  buildWrongResourceCodeError,
+  checkResourceCodeMajority,
+} from "@/lib/resourceCodeGuard";
+import {
   DAVIES_OK_ORDERSTATUSES,
   DAVIES_REQUIRED_HEADERS,
+  DAVIES_RESOURCE_CODE,
   type DaviesParseResult,
   type DaviesRow,
 } from "./types";
@@ -60,6 +65,7 @@ export async function parseDaviesFile(file: File): Promise<DaviesParseResult> {
       const parsed = tryParseSheet(workbook.Sheets[sheetName], sheetName);
       if (parsed.success) return parsed;
       if (parsed.error.type === "missing_columns") continue;
+      return parsed;
     }
 
     const firstSheetName = workbook.SheetNames[0];
@@ -178,7 +184,21 @@ function tryParseSheet(
     mottNamn: findColumnIndex(headerMap, "Mott namn")!,
     mottOrt: findColumnIndex(headerMap, "Mott Ort")!,
     gods: findColumnIndex(headerMap, "Gods")!,
+    tjanst: findColumnIndex(headerMap, "Tjänst"),
   };
+
+  const resursMajority = checkResourceCodeMajority(
+    rows,
+    headerRowIndex,
+    [col.resurs1, col.resurs2, col.resurs3],
+    DAVIES_RESOURCE_CODE
+  );
+  if (!resursMajority.ok) {
+    return {
+      success: false,
+      error: buildWrongResourceCodeError(DAVIES_RESOURCE_CODE, resursMajority),
+    };
+  }
 
   const formattedRows = XLSX.utils.sheet_to_json<(string | null)[]>(sheet, {
     header: 1,
@@ -213,10 +233,12 @@ function tryParseSheet(
     const tg = parseNumericValue(row[col.tg]);
     const tb = parseNumericValue(row[col.tb]);
     const resurs = sumDaviesResursKostnad(row, col);
-    const { mottNamn, mottOrt } = resolveMottagare(
-      formatIdentifier(row[col.mottNamn]),
-      formatIdentifier(row[col.mottOrt])
-    );
+    const rawMottNamn = formatIdentifier(row[col.mottNamn]);
+    const rawMottOrt = formatIdentifier(row[col.mottOrt]);
+    const tjanst =
+      col.tjanst !== undefined ? formatIdentifier(row[col.tjanst]) : "";
+    const isSamtax = containsSamtaxTjanst(tjanst);
+    const { mottNamn, mottOrt } = resolveMottagare(rawMottNamn, rawMottOrt);
     const gods = formatIdentifier(row[col.gods]);
 
     if (
@@ -251,7 +273,7 @@ function tryParseSheet(
       tb,
       tbFormatted: formatSwedishDecimal2(tb),
       resurs,
-      resursFormatted: formatSwedishCurrency(resurs),
+      resursFormatted: isSamtax ? "Samtax" : formatSwedishCurrency(resurs),
       mottNamn,
       mottOrt,
       gods,
@@ -259,6 +281,7 @@ function tryParseSheet(
   }
 
   const totalIntakter = result.reduce((sum, row) => sum + row.intakter, 0);
+  const totalResurs = result.reduce((sum, row) => sum + row.resurs, 0);
 
   return {
     success: true,
@@ -268,6 +291,8 @@ function tryParseSheet(
       rowCount: result.length,
       totalIntakter,
       totalIntakterFormatted: formatSwedishCurrency(totalIntakter),
+      totalResurs,
+      totalResursFormatted: formatSwedishCurrency(totalResurs),
     },
   };
 }
@@ -301,8 +326,8 @@ function sumDaviesResursKostnad(
 
 function containsDaviesCode(value: unknown): boolean {
   if (value === null || value === undefined) return false;
-  if (typeof value === "number") return value === 3054;
-  return String(value).includes("3054");
+  if (typeof value === "number") return value === DAVIES_RESOURCE_CODE;
+  return String(value).includes(String(DAVIES_RESOURCE_CODE));
 }
 
 function resolveMottagare(
@@ -313,6 +338,10 @@ function resolveMottagare(
     return { mottNamn, mottOrt };
   }
   return { mottNamn: BOXMOVER_MOTT_NAMN, mottOrt: BOXMOVER_MOTT_ORT };
+}
+
+function containsSamtaxTjanst(tjanst: string): boolean {
+  return /samtax/i.test(tjanst.trim());
 }
 
 function shouldKeepMottNamn(mottNamn: string): boolean {

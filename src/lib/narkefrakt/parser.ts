@@ -13,6 +13,10 @@ import {
   normalizeHeader,
 } from "@/lib/validation";
 import {
+  buildWrongResourceCodeError,
+  checkResourceCodeMajority,
+} from "@/lib/resourceCodeGuard";
+import {
   NARKEFRAKT_OK_ORDERSTATUSES,
   NARKEFRAKT_REQUIRED_HEADERS,
   NARKEFRAKT_SOURCES,
@@ -54,6 +58,7 @@ export async function parseNarkefraktFile(
       );
       if (parsed.success) return parsed;
       if (parsed.error.type === "missing_columns") continue;
+      return parsed;
     }
 
     const firstSheetName = workbook.SheetNames[0];
@@ -164,6 +169,7 @@ export function mergeNarkefraktWorkbooks(
 ): NarkefraktWorkbook {
   const rows = [...sourceA.rows, ...sourceB.rows];
   const totalIntakter = rows.reduce((sum, row) => sum + row.intakter, 0);
+  const totalResurs = rows.reduce((sum, row) => sum + row.resurs, 0);
 
   return {
     sheetName: `${NARKEFRAKT_SOURCES["source-a"].label} + ${NARKEFRAKT_SOURCES["source-b"].label}`,
@@ -171,6 +177,8 @@ export function mergeNarkefraktWorkbooks(
     rowCount: rows.length,
     totalIntakter,
     totalIntakterFormatted: formatSwedishCurrency(totalIntakter),
+    totalResurs,
+    totalResursFormatted: formatSwedishCurrency(totalResurs),
     sources: [
       {
         id: "source-a",
@@ -282,7 +290,22 @@ function tryParseSheet(
     mottNamn: findColumnIndex(headerMap, "Mott namn")!,
     mottOrt: findColumnIndex(headerMap, "Mott Ort")!,
     gods: findColumnIndex(headerMap, "Gods")!,
+    tjanst: findColumnIndex(headerMap, "Tjänst"),
   };
+
+  const expectedCode = NARKEFRAKT_SOURCES[sourceId].resourceCode;
+  const resursMajority = checkResourceCodeMajority(
+    rows,
+    headerRowIndex,
+    [col.resurs1, col.resurs2, col.resurs3],
+    expectedCode
+  );
+  if (!resursMajority.ok) {
+    return {
+      success: false,
+      error: buildWrongResourceCodeError(expectedCode, resursMajority),
+    };
+  }
 
   const formattedRows = XLSX.utils.sheet_to_json<(string | null)[]>(sheet, {
     header: 1,
@@ -319,6 +342,9 @@ function tryParseSheet(
     const resurs = sumNarkefraktResursKostnad(row, col, sourceId);
     const rawMottNamn = formatIdentifier(row[col.mottNamn]);
     const mottOrt = formatIdentifier(row[col.mottOrt]);
+    const tjanst =
+      col.tjanst !== undefined ? formatIdentifier(row[col.tjanst]) : "";
+    const isSamtax = containsSamtaxTjanst(tjanst);
     const gods = formatIdentifier(row[col.gods]);
 
     // 3028: Mott Namn + Mott Ort pairs + resurskod 3028
@@ -389,7 +415,7 @@ function tryParseSheet(
       tb,
       tbFormatted: formatSwedishDecimal2(tb),
       resurs,
-      resursFormatted: formatSwedishCurrency(resurs),
+      resursFormatted: isSamtax ? "Samtax" : formatSwedishCurrency(resurs),
       mottNamn,
       mottOrt: resolvedMottOrt,
       gods,
@@ -397,6 +423,7 @@ function tryParseSheet(
   }
 
   const totalIntakter = result.reduce((sum, row) => sum + row.intakter, 0);
+  const totalResurs = result.reduce((sum, row) => sum + row.resurs, 0);
   const source = NARKEFRAKT_SOURCES[sourceId];
 
   return {
@@ -407,6 +434,8 @@ function tryParseSheet(
       rowCount: result.length,
       totalIntakter,
       totalIntakterFormatted: formatSwedishCurrency(totalIntakter),
+      totalResurs,
+      totalResursFormatted: formatSwedishCurrency(totalResurs),
       sources: [
         {
           id: sourceId,
@@ -463,6 +492,10 @@ function rowHasNarkefraktCode(
     containsNarkefraktCode(row[col.resurs2], resourceCode) ||
     containsNarkefraktCode(row[col.resurs3], resourceCode)
   );
+}
+
+function containsSamtaxTjanst(tjanst: string): boolean {
+  return /samtax/i.test(tjanst.trim());
 }
 
 /** Match resurskod like Davies/Boxmover (number, "3028", "3028.0", etc.). */

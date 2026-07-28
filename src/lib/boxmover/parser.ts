@@ -13,6 +13,10 @@ import {
   normalizeHeader,
 } from "@/lib/validation";
 import {
+  buildWrongResourceCodeError,
+  checkResourceCodeMajority,
+} from "@/lib/resourceCodeGuard";
+import {
   BOXMOVER_OK_ORDERSTATUSES,
   BOXMOVER_REQUIRED_HEADERS,
   BOXMOVER_RESOURCE_CODE,
@@ -45,6 +49,7 @@ export async function parseBoxmoverFile(
       const parsed = tryParseSheet(workbook.Sheets[sheetName], sheetName);
       if (parsed.success) return parsed;
       if (parsed.error.type === "missing_columns") continue;
+      return parsed;
     }
 
     const firstSheetName = workbook.SheetNames[0];
@@ -163,7 +168,24 @@ function tryParseSheet(
     mottNamn: findColumnIndex(headerMap, "Mott namn")!,
     mottOrt: findColumnIndex(headerMap, "Mott Ort")!,
     gods: findColumnIndex(headerMap, "Gods")!,
+    tjanst: findColumnIndex(headerMap, "Tjänst"),
   };
+
+  const resursMajority = checkResourceCodeMajority(
+    rows,
+    headerRowIndex,
+    [col.resurs1, col.resurs2, col.resurs3],
+    BOXMOVER_RESOURCE_CODE
+  );
+  if (!resursMajority.ok) {
+    return {
+      success: false,
+      error: buildWrongResourceCodeError(
+        BOXMOVER_RESOURCE_CODE,
+        resursMajority
+      ),
+    };
+  }
 
   const formattedRows = XLSX.utils.sheet_to_json<(string | null)[]>(sheet, {
     header: 1,
@@ -200,6 +222,9 @@ function tryParseSheet(
     const resurs = sumBoxmoverResursKostnad(row, col);
     const mottNamn = formatIdentifier(row[col.mottNamn]);
     const mottOrt = formatIdentifier(row[col.mottOrt]);
+    const tjanst =
+      col.tjanst !== undefined ? formatIdentifier(row[col.tjanst]) : "";
+    const isSamtax = containsSamtaxTjanst(tjanst);
     const gods = formatIdentifier(row[col.gods]);
 
     if (
@@ -234,7 +259,7 @@ function tryParseSheet(
       tb,
       tbFormatted: formatSwedishDecimal2(tb),
       resurs,
-      resursFormatted: formatSwedishCurrency(resurs),
+      resursFormatted: isSamtax ? "Samtax" : formatSwedishCurrency(resurs),
       mottNamn,
       mottOrt,
       gods,
@@ -242,6 +267,7 @@ function tryParseSheet(
   }
 
   const totalIntakter = result.reduce((sum, row) => sum + row.intakter, 0);
+  const totalResurs = result.reduce((sum, row) => sum + row.resurs, 0);
 
   return {
     success: true,
@@ -251,6 +277,8 @@ function tryParseSheet(
       rowCount: result.length,
       totalIntakter,
       totalIntakterFormatted: formatSwedishCurrency(totalIntakter),
+      totalResurs,
+      totalResursFormatted: formatSwedishCurrency(totalResurs),
     },
   };
 }
@@ -286,6 +314,10 @@ function containsBoxmoverCode(value: unknown): boolean {
   if (value === null || value === undefined) return false;
   if (typeof value === "number") return value === BOXMOVER_RESOURCE_CODE;
   return String(value).includes(String(BOXMOVER_RESOURCE_CODE));
+}
+
+function containsSamtaxTjanst(tjanst: string): boolean {
+  return /samtax/i.test(tjanst.trim());
 }
 
 function isOkOrderstatus(value: string): boolean {

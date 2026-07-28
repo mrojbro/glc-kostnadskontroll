@@ -47,6 +47,7 @@ type FilterableColumn =
 interface BoxmoverTableProps {
   rows: BoxmoverRow[];
   totalIntakterFormatted: string;
+  totalResursFormatted: string;
   rowCount: number;
 }
 
@@ -209,6 +210,7 @@ function rowMatchesOtherColumnFilters(
 export function BoxmoverTable({
   rows,
   totalIntakterFormatted,
+  totalResursFormatted,
   rowCount,
 }: BoxmoverTableProps) {
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING);
@@ -472,6 +474,10 @@ export function BoxmoverTable({
     (sum, row) => sum + row.original.intakter,
     0
   );
+  const filteredResurs = filteredRows.reduce(
+    (sum, row) => sum + row.original.resurs,
+    0
+  );
   const hasActiveFilters =
     globalFilter.trim() !== "" ||
     columnFilters.length > 0 ||
@@ -479,6 +485,9 @@ export function BoxmoverTable({
   const displayTotal = !hasActiveFilters
     ? totalIntakterFormatted
     : formatSwedishCurrency(filteredIntakter);
+  const displayTotalResurs = !hasActiveFilters
+    ? totalResursFormatted
+    : formatSwedishCurrency(filteredResurs);
   const displayCount = !hasActiveFilters ? rowCount : filteredRows.length;
 
   const legendCounts = useMemo((): BoxmoverLegendCounts => {
@@ -528,6 +537,7 @@ export function BoxmoverTable({
         rowCount={displayCount}
         totalCount={rowCount}
         totalIntakterFormatted={displayTotal}
+        totalResursFormatted={displayTotalResurs}
       />
 
       <BoxmoverColorLegend
@@ -670,12 +680,20 @@ export function BoxmoverTable({
               av <span className="font-medium text-white">{rowCount}</span>{" "}
               rader
             </p>
-            <p className="text-sm">
-              <span className="text-[#b8b8b8]">Totalt Intäkter: </span>
-              <span className="font-semibold tabular-nums text-[#eb6e08]">
-                {displayTotal}
-              </span>
-            </p>
+            <div className="flex flex-col gap-1 text-sm sm:flex-row sm:gap-6">
+              <p>
+                <span className="text-[#b8b8b8]">Totalt Intäkter: </span>
+                <span className="font-semibold tabular-nums text-[#eb6e08]">
+                  {displayTotal}
+                </span>
+              </p>
+              <p>
+                <span className="text-[#b8b8b8]">Totalt Resurs: </span>
+                <span className="font-semibold tabular-nums text-[#eb6e08]">
+                  {displayTotalResurs}
+                </span>
+              </p>
+            </div>
           </div>
         </div>
       )}

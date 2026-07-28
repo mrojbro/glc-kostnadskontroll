@@ -29,12 +29,15 @@ export interface BoxmoverWorkbook {
   rowCount: number;
   totalIntakter: number;
   totalIntakterFormatted: string;
+  totalResurs: number;
+  totalResursFormatted: string;
 }
 
 export type BoxmoverParseErrorType =
   | "missing_sheet"
   | "missing_columns"
-  | "parse_error";
+  | "parse_error"
+  | "wrong_resource_code";
 
 export interface BoxmoverParseError {
   type: BoxmoverParseErrorType;

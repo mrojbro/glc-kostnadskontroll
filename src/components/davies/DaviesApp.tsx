@@ -151,6 +151,7 @@ export function DaviesApp() {
           <DaviesTable
             rows={state.data.rows}
             totalIntakterFormatted={state.data.totalIntakterFormatted}
+            totalResursFormatted={state.data.totalResursFormatted}
             rowCount={state.data.rowCount}
           />
         </div>

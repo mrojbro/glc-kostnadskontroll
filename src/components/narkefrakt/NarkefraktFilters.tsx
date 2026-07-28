@@ -10,6 +10,7 @@ interface NarkefraktFiltersProps {
   rowCount: number;
   totalCount: number;
   totalIntakterFormatted: string;
+  totalResursFormatted: string;
 }
 
 const deckClass =
@@ -22,6 +23,7 @@ export function NarkefraktFilters({
   rowCount,
   totalCount,
   totalIntakterFormatted,
+  totalResursFormatted,
 }: NarkefraktFiltersProps) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -42,13 +44,26 @@ export function NarkefraktFilters({
       </div>
 
       <article className={`${deckClass} border-[#eb6e08]/45 bg-[#2a2218] p-5`}>
-        <p className="text-sm text-[#b8b8b8]">Totalt Intäkter</p>
-        <p className="mt-2 text-xl font-bold tabular-nums text-[#eb6e08]">
-          {totalIntakterFormatted}
-        </p>
-        <p className="mt-1 text-xs text-[#b8b8b8]">
-          {rowCount} av {totalCount} rader
-        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <p className="text-sm text-[#b8b8b8]">Totalt Intäkter</p>
+            <p className="mt-2 text-xl font-bold tabular-nums text-[#eb6e08]">
+              {totalIntakterFormatted}
+            </p>
+            <p className="mt-1 text-xs text-[#b8b8b8]">
+              {rowCount} av {totalCount} rader
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-[#b8b8b8]">Totalt Resurs</p>
+            <p className="mt-2 text-xl font-bold tabular-nums text-[#eb6e08]">
+              {totalResursFormatted}
+            </p>
+            <p className="mt-1 text-xs text-[#b8b8b8]">
+              {rowCount} av {totalCount} rader
+            </p>
+          </div>
+        </div>
       </article>
 
       <button

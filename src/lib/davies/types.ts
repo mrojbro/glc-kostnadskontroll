@@ -29,12 +29,17 @@ export interface DaviesWorkbook {
   rowCount: number;
   totalIntakter: number;
   totalIntakterFormatted: string;
+  totalResurs: number;
+  totalResursFormatted: string;
 }
 
 export type DaviesParseErrorType =
   | "missing_sheet"
   | "missing_columns"
-  | "parse_error";
+  | "parse_error"
+  | "wrong_resource_code";
+
+export const DAVIES_RESOURCE_CODE = 3054;
 
 export interface DaviesParseError {
   type: DaviesParseErrorType;

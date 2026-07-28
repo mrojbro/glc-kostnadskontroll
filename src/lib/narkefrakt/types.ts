@@ -64,6 +64,8 @@ export interface NarkefraktWorkbook {
   rowCount: number;
   totalIntakter: number;
   totalIntakterFormatted: string;
+  totalResurs: number;
+  totalResursFormatted: string;
   sources: NarkefraktSourceMeta[];
 }
 
@@ -71,7 +73,8 @@ export type NarkefraktParseErrorType =
   | "missing_sheet"
   | "missing_columns"
   | "parse_error"
-  | "missing_sources";
+  | "missing_sources"
+  | "wrong_resource_code";
 
 export interface NarkefraktParseError {
   type: NarkefraktParseErrorType;
