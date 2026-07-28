@@ -3,6 +3,8 @@ export interface PortalItem {
   name: string;
   href?: string;
   enabled: boolean;
+  /** Non-route fun tile on the landing page. */
+  kind?: "easter-egg";
 }
 
 export const PORTALS: PortalItem[] = [
@@ -45,6 +47,19 @@ export const PORTALS: PortalItem[] = [
   {
     id: "2215-krickos",
     name: "2215 Krickos",
+    href: "/2215-krickos/",
+    enabled: true,
+  },
+  {
+    id: "br-hanssons",
+    name: "Br Hanssons",
+    href: "/br-hanssons/",
+    enabled: true,
+  },
+  {
+    id: "mystery",
+    name: "",
     enabled: false,
+    kind: "easter-egg",
   },
 ];

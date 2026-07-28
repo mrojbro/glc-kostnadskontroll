@@ -17,11 +17,11 @@ import {
   checkResourceCodeMajority,
 } from "@/lib/resourceCodeGuard";
 import {
-  DAVIES_OK_ORDERSTATUSES,
-  DAVIES_REQUIRED_HEADERS,
-  DAVIES_RESOURCE_CODE,
-  type DaviesParseResult,
-  type DaviesRow,
+  KRICKOS_OK_ORDERSTATUSES,
+  KRICKOS_REQUIRED_HEADERS,
+  KRICKOS_RESOURCE_CODE,
+  type KrickosParseResult,
+  type KrickosRow,
 } from "./types";
 
 const INTÄKTER_ALIASES = ["Intäkter", "Intäker", "Intakter"] as const;
@@ -30,28 +30,12 @@ const FRAKTSEDEL_ALIASES = [
   "Fraktsedelsnummer",
 ] as const;
 
-/** Keep these Mott namn as-is; everything else → Boxmover c/o Dale Davies. */
-const MOTT_NAMN_KEEP_AS_IS = [
-  "GLC TERMINAL",
-  "KÅKÅ Staffanstorp",
-  "Kåkå Staffanstorp",
-  "Martin & Servera Enköping",
-  "Martin & Servera Holm",
-  "Martin & Servera Norrköping",
-  "Palcon c/o Kåkå",
-  "Pågens AB",
-  "Björk & Magnusson i Helsingborg",
-  "Björk & Magnusson i Helsingborg AB",
-  "CHOPCHOP VARBERG",
-] as const;
-
-const BOXMOVER_MOTT_NAMN = "Boxmover c/o Dale Davies";
-const BOXMOVER_MOTT_ORT = "Staffanstorp";
-
 /**
- * Parse 3054 Davies workbook — first sheet with the required headers.
+ * Parse 2215 Krickos workbook — first sheet with the required headers.
  */
-export async function parseDaviesFile(file: File): Promise<DaviesParseResult> {
+export async function parseKrickosFile(
+  file: File
+): Promise<KrickosParseResult> {
   try {
     const buffer = await file.arrayBuffer();
     const workbook = XLSX.read(buffer, {
@@ -96,7 +80,7 @@ export async function parseDaviesFile(file: File): Promise<DaviesParseResult> {
 function tryParseSheet(
   sheet: XLSX.WorkSheet,
   sheetName: string
-): DaviesParseResult {
+): KrickosParseResult {
   const rows = XLSX.utils.sheet_to_json<(string | number | boolean | Date | null)[]>(
     sheet,
     {
@@ -113,7 +97,7 @@ function tryParseSheet(
       error: {
         type: "missing_columns",
         message: `Arbetsbladet "${sheetName}" saknar rubrikrad och data.`,
-        details: [...DAVIES_REQUIRED_HEADERS],
+        details: [...KRICKOS_REQUIRED_HEADERS],
       },
     };
   }
@@ -136,7 +120,7 @@ function tryParseSheet(
       error: {
         type: "missing_columns",
         message: `Hittade ingen rubrikrad med "Lastdag" i arbetsbladet "${sheetName}".`,
-        details: [...DAVIES_REQUIRED_HEADERS],
+        details: [...KRICKOS_REQUIRED_HEADERS],
       },
     };
   }
@@ -147,7 +131,7 @@ function tryParseSheet(
     FRAKTSEDEL_ALIASES
   );
 
-  const missing = DAVIES_REQUIRED_HEADERS.filter((header) => {
+  const missing = KRICKOS_REQUIRED_HEADERS.filter((header) => {
     if (header === "Intäkter") return intakterCol === undefined;
     if (header === "Fraktsedelnummer") return fraktsedelCol === undefined;
     return findColumnIndex(headerMap, header) === undefined;
@@ -191,12 +175,15 @@ function tryParseSheet(
     rows,
     headerRowIndex,
     [col.resurs1, col.resurs2, col.resurs3],
-    DAVIES_RESOURCE_CODE
+    KRICKOS_RESOURCE_CODE
   );
   if (!resursMajority.ok) {
     return {
       success: false,
-      error: buildWrongResourceCodeError(DAVIES_RESOURCE_CODE, resursMajority),
+      error: buildWrongResourceCodeError(
+        KRICKOS_RESOURCE_CODE,
+        resursMajority
+      ),
     };
   }
 
@@ -207,7 +194,7 @@ function tryParseSheet(
     blankrows: false,
   });
 
-  const result: DaviesRow[] = [];
+  const result: KrickosRow[] = [];
   let rowId = 0;
 
   for (let i = headerRowIndex + 1; i < rows.length; i++) {
@@ -230,9 +217,9 @@ function tryParseSheet(
     const orderstatusOk = isOkOrderstatus(orderstatus);
     const tg = parseNumericValue(row[col.tg]);
     const tb = parseNumericValue(row[col.tb]);
-    const resurs = sumDaviesResursKostnad(row, col);
-    const rawMottNamn = formatIdentifier(row[col.mottNamn]);
-    const rawMottOrt = formatIdentifier(row[col.mottOrt]);
+    const resurs = sumKrickosResursKostnad(row, col);
+    const mottNamn = formatIdentifier(row[col.mottNamn]);
+    const mottOrt = formatIdentifier(row[col.mottOrt]);
     const tjanst =
       col.tjanst !== undefined ? formatIdentifier(row[col.tjanst]) : "";
     const isSamtax = containsSamtaxTjanst(tjanst);
@@ -240,7 +227,6 @@ function tryParseSheet(
       ? 0.01
       : (parseNumericValue(row[col.intakter]) ?? 0);
     const intakterOk = intakter > 0;
-    const { mottNamn, mottOrt } = resolveMottagare(rawMottNamn, rawMottOrt);
     const gods = formatIdentifier(row[col.gods]);
 
     if (
@@ -257,7 +243,7 @@ function tryParseSheet(
 
     rowId += 1;
     result.push({
-      id: `davies-${rowId}`,
+      id: `krickos-${rowId}`,
       datum,
       ordernr,
       betalare,
@@ -299,7 +285,7 @@ function tryParseSheet(
   };
 }
 
-function sumDaviesResursKostnad(
+function sumKrickosResursKostnad(
   row: (string | number | boolean | Date | null)[],
   col: {
     resurs1: number;
@@ -318,7 +304,7 @@ function sumDaviesResursKostnad(
   ] as const;
 
   for (const [resursCol, kostnCol] of pairs) {
-    if (containsDaviesCode(row[resursCol])) {
+    if (containsKrickosCode(row[resursCol])) {
       total += parseNumericValue(row[kostnCol]) ?? 0;
     }
   }
@@ -326,37 +312,19 @@ function sumDaviesResursKostnad(
   return total;
 }
 
-function containsDaviesCode(value: unknown): boolean {
+function containsKrickosCode(value: unknown): boolean {
   if (value === null || value === undefined) return false;
-  if (typeof value === "number") return value === DAVIES_RESOURCE_CODE;
-  return String(value).includes(String(DAVIES_RESOURCE_CODE));
-}
-
-function resolveMottagare(
-  mottNamn: string,
-  mottOrt: string
-): { mottNamn: string; mottOrt: string } {
-  if (shouldKeepMottNamn(mottNamn)) {
-    return { mottNamn, mottOrt };
-  }
-  return { mottNamn: BOXMOVER_MOTT_NAMN, mottOrt: BOXMOVER_MOTT_ORT };
+  if (typeof value === "number") return value === KRICKOS_RESOURCE_CODE;
+  return String(value).includes(String(KRICKOS_RESOURCE_CODE));
 }
 
 function containsSamtaxTjanst(tjanst: string): boolean {
   return /samtax/i.test(tjanst.trim());
 }
 
-function shouldKeepMottNamn(mottNamn: string): boolean {
-  const normalized = normalizeHeader(mottNamn);
-  if (!normalized) return false;
-  return MOTT_NAMN_KEEP_AS_IS.some((allowed) =>
-    normalized.includes(normalizeHeader(allowed))
-  );
-}
-
 function isOkOrderstatus(value: string): boolean {
   const normalized = normalizeHeader(value);
-  return DAVIES_OK_ORDERSTATUSES.some(
+  return KRICKOS_OK_ORDERSTATUSES.some(
     (status) => normalizeHeader(status) === normalized
   );
 }

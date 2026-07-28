@@ -335,8 +335,6 @@ function tryParseSheet(
     if (/makulerad/i.test(orderstatus)) continue;
 
     const orderstatusOk = isOkOrderstatus(orderstatus);
-    const intakter = parseNumericValue(row[col.intakter]) ?? 0;
-    const intakterOk = intakter > 0;
     const tg = parseNumericValue(row[col.tg]);
     const tb = parseNumericValue(row[col.tb]);
     const resurs = sumNarkefraktResursKostnad(row, col, sourceId);
@@ -345,6 +343,10 @@ function tryParseSheet(
     const tjanst =
       col.tjanst !== undefined ? formatIdentifier(row[col.tjanst]) : "";
     const isSamtax = containsSamtaxTjanst(tjanst);
+    const intakter = isSamtax
+      ? 0.01
+      : (parseNumericValue(row[col.intakter]) ?? 0);
+    const intakterOk = intakter > 0;
     const gods = formatIdentifier(row[col.gods]);
 
     // 3028: Mott Namn + Mott Ort pairs + resurskod 3028

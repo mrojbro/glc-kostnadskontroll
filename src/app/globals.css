@@ -101,3 +101,144 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Mystery tile easter-egg animations (landing page only) */
+@keyframes mystery-grid-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes mystery-tile-spin {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes mystery-rain-fall {
+  0% {
+    transform: translateY(-12px);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh);
+    opacity: 0;
+  }
+}
+
+@keyframes mystery-night-flash {
+  0% {
+    filter: invert(0);
+  }
+  35% {
+    filter: invert(1) hue-rotate(180deg);
+  }
+  100% {
+    filter: invert(0);
+  }
+}
+
+@keyframes mystery-quiet-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.mystery-grid-shake {
+  animation: mystery-grid-shake 0.45s ease-in-out 2;
+}
+
+.mystery-tile-spin {
+  animation: mystery-tile-spin 0.9s ease-in-out;
+  transform-style: preserve-3d;
+}
+
+.mystery-label-flash {
+  color: #eb6e08 !important;
+  transition: color 0.2s ease;
+}
+
+.mystery-rain-layer {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 40;
+}
+
+.mystery-rain-drop {
+  position: absolute;
+  top: -16px;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: #eb6e08;
+  box-shadow: 0 0 8px rgba(235, 110, 8, 0.55);
+  animation-name: mystery-rain-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.mystery-boot-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background: rgba(26, 26, 26, 0.82);
+  backdrop-filter: blur(2px);
+}
+
+.mystery-boot-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #eb6e08;
+  letter-spacing: 0.02em;
+}
+
+.mystery-boot-error {
+  color: #fca5a5;
+}
+
+.mystery-night-flash {
+  animation: mystery-night-flash 0.65s ease-in-out;
+}
+
+.mystery-quiet-pulse {
+  animation: mystery-quiet-pulse 1s ease-in-out 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mystery-grid-shake,
+  .mystery-tile-spin,
+  .mystery-rain-drop,
+  .mystery-night-flash {
+    animation: none !important;
+  }
+}
