@@ -11,6 +11,7 @@ import {
   type CoopFruktDateEkipageSummary,
   type CoopFruktEkipage3ButikSummary,
 } from "@/lib/coopFrukt/aggregates";
+import { CopyableVikt } from "@/components/coop-frukt/CopyableVikt";
 import type { CoopFruktRow } from "@/lib/coopFrukt/types";
 import {
   formatSwedishCurrency,
@@ -372,8 +373,8 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
                     <td className="px-3 py-2.5 whitespace-nowrap text-white">
                       {item.ekipage}
                     </td>
-                    <td className="px-3 py-2.5 text-right tabular-nums text-white">
-                      {formatVikt(item.totalVikt)}
+                    <td className="px-3 py-2.5 text-right text-white">
+                      <CopyableVikt value={formatVikt(item.totalVikt)} />
                     </td>
                     <td className="px-3 py-2.5 text-right tabular-nums text-white">
                       {formatSwedishCurrency(item.totalSumma)}
@@ -405,8 +406,11 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
               >
                 Totalt
               </td>
-              <td className="px-3 py-3 text-right text-sm font-semibold tabular-nums text-[#eb6e08]">
-                {formatVikt(ekipageTotalVikt)}
+              <td className="px-3 py-3 text-right text-sm font-semibold text-[#eb6e08]">
+                <CopyableVikt
+                  value={formatVikt(ekipageTotalVikt)}
+                  className="font-semibold text-[#eb6e08]"
+                />
               </td>
               <td className="px-3 py-3 text-right text-sm font-semibold tabular-nums text-[#eb6e08]">
                 {formatSwedishCurrency(ekipageTotalSumma)}
@@ -489,8 +493,8 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
                       <td className="px-3 py-2.5 whitespace-nowrap text-white">
                         {item.butiksnamn}
                       </td>
-                      <td className="px-3 py-2.5 text-right tabular-nums text-white">
-                        {formatVikt(item.totalVikt)}
+                      <td className="px-3 py-2.5 text-right text-white">
+                        <CopyableVikt value={formatVikt(item.totalVikt)} />
                       </td>
                       <td className="px-3 py-2.5 text-right tabular-nums text-white">
                         {formatSwedishCurrency(item.totalSumma)}
@@ -522,8 +526,11 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
                 >
                   Totalt
                 </td>
-                <td className="px-3 py-3 text-right text-sm font-semibold tabular-nums text-[#eb6e08]">
-                  {formatVikt(ekipage3TotalVikt)}
+                <td className="px-3 py-3 text-right text-sm font-semibold text-[#eb6e08]">
+                  <CopyableVikt
+                    value={formatVikt(ekipage3TotalVikt)}
+                    className="font-semibold text-[#eb6e08]"
+                  />
                 </td>
                 <td className="px-3 py-3 text-right text-sm font-semibold tabular-nums text-[#eb6e08]">
                   {formatSwedishCurrency(ekipage3TotalSumma)}

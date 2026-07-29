@@ -18,6 +18,7 @@ import {
 } from "@/components/ColumnFilterDropdown";
 import { CoopFruktFilters } from "@/components/coop-frukt/CoopFruktFilters";
 import { CoopFruktGroupSummary } from "@/components/coop-frukt/CoopFruktGroupSummary";
+import { CopyableVikt } from "@/components/coop-frukt/CopyableVikt";
 import { EmptyState } from "@/components/EmptyState";
 import {
   RowCommentInput,
@@ -355,7 +356,7 @@ export function CoopFruktTable({
         header: "Vikt",
         filterFn: multiSelectFilter,
         cell: (info) => (
-          <span className="tabular-nums">{info.row.original.viktFormatted}</span>
+          <CopyableVikt value={info.row.original.viktFormatted || "—"} />
         ),
         sortingFn: "basic",
       },
