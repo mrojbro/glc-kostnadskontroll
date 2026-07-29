@@ -1,6 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import {
+  ColumnFilterDropdown,
+  EMPTY_VALUE,
+} from "@/components/ColumnFilterDropdown";
 import type {
   BrHanssonsCompareResult,
   BrHanssonsCompareRow,
@@ -28,6 +32,88 @@ interface BrHanssonsCompareTableProps {
 
 type TimeSlot = "15:00" | "21:00";
 
+type FilterColumn =
+  | "status"
+  | "datum"
+  | "sedelnummer"
+  | "markning"
+  | "angoringNamn"
+  | "angoringPostort";
+
+const FILTER_COLUMNS = [
+  "status",
+  "datum",
+  "sedelnummer",
+  "markning",
+  "angoringNamn",
+  "angoringPostort",
+] as const satisfies readonly FilterColumn[];
+
+const FILTER_LABELS: Record<FilterColumn, string> = {
+  status: "Status",
+  datum: "Datum",
+  sedelnummer: "Sedelnummer",
+  markning: "Märkning",
+  angoringNamn: "Angöring namn",
+  angoringPostort: "Angöring postort",
+};
+
+type FilterState = Partial<Record<FilterColumn, string[]>>;
+
+function sortFilterOptions(values: string[]): string[] {
+  return values.sort((a, b) => {
+    if (a === EMPTY_VALUE) return -1;
+    if (b === EMPTY_VALUE) return 1;
+    return a.localeCompare(b, "sv", { numeric: true });
+  });
+}
+
+function getFilterValue(
+  row: BrHanssonsCompareRow,
+  columnId: FilterColumn
+): string {
+  switch (columnId) {
+    case "status":
+      return STATUS_LABELS[row.status];
+    case "datum":
+      return row.datum.trim() || EMPTY_VALUE;
+    case "sedelnummer":
+      return row.sedelnummer.trim() || EMPTY_VALUE;
+    case "markning":
+      return row.markning.trim() || EMPTY_VALUE;
+    case "angoringNamn":
+      return row.angoringNamn.trim() || EMPTY_VALUE;
+    case "angoringPostort":
+      return row.angoringPostort.trim() || EMPTY_VALUE;
+  }
+}
+
+function matchesFilters(
+  row: BrHanssonsCompareRow,
+  filters: FilterState,
+  excludeColumnId?: FilterColumn
+): boolean {
+  for (const columnId of FILTER_COLUMNS) {
+    if (excludeColumnId && columnId === excludeColumnId) continue;
+    const selected = filters[columnId];
+    if (!selected || selected.length === 0) continue;
+    if (!selected.includes(getFilterValue(row, columnId))) return false;
+  }
+  return true;
+}
+
+function sortPairs(rows: BrHanssonsCompareRow[]): BrHanssonsCompareRow[] {
+  return [...rows].sort((a, b) => {
+    const byPostort = a.angoringPostort.localeCompare(b.angoringPostort, "sv", {
+      sensitivity: "base",
+    });
+    if (byPostort !== 0) return byPostort;
+    return a.angoringNamn.localeCompare(b.angoringNamn, "sv", {
+      sensitivity: "base",
+    });
+  });
+}
+
 interface DisplayLine {
   key: string;
   pairId: string;
@@ -52,19 +138,47 @@ interface DisplayLine {
 export function BrHanssonsCompareTable({ data }: BrHanssonsCompareTableProps) {
   const [showAll, setShowAll] = useState(false);
   const [klarIds, setKlarIds] = useState<Set<string>>(() => new Set());
+  const [filters, setFilters] = useState<FilterState>({});
 
-  useEffect(() => {
-    setKlarIds(new Set());
-  }, [data]);
-
-  const visiblePairs = useMemo(() => {
-    if (showAll) return data.rows;
-    return data.rows.filter((row) => row.status === "changed");
+  const basePairs = useMemo(() => {
+    const rows = showAll
+      ? data.rows
+      : data.rows.filter((row) => row.status === "changed");
+    return sortPairs(rows);
   }, [data.rows, showAll]);
+
+  const filterOptions = useMemo(() => {
+    const options = {} as Record<FilterColumn, string[]>;
+    for (const columnId of FILTER_COLUMNS) {
+      const source = basePairs.filter((row) =>
+        matchesFilters(row, filters, columnId)
+      );
+      const values = new Set(source.map((row) => getFilterValue(row, columnId)));
+      options[columnId] = sortFilterOptions([...values]);
+    }
+    return options;
+  }, [basePairs, filters]);
+
+  const visiblePairs = useMemo(
+    () => basePairs.filter((row) => matchesFilters(row, filters)),
+    [basePairs, filters]
+  );
 
   const lines = useMemo(
     () => visiblePairs.flatMap((row, pairIndex) => toDisplayLines(row, pairIndex)),
     [visiblePairs]
+  );
+
+  const setFilterSelected = useCallback(
+    (columnId: FilterColumn, selected: string[]) => {
+      setFilters((prev) => {
+        const next = { ...prev };
+        if (selected.length === 0) delete next[columnId];
+        else next[columnId] = selected;
+        return next;
+      });
+    },
+    []
   );
 
   const toggleKlar = (pairId: string) => {
@@ -108,7 +222,8 @@ export function BrHanssonsCompareTable({ data }: BrHanssonsCompareTableProps) {
           <span className="text-white">{visiblePairs.length}</span> av{" "}
           <span className="text-white">{data.rowCount}</span> angöringar
           med skiljande Kollinslag
-          {showAll ? " (alla statusar)" : ""}.
+          {showAll ? " (alla statusar)" : ""}
+          {Object.keys(filters).length > 0 ? " (filtrerat)" : ""}.
         </p>
         <label className="inline-flex cursor-pointer items-center gap-2 text-sm text-[#b8b8b8]">
           <input
@@ -139,18 +254,24 @@ export function BrHanssonsCompareTable({ data }: BrHanssonsCompareTableProps) {
             </colgroup>
             <thead className="sticky top-0 z-10 bg-[#eb6e08]">
               <tr>
-                <th className="px-2 py-2.5 font-semibold text-white">Status</th>
-                <th className="px-2 py-2.5 font-semibold text-white">Datum</th>
-                <th className="px-2 py-2.5 font-semibold text-white">
-                  Sedelnummer
-                </th>
-                <th className="px-2 py-2.5 font-semibold text-white">Märkning</th>
-                <th className="px-2 py-2.5 font-semibold text-white">
-                  Angöring namn
-                </th>
-                <th className="px-2 py-2.5 font-semibold text-white">
-                  Angöring postort
-                </th>
+                {FILTER_COLUMNS.map((columnId) => (
+                  <th
+                    key={columnId}
+                    className="px-2 py-2.5 font-semibold text-white"
+                  >
+                    <div className="flex items-center gap-0.5">
+                      <span>{FILTER_LABELS[columnId]}</span>
+                      <ColumnFilterDropdown
+                        label={FILTER_LABELS[columnId]}
+                        options={filterOptions[columnId]}
+                        selected={filters[columnId] ?? []}
+                        onChange={(selected) =>
+                          setFilterSelected(columnId, selected)
+                        }
+                      />
+                    </div>
+                  </th>
+                ))}
                 <th className="px-2 py-2.5 font-semibold text-white">Tid</th>
                 <th className="px-2 py-2.5 text-right font-semibold text-white">
                   Vikt
@@ -169,8 +290,9 @@ export function BrHanssonsCompareTable({ data }: BrHanssonsCompareTableProps) {
                     colSpan={11}
                     className="px-4 py-16 text-center text-sm text-[#b8b8b8]"
                   >
-                    Inga Kollinslag-skillnader att visa. Markera &quot;Visa
-                    alla&quot; för övriga rader.
+                    {Object.keys(filters).length > 0
+                      ? "Ingen rad matchar dina filter."
+                      : 'Inga Kollinslag-skillnader att visa. Markera "Visa alla" för övriga rader.'}
                   </td>
                 </tr>
               ) : (
@@ -181,7 +303,7 @@ export function BrHanssonsCompareTable({ data }: BrHanssonsCompareTableProps) {
                       key={line.key}
                       className={cn(
                         line.isFirst
-                          ? "border-t-2 border-[#4a4a4a]"
+                          ? "border-t border-[#4a4a4a]"
                           : "border-t border-[#323232]",
                         isKlar
                           ? line.isFirst
@@ -196,7 +318,7 @@ export function BrHanssonsCompareTable({ data }: BrHanssonsCompareTableProps) {
                     >
                       <td
                         className={cn(
-                          "px-2 py-1.5 whitespace-nowrap font-medium",
+                          "px-2 py-1 whitespace-nowrap font-medium",
                           isKlar
                             ? "text-[#86efac]"
                             : STATUS_CLASS[line.status]
@@ -204,17 +326,17 @@ export function BrHanssonsCompareTable({ data }: BrHanssonsCompareTableProps) {
                       >
                         {line.isFirst ? STATUS_LABELS[line.status] : ""}
                       </td>
-                      <td className="px-2 py-1.5 whitespace-nowrap text-white">
+                      <td className="px-2 py-1 whitespace-nowrap text-white">
                         {line.isFirst ? line.datum || "—" : ""}
                       </td>
-                      <td className="px-2 py-1.5 whitespace-nowrap text-white">
+                      <td className="px-2 py-1 whitespace-nowrap text-white">
                         {line.isFirst ? line.sedelnummer || "—" : ""}
                       </td>
-                      <td className="px-2 py-1.5 whitespace-nowrap text-white">
+                      <td className="px-2 py-1 whitespace-nowrap text-white">
                         {line.isFirst ? line.markning || "—" : ""}
                       </td>
                       <td
-                        className="px-2 py-1.5 whitespace-nowrap text-white"
+                        className="px-2 py-1 whitespace-nowrap text-white"
                         title={line.isFirst ? line.angoringNamn : undefined}
                       >
                         {line.isFirst ? (
@@ -223,12 +345,12 @@ export function BrHanssonsCompareTable({ data }: BrHanssonsCompareTableProps) {
                           </span>
                         ) : null}
                       </td>
-                      <td className="px-2 py-1.5 whitespace-nowrap text-white">
+                      <td className="px-2 py-1 whitespace-nowrap text-white">
                         {line.isFirst ? line.angoringPostort || "—" : ""}
                       </td>
                       <td
                         className={cn(
-                          "px-2 py-1.5 whitespace-nowrap font-medium",
+                          "px-2 py-1 whitespace-nowrap font-medium",
                           isKlar ? "text-[#86efac]" : "text-[#eb6e08]"
                         )}
                       >
@@ -248,14 +370,14 @@ export function BrHanssonsCompareTable({ data }: BrHanssonsCompareTableProps) {
                         value={line.kolli}
                         changed={!isKlar && line.kolliChanged}
                       />
-                      <td className="px-2 py-1.5">
+                      <td className="px-2 py-1">
                         {line.isFirst ? (
                           <button
                             type="button"
                             aria-pressed={isKlar}
                             onClick={() => toggleKlar(line.pairId)}
                             className={cn(
-                              "box-border h-7 min-w-[3.25rem] rounded-md border px-2.5 text-xs font-semibold leading-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#eb6e08]/50",
+                              "box-border h-6 min-w-[3rem] rounded-md border px-2 text-xs font-semibold leading-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#eb6e08]/50",
                               isKlar
                                 ? "border-[#22c55e] bg-[#22c55e] text-[#052e16] hover:border-[#16a34a] hover:bg-[#16a34a]"
                                 : "border-[#3a3a3a] bg-[#202020] text-[#b8b8b8] hover:border-[#4ade80] hover:text-white"
@@ -383,7 +505,7 @@ function ValueCell({
   return (
     <td
       className={cn(
-        "px-2 py-1.5 whitespace-nowrap font-normal tabular-nums",
+        "px-2 py-1 whitespace-nowrap font-normal tabular-nums",
         align === "right" ? "text-right" : "text-left",
         changed ? "text-[#fca5a5]" : "text-white"
       )}

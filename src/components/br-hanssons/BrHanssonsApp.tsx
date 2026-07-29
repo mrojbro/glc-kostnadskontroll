@@ -4,6 +4,10 @@ import { useCallback, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Loader2, Upload } from "lucide-react";
 import { BrHanssonsCompareTable } from "@/components/br-hanssons/BrHanssonsCompareTable";
+import {
+  BrHanssonsInstructionsDialog,
+  BrHanssonsInstructionsTrigger,
+} from "@/components/br-hanssons/BrHanssonsInstructionsDialog";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { ExcelUploader } from "@/components/ExcelUploader";
@@ -26,6 +30,7 @@ export function BrHanssonsApp() {
   const [state, setState] = useState<AppState>({ status: "idle" });
   const [file15, setFile15] = useState<File | null>(null);
   const [file21, setFile21] = useState<File | null>(null);
+  const [instructionsOpen, setInstructionsOpen] = useState(false);
 
   const bothReady = file15 !== null && file21 !== null;
 
@@ -108,21 +113,31 @@ export function BrHanssonsApp() {
             Jämför preliminära bokningar (15:00) med slutliga bokningar (21:00)
             per angöring. Visar endast rader där Kollinslag skiljer sig.
           </p>
+          <BrHanssonsInstructionsTrigger
+            onClick={() => setInstructionsOpen(true)}
+          />
         </div>
 
-        {state.status === "success" && (
-          <Button
-            type="button"
-            variant="outline"
-            size="lg"
-            className="h-10 gap-2 rounded-lg border-[#3a3a3a] bg-[#202020] text-white hover:border-[#eb6e08] hover:bg-[#2a2218] hover:text-white focus-visible:border-[#eb6e08] focus-visible:ring-[#eb6e08]/40"
-            onClick={handleReset}
-          >
-            <Upload className="size-4" aria-hidden />
-            Ladda upp nya filer
-          </Button>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {state.status === "success" && (
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="h-10 gap-2 rounded-lg border-[#3a3a3a] bg-[#202020] text-white hover:border-[#eb6e08] hover:bg-[#2a2218] hover:text-white focus-visible:border-[#eb6e08] focus-visible:ring-[#eb6e08]/40"
+              onClick={handleReset}
+            >
+              <Upload className="size-4" aria-hidden />
+              Ladda upp nya filer
+            </Button>
+          )}
+        </div>
       </div>
+
+      <BrHanssonsInstructionsDialog
+        open={instructionsOpen}
+        onOpenChange={setInstructionsOpen}
+      />
 
       {state.status === "error" && (
         <ErrorMessage
@@ -199,7 +214,10 @@ export function BrHanssonsApp() {
             </p>
           </div>
 
-          <BrHanssonsCompareTable data={state.data} />
+          <BrHanssonsCompareTable
+            key={`${state.data.source15.fileName}|${state.data.source21.fileName}`}
+            data={state.data}
+          />
         </div>
       )}
 

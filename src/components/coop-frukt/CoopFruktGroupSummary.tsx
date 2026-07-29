@@ -21,8 +21,8 @@ interface CoopFruktGroupSummaryProps {
   rows: CoopFruktRow[];
 }
 
-type EkipageFilterColumn = "avgangsdatum" | "ekipage" | "vikt" | "summa";
-type ButikFilterColumn = "avgangsdatum" | "butiksnamn" | "vikt" | "summa";
+type EkipageFilterColumn = "avgangsdatum" | "vecka" | "ekipage" | "vikt" | "summa";
+type ButikFilterColumn = "avgangsdatum" | "vecka" | "butiksnamn" | "vikt" | "summa";
 
 type FilterState<T extends string> = Partial<Record<T, string[]>>;
 
@@ -45,6 +45,8 @@ function getEkipageFilterValue(
   switch (columnId) {
     case "avgangsdatum":
       return item.avgangsdatum.trim() || EMPTY_VALUE;
+    case "vecka":
+      return item.vecka.trim() || EMPTY_VALUE;
     case "ekipage":
       return item.ekipage.trim() || EMPTY_VALUE;
     case "vikt":
@@ -63,6 +65,8 @@ function getButikFilterValue(
   switch (columnId) {
     case "avgangsdatum":
       return item.avgangsdatum.trim() || EMPTY_VALUE;
+    case "vecka":
+      return item.vecka.trim() || EMPTY_VALUE;
     case "butiksnamn":
       return item.butiksnamn.trim() || EMPTY_VALUE;
     case "vikt":
@@ -114,6 +118,7 @@ function SummaryCard({
 
 const EKIPAGE_COLUMNS = [
   "avgangsdatum",
+  "vecka",
   "ekipage",
   "vikt",
   "summa",
@@ -121,6 +126,7 @@ const EKIPAGE_COLUMNS = [
 
 const EKIPAGE_LABELS: Record<EkipageFilterColumn, string> = {
   avgangsdatum: "Datum",
+  vecka: "Vecka",
   ekipage: "Ekipage",
   vikt: "Vikt",
   summa: "Summa",
@@ -128,6 +134,7 @@ const EKIPAGE_LABELS: Record<EkipageFilterColumn, string> = {
 
 const BUTIK_COLUMNS = [
   "avgangsdatum",
+  "vecka",
   "butiksnamn",
   "vikt",
   "summa",
@@ -135,6 +142,7 @@ const BUTIK_COLUMNS = [
 
 const BUTIK_LABELS: Record<ButikFilterColumn, string> = {
   avgangsdatum: "Datum",
+  vecka: "Vecka",
   butiksnamn: "Butiksnamn",
   vikt: "Vikt",
   summa: "Summa",
@@ -157,10 +165,29 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
     [rows]
   );
 
+  // Left summary ("Per dag och ekipage") should not include Ekipage 3.
+  const ekipageSummariesNoEkipage3 = useMemo(() => {
+    return ekipageSummaries.filter(
+      (item) => item.ekipage.trim().toLowerCase() !== "ekipage 3"
+    );
+  }, [ekipageSummaries]);
+
+  // Local "Klar" toggles (visual only, like the Br Hanssons compare table).
+  const [klarIds, setKlarIds] = useState<Set<string>>(() => new Set());
+
+  const toggleKlar = (id: string) => {
+    setKlarIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
   const ekipageFilterOptions = useMemo(() => {
     const options = {} as Record<EkipageFilterColumn, string[]>;
     for (const key of EKIPAGE_COLUMNS) {
-      const scoped = ekipageSummaries.filter((item) =>
+      const scoped = ekipageSummariesNoEkipage3.filter((item) =>
         matchesFilters(
           item,
           ekipageFilters,
@@ -180,7 +207,7 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
       );
     }
     return options;
-  }, [ekipageSummaries, ekipageFilters]);
+  }, [ekipageSummariesNoEkipage3, ekipageFilters]);
 
   const butikFilterOptions = useMemo(() => {
     const options = {} as Record<ButikFilterColumn, string[]>;
@@ -209,7 +236,7 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
 
   const filteredEkipage = useMemo(
     () =>
-      ekipageSummaries.filter((item) =>
+      ekipageSummariesNoEkipage3.filter((item) =>
         matchesFilters(
           item,
           ekipageFilters,
@@ -217,7 +244,7 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
           getEkipageFilterValue
         )
       ),
-    [ekipageSummaries, ekipageFilters]
+    [ekipageSummariesNoEkipage3, ekipageFilters]
   );
 
   const filteredButik = useMemo(
@@ -252,7 +279,7 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
     []
   );
 
-  if (rows.length === 0 || ekipageSummaries.length === 0) return null;
+  if (rows.length === 0 || ekipageSummariesNoEkipage3.length === 0) return null;
 
   const ekipageTotalVikt = filteredEkipage.reduce<number | null>((sum, item) => {
     if (item.totalVikt === null) return sum;
@@ -308,44 +335,72 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
                   </th>
                 );
               })}
+              <th className="px-3 py-2.5 font-semibold text-white whitespace-nowrap text-left">
+                Klar
+              </th>
             </tr>
           </thead>
           <tbody>
             {filteredEkipage.length === 0 ? (
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={6}
                   className="px-4 py-12 text-center text-sm text-[#b8b8b8]"
                 >
                   Ingen rad matchar dina filter.
                 </td>
               </tr>
             ) : (
-              filteredEkipage.map((item) => (
-                <tr
-                  key={`${item.avgangsdatum}-${item.ekipage}`}
-                  className="border-t border-[#3a3a3a] even:bg-[#202020] odd:bg-[#242424]"
-                >
-                  <td className="px-3 py-2.5 whitespace-nowrap text-white">
-                    {item.avgangsdatum}
-                  </td>
-                  <td className="px-3 py-2.5 whitespace-nowrap text-white">
-                    {item.ekipage}
-                  </td>
-                  <td className="px-3 py-2.5 text-right tabular-nums text-white">
-                    {formatVikt(item.totalVikt)}
-                  </td>
-                  <td className="px-3 py-2.5 text-right tabular-nums text-white">
-                    {formatSwedishCurrency(item.totalSumma)}
-                  </td>
-                </tr>
-              ))
+              filteredEkipage.map((item) => {
+                const klarId = `ekipage-${item.avgangsdatum}-${item.ekipage}`;
+                const isKlar = klarIds.has(klarId);
+                return (
+                  <tr
+                    key={`${item.avgangsdatum}-${item.ekipage}`}
+                    className={`border-t border-[#3a3a3a] ${
+                      isKlar
+                        ? "bg-[#1a3a24] hover:bg-[#203528]"
+                        : "even:bg-[#202020] odd:bg-[#242424]"
+                    }`}
+                  >
+                    <td className="px-3 py-2.5 whitespace-nowrap text-white">
+                      {item.avgangsdatum}
+                    </td>
+                    <td className="px-3 py-2.5 whitespace-nowrap text-white">
+                      {item.vecka}
+                    </td>
+                    <td className="px-3 py-2.5 whitespace-nowrap text-white">
+                      {item.ekipage}
+                    </td>
+                    <td className="px-3 py-2.5 text-right tabular-nums text-white">
+                      {formatVikt(item.totalVikt)}
+                    </td>
+                    <td className="px-3 py-2.5 text-right tabular-nums text-white">
+                      {formatSwedishCurrency(item.totalSumma)}
+                    </td>
+                    <td className="px-3 py-2.5">
+                      <button
+                        type="button"
+                        aria-pressed={isKlar}
+                        onClick={() => toggleKlar(klarId)}
+                        className={`box-border h-7 min-w-[3.25rem] rounded-md border px-2.5 text-xs font-semibold leading-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#eb6e08]/50 ${
+                          isKlar
+                            ? "border-[#22c55e] bg-[#22c55e] text-[#052e16] hover:border-[#16a34a] hover:bg-[#16a34a]"
+                            : "border-[#3a3a3a] bg-[#202020] text-[#b8b8b8] hover:border-[#4ade80] hover:text-white"
+                        }`}
+                      >
+                        Klar
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
           <tfoot>
             <tr className="border-t border-[#3a3a3a] bg-[#202020]">
               <td
-                colSpan={2}
+                colSpan={3}
                 className="px-3 py-3 text-sm font-semibold text-white"
               >
                 Totalt
@@ -356,6 +411,7 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
               <td className="px-3 py-3 text-right text-sm font-semibold tabular-nums text-[#eb6e08]">
                 {formatSwedishCurrency(ekipageTotalSumma)}
               </td>
+              <td className="px-3 py-3" />
             </tr>
           </tfoot>
         </table>
@@ -396,44 +452,72 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
                     </th>
                   );
                 })}
+                <th className="px-3 py-2.5 font-semibold text-white whitespace-nowrap text-left">
+                  Klar
+                </th>
               </tr>
             </thead>
             <tbody>
               {filteredButik.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={6}
                     className="px-4 py-12 text-center text-sm text-[#b8b8b8]"
                   >
                     Ingen rad matchar dina filter.
                   </td>
                 </tr>
               ) : (
-                filteredButik.map((item) => (
-                  <tr
-                    key={`${item.avgangsdatum}-${item.butiksnamn}`}
-                    className="border-t border-[#3a3a3a] even:bg-[#202020] odd:bg-[#242424]"
-                  >
-                    <td className="px-3 py-2.5 whitespace-nowrap text-white">
-                      {item.avgangsdatum}
-                    </td>
-                    <td className="px-3 py-2.5 whitespace-nowrap text-white">
-                      {item.butiksnamn}
-                    </td>
-                    <td className="px-3 py-2.5 text-right tabular-nums text-white">
-                      {formatVikt(item.totalVikt)}
-                    </td>
-                    <td className="px-3 py-2.5 text-right tabular-nums text-white">
-                      {formatSwedishCurrency(item.totalSumma)}
-                    </td>
-                  </tr>
-                ))
+                filteredButik.map((item) => {
+                  const klarId = `butik-${item.avgangsdatum}-${item.butiksnamn}`;
+                  const isKlar = klarIds.has(klarId);
+                  return (
+                    <tr
+                      key={`${item.avgangsdatum}-${item.butiksnamn}`}
+                      className={`border-t border-[#3a3a3a] ${
+                        isKlar
+                          ? "bg-[#1a3a24] hover:bg-[#203528]"
+                          : "even:bg-[#202020] odd:bg-[#242424]"
+                      }`}
+                    >
+                      <td className="px-3 py-2.5 whitespace-nowrap text-white">
+                        {item.avgangsdatum}
+                      </td>
+                      <td className="px-3 py-2.5 whitespace-nowrap text-white">
+                        {item.vecka}
+                      </td>
+                      <td className="px-3 py-2.5 whitespace-nowrap text-white">
+                        {item.butiksnamn}
+                      </td>
+                      <td className="px-3 py-2.5 text-right tabular-nums text-white">
+                        {formatVikt(item.totalVikt)}
+                      </td>
+                      <td className="px-3 py-2.5 text-right tabular-nums text-white">
+                        {formatSwedishCurrency(item.totalSumma)}
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <button
+                          type="button"
+                          aria-pressed={isKlar}
+                          onClick={() => toggleKlar(klarId)}
+                          className={`box-border h-7 min-w-[3.25rem] rounded-md border px-2.5 text-xs font-semibold leading-none transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#eb6e08]/50 ${
+                            isKlar
+                              ? "border-[#22c55e] bg-[#22c55e] text-[#052e16] hover:border-[#16a34a] hover:bg-[#16a34a]"
+                              : "border-[#3a3a3a] bg-[#202020] text-[#b8b8b8] hover:border-[#4ade80] hover:text-white"
+                          }`}
+                        >
+                          Klar
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
             <tfoot>
               <tr className="border-t border-[#3a3a3a] bg-[#202020]">
                 <td
-                  colSpan={2}
+                  colSpan={3}
                   className="px-3 py-3 text-sm font-semibold text-white"
                 >
                   Totalt
@@ -444,6 +528,7 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
                 <td className="px-3 py-3 text-right text-sm font-semibold tabular-nums text-[#eb6e08]">
                   {formatSwedishCurrency(ekipage3TotalSumma)}
                 </td>
+                <td className="px-3 py-3" />
               </tr>
             </tfoot>
           </table>

@@ -154,14 +154,19 @@ function parseGrunddataSheet(
     const formattedRow = formattedRows[i] ?? [];
     const frs = pickIdentifier(formattedRow[col.frs], row[col.frs]);
     const vecka = pickIdentifier(formattedRow[col.vecka], row[col.vecka]);
-    const butiksnamn = formatIdentifier(row[col.kundnamn]);
-    const postort = formatIdentifier(row[col.motort]);
+    const kundnamn = formatIdentifier(
+      formattedRow[col.kundnamn] ?? row[col.kundnamn]
+    );
+    const postort = formatIdentifier(
+      formattedRow[col.motort] ?? row[col.motort]
+    );
     const avgangsdatum = formatDate(row[col.datum]);
     const vikt = parseNumericValue(row[col.kg]);
     const pris = parseNumericValue(row[col.krKg]);
     const summa = parseNumericValue(row[col.totalKr]) ?? 0;
     const summaMatches = doesViktPrisMatchSumma(vikt, pris, summa);
-    const butik = lookupButikByName(butiksnamn);
+    const butik = lookupButikByName(kundnamn);
+    const butiksnamn = butik?.butiksnamn ?? kundnamn;
 
     if (!frs && !butiksnamn && !avgangsdatum && vikt === null && summa === 0) {
       continue;

@@ -478,8 +478,10 @@ function buildCompareResult(
   }
 
   rows.sort((a, b) => {
-    const byStatus = statusSortRank(a.status) - statusSortRank(b.status);
-    if (byStatus !== 0) return byStatus;
+    const byPostort = a.angoringPostort.localeCompare(b.angoringPostort, "sv", {
+      sensitivity: "base",
+    });
+    if (byPostort !== 0) return byPostort;
     return a.angoringNamn.localeCompare(b.angoringNamn, "sv", {
       sensitivity: "base",
     });
@@ -532,19 +534,6 @@ function indexByAngoring(rows: BrHanssonsRow[]): Map<string, BrHanssonsRow> {
 
 function normalizeText(value: string): string {
   return value.trim().toLowerCase();
-}
-
-function statusSortRank(status: BrHanssonsCompareRow["status"]): number {
-  switch (status) {
-    case "changed":
-      return 0;
-    case "only15":
-      return 1;
-    case "only21":
-      return 2;
-    case "unchanged":
-      return 3;
-  }
 }
 
 function pickIdentifier(formatted: unknown, raw: unknown): string {
