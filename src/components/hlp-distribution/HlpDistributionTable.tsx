@@ -651,7 +651,7 @@ export function HlpDistributionTable({
                         {row.getVisibleCells().map((cell) => (
                           <td
                             key={cell.id}
-                            className="px-2 py-2 whitespace-nowrap text-white"
+                            className="px-2 py-1 whitespace-nowrap text-white"
                           >
                             {flexRender(
                               cell.column.columnDef.cell,
