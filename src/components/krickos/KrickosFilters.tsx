@@ -11,7 +11,8 @@ interface KrickosFiltersProps {
   totalCount: number;
   totalIntakterFormatted: string;
   totalResursFormatted: string;
-  totalKrickosFormatted: string;
+  totalKrickos10Formatted: string;
+  totalKrickos5Formatted: string;
 }
 
 const deckClass =
@@ -25,10 +26,11 @@ export function KrickosFilters({
   totalCount,
   totalIntakterFormatted,
   totalResursFormatted,
-  totalKrickosFormatted,
+  totalKrickos10Formatted,
+  totalKrickos5Formatted,
 }: KrickosFiltersProps) {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <div className={`${deckClass} flex items-center p-5`}>
         <div className="relative w-full">
           <Search
@@ -46,7 +48,7 @@ export function KrickosFilters({
       </div>
 
       <article className={`${deckClass} border-[#eb6e08]/45 bg-[#2a2218] p-5`}>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 grid-cols-2">
           <div>
             <p className="text-sm text-[#b8b8b8]">Totalt Intäkter</p>
             <p className="mt-2 text-xl font-bold tabular-nums text-[#eb6e08]">
@@ -65,12 +67,24 @@ export function KrickosFilters({
               {rowCount} av {totalCount} rader
             </p>
           </div>
+        </div>
+      </article>
+
+      <article className={`${deckClass} border-[#eb6e08]/45 bg-[#2a2218] p-5`}>
+        <div className="grid gap-4 grid-cols-2">
           <div>
-            <p className="text-sm text-[#b8b8b8]">Krickos</p>
+            <p className="text-sm text-[#b8b8b8]">Krickos −10%</p>
             <p className="mt-2 text-xl font-bold tabular-nums text-[#eb6e08]">
-              {totalKrickosFormatted}
+              {totalKrickos10Formatted}
             </p>
-            <p className="mt-1 text-xs text-[#b8b8b8]">Resurs − 10%</p>
+            <p className="mt-1 text-xs text-[#b8b8b8]">Resurs × 0,90</p>
+          </div>
+          <div>
+            <p className="text-sm text-[#b8b8b8]">Krickos −5%</p>
+            <p className="mt-2 text-xl font-bold tabular-nums text-[#eb6e08]">
+              {totalKrickos5Formatted}
+            </p>
+            <p className="mt-1 text-xs text-[#b8b8b8]">Resurs × 0,95</p>
           </div>
         </div>
       </article>
@@ -78,7 +92,7 @@ export function KrickosFilters({
       <button
         type="button"
         onClick={onReset}
-        className={`${deckClass} flex w-full items-center justify-center gap-2 p-5 text-base font-medium text-white transition-colors hover:border-[#eb6e08] hover:bg-[#2a2218] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#eb6e08] sm:col-span-2 xl:col-span-1`}
+        className={`${deckClass} flex w-full items-center justify-center gap-2 p-5 text-base font-medium text-white transition-colors hover:border-[#eb6e08] hover:bg-[#2a2218] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#eb6e08]`}
       >
         <RotateCcw className="size-5" aria-hidden />
         Återställ

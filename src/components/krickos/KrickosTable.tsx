@@ -488,7 +488,8 @@ export function KrickosTable({
   const displayTotalResurs = !hasActiveFilters
     ? totalResursFormatted
     : formatSwedishCurrency(filteredResurs);
-  const displayTotalKrickos = formatSwedishCurrency(filteredResurs * 0.9);
+  const displayTotalKrickos10 = formatSwedishCurrency(filteredResurs * 0.9);
+  const displayTotalKrickos5 = formatSwedishCurrency(filteredResurs * 0.95);
   const displayCount = !hasActiveFilters ? rowCount : filteredRows.length;
 
   const legendCounts = useMemo((): KrickosLegendCounts => {
@@ -539,7 +540,8 @@ export function KrickosTable({
         totalCount={rowCount}
         totalIntakterFormatted={displayTotal}
         totalResursFormatted={displayTotalResurs}
-        totalKrickosFormatted={displayTotalKrickos}
+        totalKrickos10Formatted={displayTotalKrickos10}
+        totalKrickos5Formatted={displayTotalKrickos5}
       />
 
       <KrickosColorLegend
@@ -696,9 +698,15 @@ export function KrickosTable({
                 </span>
               </p>
               <p>
-                <span className="text-[#b8b8b8]">Krickos: </span>
+                <span className="text-[#b8b8b8]">Krickos −10%: </span>
                 <span className="font-semibold tabular-nums text-[#eb6e08]">
-                  {displayTotalKrickos}
+                  {displayTotalKrickos10}
+                </span>
+              </p>
+              <p>
+                <span className="text-[#b8b8b8]">Krickos −5%: </span>
+                <span className="font-semibold tabular-nums text-[#eb6e08]">
+                  {displayTotalKrickos5}
                 </span>
               </p>
             </div>
