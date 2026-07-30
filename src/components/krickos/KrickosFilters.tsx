@@ -11,6 +11,7 @@ interface KrickosFiltersProps {
   totalCount: number;
   totalIntakterFormatted: string;
   totalResursFormatted: string;
+  totalKrickosFormatted: string;
 }
 
 const deckClass =
@@ -24,6 +25,7 @@ export function KrickosFilters({
   totalCount,
   totalIntakterFormatted,
   totalResursFormatted,
+  totalKrickosFormatted,
 }: KrickosFiltersProps) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -44,7 +46,7 @@ export function KrickosFilters({
       </div>
 
       <article className={`${deckClass} border-[#eb6e08]/45 bg-[#2a2218] p-5`}>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-3">
           <div>
             <p className="text-sm text-[#b8b8b8]">Totalt Intäkter</p>
             <p className="mt-2 text-xl font-bold tabular-nums text-[#eb6e08]">
@@ -62,6 +64,13 @@ export function KrickosFilters({
             <p className="mt-1 text-xs text-[#b8b8b8]">
               {rowCount} av {totalCount} rader
             </p>
+          </div>
+          <div>
+            <p className="text-sm text-[#b8b8b8]">Krickos</p>
+            <p className="mt-2 text-xl font-bold tabular-nums text-[#eb6e08]">
+              {totalKrickosFormatted}
+            </p>
+            <p className="mt-1 text-xs text-[#b8b8b8]">Resurs − 10%</p>
           </div>
         </div>
       </article>

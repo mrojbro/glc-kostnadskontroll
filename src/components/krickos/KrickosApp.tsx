@@ -2,13 +2,12 @@
 
 import { useCallback, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Download, Loader2, Upload } from "lucide-react";
+import { ArrowLeft, Loader2, Upload } from "lucide-react";
 import { KrickosTable } from "@/components/krickos/KrickosTable";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { ExcelUploader } from "@/components/ExcelUploader";
 import { Button } from "@/components/ui/button";
-import { exportKrickosToExcel } from "@/lib/krickos/exporter";
 import { parseKrickosFile } from "@/lib/krickos/parser";
 import type { KrickosParseError, KrickosWorkbook } from "@/lib/krickos/types";
 
@@ -67,27 +66,16 @@ export function KrickosApp() {
         </div>
 
         {state.status === "success" && (
-          <div className="flex flex-wrap gap-2">
-            <Button
-              type="button"
-              size="lg"
-              className="h-10 gap-2 rounded-lg bg-[#eb6e08] px-4 text-white hover:bg-[#d46207] focus-visible:border-[#eb6e08] focus-visible:ring-[#eb6e08]/40"
-              onClick={() => void exportKrickosToExcel(state.data)}
-            >
-              <Download className="size-4" aria-hidden />
-              Exportera Excel
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="lg"
-              className="h-10 gap-2 rounded-lg border-[#3a3a3a] bg-[#202020] text-white hover:border-[#eb6e08] hover:bg-[#2a2218] hover:text-white focus-visible:border-[#eb6e08] focus-visible:ring-[#eb6e08]/40"
-              onClick={handleReset}
-            >
-              <Upload className="size-4" aria-hidden />
-              Ladda upp ny fil
-            </Button>
-          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            className="h-10 gap-2 rounded-lg border-[#3a3a3a] bg-[#202020] text-white hover:border-[#eb6e08] hover:bg-[#2a2218] hover:text-white focus-visible:border-[#eb6e08] focus-visible:ring-[#eb6e08]/40"
+            onClick={handleReset}
+          >
+            <Upload className="size-4" aria-hidden />
+            Ladda upp ny fil
+          </Button>
         )}
       </div>
 
