@@ -63,3 +63,23 @@ export const PORTALS: PortalItem[] = [
     kind: "easter-egg",
   },
 ];
+
+/** Second landing row — shown after a spacer below the main portals. */
+export const SECONDARY_PORTALS: PortalItem[] = [
+  {
+    id: "gdl",
+    name: "GDL",
+    href: "/gdl/",
+    enabled: true,
+  },
+  {
+    id: "secondary-blank-1",
+    name: "",
+    enabled: false,
+  },
+  {
+    id: "secondary-blank-2",
+    name: "",
+    enabled: false,
+  },
+];
