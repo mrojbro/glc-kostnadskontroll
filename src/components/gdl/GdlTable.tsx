@@ -117,7 +117,7 @@ function EditableT5Cell({
       aria-label="Redigera T5"
       title="Klicka för att redigera T5"
       className={cn(
-        "w-full min-w-[6.5rem] rounded-md border border-[#3a3a3a] bg-[#202020] px-1.5 py-0.5 text-right tabular-nums outline-none transition-colors",
+        "w-[7.5rem] max-w-[7.5rem] rounded-md border border-[#3a3a3a] bg-[#202020] px-1.5 py-0.5 text-right tabular-nums outline-none transition-colors",
         "focus:border-[#eb6e08] focus:ring-1 focus:ring-[#eb6e08]/40",
         value === null ? "text-[#b8b8b8]" : "text-[#eb6e08]",
         "hover:border-[#eb6e08]/60"
@@ -201,7 +201,24 @@ export function GdlTable({ rows, onT5Change }: GdlTableProps) {
 
       <div className="overflow-hidden rounded-2xl border border-[#3a3a3a] bg-[#242424] shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
         <div className="h-[min(70vh,720px)] overflow-x-auto overflow-y-auto [scrollbar-gutter:stable]">
-          <table className="w-full min-w-[1600px] border-collapse text-left text-sm">
+          <table className="w-full min-w-[1600px] table-fixed border-collapse text-left text-sm">
+            <colgroup>
+              <col className="w-[7.5rem]" />
+              <col className="w-[6.5rem]" />
+              <col className="w-[5.5rem]" />
+              <col className="w-[7rem]" />
+              <col className="w-[9rem]" />
+              <col className="w-[9rem]" />
+              <col className="w-[7rem]" />
+              <col className="w-[4.5rem]" />
+              <col className="w-[5rem]" />
+              <col className="w-[4.5rem]" />
+              <col className="w-[7.5rem]" />
+              <col className="w-[6rem]" />
+              <col className="w-[7rem]" />
+              <col className="w-[8rem]" />
+              <col className="w-[7rem]" />
+            </colgroup>
             <thead className="sticky top-0 z-10 bg-[#eb6e08]">
               <tr>
                 {COLUMNS.map((column) => (
@@ -258,7 +275,7 @@ export function GdlTable({ rows, onT5Change }: GdlTableProps) {
                           return (
                             <td
                               key={column.key}
-                              className="px-2 py-1 whitespace-nowrap text-right"
+                              className="w-[8rem] max-w-[8rem] px-2 py-1 whitespace-nowrap text-right"
                             >
                               <EditableT5Cell
                                 rowId={row.id}
