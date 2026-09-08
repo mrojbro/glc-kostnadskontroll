@@ -410,7 +410,7 @@ function resolveT5FromInput2Row(row: GdlInput2Row): number {
   return 0;
 }
 
-function buildT5AndDifferens(
+export function buildT5AndDifferens(
   t5: number | null,
   summa: number | null
 ): Pick<

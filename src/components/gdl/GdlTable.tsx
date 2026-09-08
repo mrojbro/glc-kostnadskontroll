@@ -1,8 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { GdlRow } from "@/lib/gdl/types";
-import { formatSwedishCurrency } from "@/lib/formatters";
+import {
+  formatSwedishCurrency,
+  formatSwedishDecimal2,
+  parseNumericValue,
+} from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 
 const COLUMNS: Array<{
@@ -35,6 +39,7 @@ const COLUMNS: Array<{
 
 interface GdlTableProps {
   rows: GdlRow[];
+  onT5Change: (rowId: string, t5: number | null) => void;
 }
 
 const deckClass =
@@ -54,7 +59,74 @@ function sumNullable(rows: GdlRow[], key: "summa" | "t5" | "differens"): number 
   }, 0);
 }
 
-export function GdlTable({ rows }: GdlTableProps) {
+function formatT5Draft(value: number | null): string {
+  if (value === null) return "";
+  return formatSwedishDecimal2(value);
+}
+
+function EditableT5Cell({
+  rowId,
+  value,
+  onChange,
+}: {
+  rowId: string;
+  value: number | null;
+  onChange: (rowId: string, t5: number | null) => void;
+}) {
+  const [draft, setDraft] = useState(() => formatT5Draft(value));
+  const [focused, setFocused] = useState(false);
+
+  useEffect(() => {
+    if (!focused) setDraft(formatT5Draft(value));
+  }, [value, focused]);
+
+  const commit = () => {
+    setFocused(false);
+    const trimmed = draft.trim();
+    if (!trimmed || trimmed === "—") {
+      onChange(rowId, null);
+      setDraft("");
+      return;
+    }
+    const parsed = parseNumericValue(trimmed);
+    onChange(rowId, parsed);
+    setDraft(formatT5Draft(parsed));
+  };
+
+  return (
+    <input
+      type="text"
+      inputMode="decimal"
+      value={focused ? draft : value === null ? "—" : formatSwedishCurrency(value)}
+      onFocus={(e) => {
+        setFocused(true);
+        setDraft(formatT5Draft(value));
+        requestAnimationFrame(() => e.currentTarget.select());
+      }}
+      onChange={(e) => setDraft(e.target.value)}
+      onBlur={commit}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.currentTarget.blur();
+        }
+        if (e.key === "Escape") {
+          setDraft(formatT5Draft(value));
+          e.currentTarget.blur();
+        }
+      }}
+      aria-label="Redigera T5"
+      title="Klicka för att redigera T5"
+      className={cn(
+        "w-full min-w-[6.5rem] rounded-md border border-[#3a3a3a] bg-[#202020] px-1.5 py-0.5 text-right tabular-nums outline-none transition-colors",
+        "focus:border-[#eb6e08] focus:ring-1 focus:ring-[#eb6e08]/40",
+        value === null ? "text-[#b8b8b8]" : "text-[#eb6e08]",
+        "hover:border-[#eb6e08]/60"
+      )}
+    />
+  );
+}
+
+export function GdlTable({ rows, onT5Change }: GdlTableProps) {
   const totals = useMemo(() => {
     const summa = sumNullable(rows, "summa");
     const t5 = sumNullable(rows, "t5");
@@ -109,7 +181,7 @@ export function GdlTable({ rows }: GdlTableProps) {
           </p>
           <p className="mt-1 text-xs text-[#b8b8b8]">
             {totals.t5Count === 0
-              ? "Väntar på Input 2"
+              ? "Inga T5-värden ännu"
               : `${totals.t5Count} med T5`}
           </p>
         </article>
@@ -162,53 +234,65 @@ export function GdlTable({ rows }: GdlTableProps) {
                   );
 
                   return (
-                  <tr
-                    key={row.id}
-                    className={`border-t border-[#3a3a3a] ${
-                      isDuplicateOrdernr
-                        ? "bg-[#2a2218]"
-                        : index % 2 === 0
-                          ? "bg-[#242424]"
-                          : "bg-[#202020]"
-                    }`}
-                    title={
-                      isDuplicateOrdernr
-                        ? "Ordernr förekommer flera gånger"
-                        : undefined
-                    }
-                  >
-                    {COLUMNS.map((column) => {
-                      const value = String(row[column.key] ?? "—");
-                      const isDifferens = column.key === "differensFormatted";
-                      const isT5 = column.key === "t5Formatted";
+                    <tr
+                      key={row.id}
+                      className={`border-t border-[#3a3a3a] ${
+                        isDuplicateOrdernr
+                          ? "bg-[#2a2218]"
+                          : index % 2 === 0
+                            ? "bg-[#242424]"
+                            : "bg-[#202020]"
+                      }`}
+                      title={
+                        isDuplicateOrdernr
+                          ? "Ordernr förekommer flera gånger"
+                          : undefined
+                      }
+                    >
+                      {COLUMNS.map((column) => {
+                        const value = String(row[column.key] ?? "—");
+                        const isDifferens = column.key === "differensFormatted";
+                        const isT5 = column.key === "t5Formatted";
 
-                      return (
-                        <td
-                          key={column.key}
-                          className={cn(
-                            "px-2 py-1 whitespace-nowrap",
-                            column.align === "right" && "text-right tabular-nums",
-                            isDifferens
-                              ? differensClass(row.differens)
-                              : isT5 && row.t5 !== null
-                                ? "text-[#eb6e08]"
-                                : isT5
-                                  ? "text-[#b8b8b8]"
-                                  : isDuplicateOrdernr
-                                    ? "font-medium text-[#f0a35a]"
-                                    : "text-white"
-                          )}
-                          title={
-                            isDifferens && row.differens !== null
-                              ? "T5 − Summa"
-                              : value
-                          }
-                        >
-                          {value || "—"}
-                        </td>
-                      );
-                    })}
-                  </tr>
+                        if (isT5) {
+                          return (
+                            <td
+                              key={column.key}
+                              className="px-2 py-1 whitespace-nowrap text-right"
+                            >
+                              <EditableT5Cell
+                                rowId={row.id}
+                                value={row.t5}
+                                onChange={onT5Change}
+                              />
+                            </td>
+                          );
+                        }
+
+                        return (
+                          <td
+                            key={column.key}
+                            className={cn(
+                              "px-2 py-1 whitespace-nowrap",
+                              column.align === "right" &&
+                                "text-right tabular-nums",
+                              isDifferens
+                                ? differensClass(row.differens)
+                                : isDuplicateOrdernr
+                                  ? "font-medium text-[#f0a35a]"
+                                  : "text-white"
+                            )}
+                            title={
+                              isDifferens && row.differens !== null
+                                ? "T5 − Summa"
+                                : value
+                            }
+                          >
+                            {value || "—"}
+                          </td>
+                        );
+                      })}
+                    </tr>
                   );
                 })
               )}
@@ -234,6 +318,8 @@ export function GdlTable({ rows }: GdlTableProps) {
             {" / "}
             <span className="text-[#fca5a5]">Differens −</span>
             {" = T5 − Summa"}
+            {" · "}
+            T5 är redigerbar
           </p>
         </div>
       </div>

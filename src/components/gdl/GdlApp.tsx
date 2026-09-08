@@ -17,6 +17,7 @@ import { ExcelUploader } from "@/components/ExcelUploader";
 import { Button } from "@/components/ui/button";
 import {
   applyGdlInput2ToWorkbook,
+  buildT5AndDifferens,
   parseGdlFile,
   parseGdlInput2File,
 } from "@/lib/gdl/parser";
@@ -121,6 +122,23 @@ export function GdlApp() {
     },
     [state]
   );
+
+  const handleT5Change = useCallback((rowId: string, t5: number | null) => {
+    setState((prev) => {
+      if (prev.status !== "success") return prev;
+      return {
+        ...prev,
+        data: {
+          ...prev.data,
+          rows: prev.data.rows.map((row) =>
+            row.id === rowId
+              ? { ...row, ...buildT5AndDifferens(t5, row.summa) }
+              : row
+          ),
+        },
+      };
+    });
+  }, []);
 
   const handleReset = useCallback(() => {
     setState({ status: "idle" });
@@ -311,7 +329,7 @@ export function GdlApp() {
             )}
           </div>
 
-          <GdlTable rows={state.data.rows} />
+          <GdlTable rows={state.data.rows} onT5Change={handleT5Change} />
         </div>
       )}
 
