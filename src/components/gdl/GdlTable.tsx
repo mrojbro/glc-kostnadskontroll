@@ -117,7 +117,7 @@ function EditableT5Cell({
       aria-label="Redigera T5"
       title="Klicka för att redigera T5"
       className={cn(
-        "w-[7.5rem] max-w-[7.5rem] rounded-md border border-[#3a3a3a] bg-[#202020] px-1.5 py-0.5 text-right tabular-nums outline-none transition-colors",
+        "w-full max-w-full rounded-md border border-[#3a3a3a] bg-[#202020] px-1.5 py-0.5 text-right text-xs tabular-nums outline-none transition-colors",
         "focus:border-[#eb6e08] focus:ring-1 focus:ring-[#eb6e08]/40",
         value === null ? "text-[#b8b8b8]" : "text-[#eb6e08]",
         "hover:border-[#eb6e08]/60"
@@ -201,23 +201,23 @@ export function GdlTable({ rows, onT5Change }: GdlTableProps) {
 
       <div className="overflow-hidden rounded-2xl border border-[#3a3a3a] bg-[#242424] shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
         <div className="h-[min(70vh,720px)] overflow-x-auto overflow-y-auto [scrollbar-gutter:stable]">
-          <table className="w-full min-w-[1600px] table-fixed border-collapse text-left text-sm">
+          <table className="w-full min-w-[1680px] table-fixed border-collapse text-left text-xs">
             <colgroup>
+              <col className="w-[7rem]" />
+              <col className="w-[6rem]" />
+              <col className="w-[5rem]" />
+              <col className="w-[6.5rem]" />
+              <col className="w-[10rem]" />
+              <col className="w-[12rem]" />
+              <col className="w-[8rem]" />
+              <col className="w-[4rem]" />
+              <col className="w-[4.5rem]" />
+              <col className="w-[4rem]" />
+              <col className="w-[7rem]" />
+              <col className="w-[5.5rem]" />
+              <col className="w-[6.5rem]" />
               <col className="w-[7.5rem]" />
               <col className="w-[6.5rem]" />
-              <col className="w-[5.5rem]" />
-              <col className="w-[7rem]" />
-              <col className="w-[9rem]" />
-              <col className="w-[9rem]" />
-              <col className="w-[7rem]" />
-              <col className="w-[4.5rem]" />
-              <col className="w-[5rem]" />
-              <col className="w-[4.5rem]" />
-              <col className="w-[7.5rem]" />
-              <col className="w-[6rem]" />
-              <col className="w-[7rem]" />
-              <col className="w-[8rem]" />
-              <col className="w-[7rem]" />
             </colgroup>
             <thead className="sticky top-0 z-10 bg-[#eb6e08]">
               <tr>
@@ -225,7 +225,7 @@ export function GdlTable({ rows, onT5Change }: GdlTableProps) {
                   <th
                     key={column.key}
                     title={column.title}
-                    className={`px-2 py-2.5 font-semibold text-white whitespace-nowrap ${
+                    className={`px-2 py-2 font-semibold text-white whitespace-nowrap ${
                       column.align === "right" ? "text-right" : "text-left"
                     }`}
                   >
@@ -275,7 +275,7 @@ export function GdlTable({ rows, onT5Change }: GdlTableProps) {
                           return (
                             <td
                               key={column.key}
-                              className="w-[8rem] max-w-[8rem] px-2 py-1 whitespace-nowrap text-right"
+                              className="overflow-hidden px-1.5 py-1 whitespace-nowrap text-right"
                             >
                               <EditableT5Cell
                                 rowId={row.id}
@@ -286,13 +286,22 @@ export function GdlTable({ rows, onT5Change }: GdlTableProps) {
                           );
                         }
 
+                        const isTextColumn =
+                          column.key === "avsandare" ||
+                          column.key === "mottagare" ||
+                          column.key === "postort" ||
+                          column.key === "fakturanummer" ||
+                          column.key === "ordernr" ||
+                          column.key === "frs";
+
                         return (
                           <td
                             key={column.key}
                             className={cn(
-                              "px-2 py-1 whitespace-nowrap",
-                              column.align === "right" &&
-                                "text-right tabular-nums",
+                              "overflow-hidden px-2 py-1",
+                              column.align === "right"
+                                ? "whitespace-nowrap text-right tabular-nums"
+                                : "max-w-0",
                               isDifferens
                                 ? differensClass(row.differens)
                                 : isDuplicateOrdernr
@@ -305,7 +314,13 @@ export function GdlTable({ rows, onT5Change }: GdlTableProps) {
                                 : value
                             }
                           >
-                            {value || "—"}
+                            {isTextColumn ? (
+                              <span className="block truncate">
+                                {value || "—"}
+                              </span>
+                            ) : (
+                              value || "—"
+                            )}
                           </td>
                         );
                       })}
