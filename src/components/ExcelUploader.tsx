@@ -10,10 +10,13 @@ interface ExcelUploaderProps {
   hint?: ReactNode;
   title?: string;
   selectedFileName?: string | null;
+  /** Also accept .csv files (KOF Input 1, etc.). */
+  acceptCsv?: boolean;
 }
 
-const ACCEPTED =
+const EXCEL_ACCEPTED =
   ".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel";
+const CSV_ACCEPTED = ".csv,text/csv";
 
 export function ExcelUploader({
   onFileSelected,
@@ -21,21 +24,25 @@ export function ExcelUploader({
   hint,
   title,
   selectedFileName,
+  acceptCsv = false,
 }: ExcelUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const accept = acceptCsv ? `${EXCEL_ACCEPTED},${CSV_ACCEPTED}` : EXCEL_ACCEPTED;
 
   const handleFiles = useCallback(
     (files: FileList | null) => {
       if (!files || files.length === 0 || disabled) return;
       const file = files[0];
       const name = file.name.toLowerCase();
-      if (!name.endsWith(".xlsx") && !name.endsWith(".xls")) {
+      const okExcel = name.endsWith(".xlsx") || name.endsWith(".xls");
+      const okCsv = acceptCsv && name.endsWith(".csv");
+      if (!okExcel && !okCsv) {
         return;
       }
       onFileSelected(file);
     },
-    [disabled, onFileSelected]
+    [acceptCsv, disabled, onFileSelected]
   );
 
   return (
@@ -95,7 +102,7 @@ export function ExcelUploader({
       <div className="space-y-2 max-w-md">
         <p className="text-lg font-semibold text-white">
           {isDragging
-            ? "Släpp Excel-filen här"
+            ? "Släpp filen här"
             : (title ?? "Ladda upp Excel-arbetsbok")}
         </p>
         {selectedFileName && (
@@ -122,7 +129,7 @@ export function ExcelUploader({
       <input
         ref={inputRef}
         type="file"
-        accept={ACCEPTED}
+        accept={accept}
         className="sr-only"
         disabled={disabled}
         onChange={(e) => {

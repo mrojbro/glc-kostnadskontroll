@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { GdlRow } from "@/lib/gdl/types";
+import { CopyableText } from "@/components/CopyableText";
+import type { KofRow } from "@/lib/kof/types";
 import {
   formatSwedishCurrency,
   formatSwedishDecimal2,
@@ -10,35 +11,30 @@ import {
 import { cn } from "@/lib/utils";
 
 const COLUMNS: Array<{
-  key: keyof GdlRow;
+  key: keyof KofRow;
   label: string;
   align?: "left" | "right";
   title?: string;
 }> = [
-  { key: "fakturanummer", label: "Fakturanummer" },
-  { key: "ordernr", label: "Ordernr" },
-  { key: "frs", label: "FRS" },
-  { key: "leveransdatum", label: "Leveransdatum" },
-  { key: "avsandare", label: "Avsändare" },
+  { key: "datum", label: "Datum" },
+  { key: "fran", label: "Från" },
   { key: "mottagare", label: "Mottagare" },
-  { key: "postort", label: "Postort" },
-  { key: "kolliFormatted", label: "Kolli", align: "right" },
-  { key: "viktFormatted", label: "Vikt", align: "right" },
+  { key: "frs", label: "FRS" },
+  { key: "ordernr", label: "Ordernr" },
+  { key: "kgFormatted", label: "Kg", align: "right" },
   { key: "pallFormatted", label: "Pall", align: "right" },
-  { key: "prisUtanDmtFormatted", label: "Pris utan DMT", align: "right" },
-  { key: "dmtFormatted", label: "DMT", align: "right" },
-  { key: "summaFormatted", label: "Summa", align: "right" },
+  { key: "prisFormatted", label: "Pris", align: "right" },
   { key: "t5Formatted", label: "T5", align: "right" },
   {
     key: "differensFormatted",
     label: "Differens",
     align: "right",
-    title: "T5 − Summa",
+    title: "T5 − Pris",
   },
 ];
 
-interface GdlTableProps {
-  rows: GdlRow[];
+interface KofTableProps {
+  rows: KofRow[];
   onT5Change: (rowId: string, t5: number | null) => void;
 }
 
@@ -51,7 +47,7 @@ function differensClass(value: number | null): string {
   return "font-medium text-[#fca5a5]";
 }
 
-function sumNullable(rows: GdlRow[], key: "summa" | "t5" | "differens"): number {
+function sumNullable(rows: KofRow[], key: "pris" | "t5" | "differens"): number {
   return rows.reduce((total, row) => {
     const value = row[key];
     return value === null ? total : total + value;
@@ -126,16 +122,16 @@ function EditableT5Cell({
   );
 }
 
-export function GdlTable({ rows, onT5Change }: GdlTableProps) {
+export function KofTable({ rows, onT5Change }: KofTableProps) {
   const totals = useMemo(() => {
-    const summa = sumNullable(rows, "summa");
+    const pris = sumNullable(rows, "pris");
     const t5 = sumNullable(rows, "t5");
     const differens = sumNullable(rows, "differens");
     const t5Count = rows.filter((row) => row.t5 !== null).length;
     const hasDifferens = rows.some((row) => row.differens !== null);
 
     return {
-      summaFormatted: formatSwedishCurrency(summa),
+      prisFormatted: formatSwedishCurrency(pris),
       t5Formatted: t5Count > 0 ? formatSwedishCurrency(t5) : "—",
       t5Count,
       differens: hasDifferens ? differens : null,
@@ -163,9 +159,9 @@ export function GdlTable({ rows, onT5Change }: GdlTableProps) {
     <section className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-3">
         <article className={`${deckClass} border-[#eb6e08]/45 bg-[#2a2218]`}>
-          <p className="text-sm text-[#b8b8b8]">Totalt Summa</p>
+          <p className="text-sm text-[#b8b8b8]">Totalt Pris</p>
           <p className="mt-2 text-xl font-bold tabular-nums text-[#eb6e08]">
-            {totals.summaFormatted}
+            {totals.prisFormatted}
           </p>
           <p className="mt-1 text-xs text-[#b8b8b8]">{rows.length} rader</p>
         </article>
@@ -195,27 +191,22 @@ export function GdlTable({ rows, onT5Change }: GdlTableProps) {
           >
             {totals.differensFormatted}
           </p>
-          <p className="mt-1 text-xs text-[#b8b8b8]">T5 − Summa</p>
+          <p className="mt-1 text-xs text-[#b8b8b8]">T5 − Pris</p>
         </article>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-[#3a3a3a] bg-[#242424] shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
         <div className="h-[min(70vh,720px)] overflow-x-auto overflow-y-auto [scrollbar-gutter:stable]">
-          <table className="w-full min-w-[1680px] table-fixed border-collapse text-left text-xs">
+          <table className="w-full min-w-[1180px] table-fixed border-collapse text-left text-xs">
             <colgroup>
               <col className="w-[7rem]" />
-              <col className="w-[6rem]" />
-              <col className="w-[5rem]" />
-              <col className="w-[6.5rem]" />
-              <col className="w-[10rem]" />
-              <col className="w-[12rem]" />
               <col className="w-[8rem]" />
-              <col className="w-[4rem]" />
-              <col className="w-[4.5rem]" />
-              <col className="w-[4rem]" />
+              <col className="w-[12rem]" />
+              <col className="w-[9rem]" />
               <col className="w-[7rem]" />
-              <col className="w-[5.5rem]" />
-              <col className="w-[6.5rem]" />
+              <col className="w-[5rem]" />
+              <col className="w-[5rem]" />
+              <col className="w-[7rem]" />
               <col className="w-[7.5rem]" />
               <col className="w-[6.5rem]" />
             </colgroup>
@@ -287,12 +278,14 @@ export function GdlTable({ rows, onT5Change }: GdlTableProps) {
                         }
 
                         const isTextColumn =
-                          column.key === "avsandare" ||
+                          column.key === "datum" ||
+                          column.key === "fran" ||
                           column.key === "mottagare" ||
-                          column.key === "postort" ||
-                          column.key === "fakturanummer" ||
-                          column.key === "ordernr" ||
-                          column.key === "frs";
+                          column.key === "frs" ||
+                          column.key === "ordernr";
+
+                        const isCopyable =
+                          column.key === "frs" || column.key === "ordernr";
 
                         return (
                           <td
@@ -310,11 +303,18 @@ export function GdlTable({ rows, onT5Change }: GdlTableProps) {
                             )}
                             title={
                               isDifferens && row.differens !== null
-                                ? "T5 − Summa"
-                                : value
+                                ? "T5 − Pris"
+                                : isCopyable
+                                  ? undefined
+                                  : value
                             }
                           >
-                            {isTextColumn ? (
+                            {isCopyable ? (
+                              <CopyableText
+                                value={value || "—"}
+                                label={column.key === "frs" ? "FRS" : "Ordernr"}
+                              />
+                            ) : isTextColumn ? (
                               <span className="block truncate">
                                 {value || "—"}
                               </span>
@@ -349,7 +349,7 @@ export function GdlTable({ rows, onT5Change }: GdlTableProps) {
             <span className="text-[#4ade80]">Differens +</span>
             {" / "}
             <span className="text-[#fca5a5]">Differens −</span>
-            {" = T5 − Summa"}
+            {" = T5 − Pris"}
             {" · "}
             T5 är redigerbar
           </p>

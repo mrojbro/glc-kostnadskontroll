@@ -73,9 +73,10 @@ export const SECONDARY_PORTALS: PortalItem[] = [
     enabled: true,
   },
   {
-    id: "secondary-blank-1",
-    name: "",
-    enabled: false,
+    id: "kof",
+    name: "KOF",
+    href: "/kof/",
+    enabled: true,
   },
   {
     id: "secondary-blank-2",
