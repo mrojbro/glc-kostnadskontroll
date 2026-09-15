@@ -79,8 +79,9 @@ export const SECONDARY_PORTALS: PortalItem[] = [
     enabled: true,
   },
   {
-    id: "secondary-blank-2",
-    name: "",
-    enabled: false,
+    id: "widens",
+    name: "Widens",
+    href: "/widens/",
+    enabled: true,
   },
 ];
