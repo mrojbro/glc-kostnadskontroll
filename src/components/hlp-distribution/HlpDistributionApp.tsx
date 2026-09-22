@@ -1,8 +1,15 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Download, Loader2, Upload } from "lucide-react";
+import {
+  ArrowLeft,
+  Check,
+  Copy,
+  Download,
+  Loader2,
+  Upload,
+} from "lucide-react";
 import { HlpDistributionTable } from "@/components/hlp-distribution/HlpDistributionTable";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -13,9 +20,11 @@ import { parseHlpDistributionFile } from "@/lib/hlpDistribution/parser";
 import { flagOlderWeekRows } from "@/lib/hlpDistribution/weekReview";
 import type {
   HlpDistributionParseError,
+  HlpDistributionRow,
   HlpDistributionWorkbook,
 } from "@/lib/hlpDistribution/types";
 import type { RowCommentMap, RowStatusMap } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 type AppState =
   | { status: "idle" }
@@ -23,15 +32,59 @@ type AppState =
   | { status: "error"; error: HlpDistributionParseError }
   | { status: "success"; data: HlpDistributionWorkbook; fileName: string };
 
+async function copyText(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    try {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      document.body.appendChild(textarea);
+      textarea.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(textarea);
+      return ok;
+    } catch {
+      return false;
+    }
+  }
+}
+
+function buildFraktsedelList(rows: HlpDistributionRow[]): string {
+  const seen = new Set<string>();
+  const values: string[] = [];
+  for (const row of rows) {
+    const value = row.fraktsedeln.trim();
+    if (!value || value === "—") continue;
+    if (seen.has(value)) continue;
+    seen.add(value);
+    values.push(value);
+  }
+  return values.join(", ");
+}
+
 export function HlpDistributionApp() {
   const [state, setState] = useState<AppState>({ status: "idle" });
   const [rowStatus, setRowStatus] = useState<RowStatusMap>({});
   const [rowComments, setRowComments] = useState<RowCommentMap>({});
+  const [frsCopied, setFrsCopied] = useState(false);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
+  }, []);
 
   const handleFile = useCallback(async (file: File) => {
     setState({ status: "loading" });
     setRowStatus({});
     setRowComments({});
+    setFrsCopied(false);
 
     const result = await parseHlpDistributionFile(file);
 
@@ -55,7 +108,22 @@ export function HlpDistributionApp() {
     setState({ status: "idle" });
     setRowStatus({});
     setRowComments({});
+    setFrsCopied(false);
   }, []);
+
+  const frsList = useMemo(() => {
+    if (state.status !== "success") return "";
+    return buildFraktsedelList(state.data.rows);
+  }, [state]);
+
+  const handleCopyFrs = useCallback(async () => {
+    if (!frsList) return;
+    const ok = await copyText(frsList);
+    if (!ok) return;
+    setFrsCopied(true);
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = setTimeout(() => setFrsCopied(false), 1500);
+  }, [frsList]);
 
   return (
     <div className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">
@@ -97,6 +165,30 @@ export function HlpDistributionApp() {
             >
               <Download className="size-4" aria-hidden />
               Exportera Excel
+            </Button>
+            <Button
+              type="button"
+              size="lg"
+              disabled={!frsList}
+              className={cn(
+                "h-10 gap-2 rounded-lg px-4 text-white focus-visible:border-[#eb6e08] focus-visible:ring-[#eb6e08]/40",
+                frsCopied
+                  ? "bg-[#22c55e] hover:bg-[#16a34a]"
+                  : "bg-[#eb6e08] hover:bg-[#d46207] disabled:opacity-40"
+              )}
+              onClick={() => void handleCopyFrs()}
+              title={
+                frsList
+                  ? "Kopiera alla Fraktsedeln som kommaseparerad lista"
+                  : "Inga Fraktsedeln att kopiera"
+              }
+            >
+              {frsCopied ? (
+                <Check className="size-4" aria-hidden />
+              ) : (
+                <Copy className="size-4" aria-hidden />
+              )}
+              {frsCopied ? "Kopierad" : "Kopiera FRS"}
             </Button>
             <Button
               type="button"

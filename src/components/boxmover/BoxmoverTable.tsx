@@ -24,6 +24,7 @@ import {
 } from "@/components/boxmover/BoxmoverColorLegend";
 import { BoxmoverFilters } from "@/components/boxmover/BoxmoverFilters";
 import { StatusPill } from "@/components/boxmover/StatusPill";
+import { EditableResursCell } from "@/components/EditableResursCell";
 import { EmptyState } from "@/components/EmptyState";
 import { formatSwedishCurrency } from "@/lib/formatters";
 import type { BoxmoverRow } from "@/lib/boxmover/types";
@@ -49,6 +50,7 @@ interface BoxmoverTableProps {
   totalIntakterFormatted: string;
   totalResursFormatted: string;
   rowCount: number;
+  onResursChange: (rowId: string, resurs: number) => void;
 }
 
 const DEFAULT_SORTING: SortingState = [
@@ -212,6 +214,7 @@ export function BoxmoverTable({
   totalIntakterFormatted,
   totalResursFormatted,
   rowCount,
+  onResursChange,
 }: BoxmoverTableProps) {
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -219,12 +222,15 @@ export function BoxmoverTable({
   const [legendFilter, setLegendFilter] =
     useState<BoxmoverLegendFilterKey | null>(null);
 
+  // Reset filters on new upload, not when a single Resurs cell is edited.
+  const rowSetId = `${rowCount}:${rows[0]?.id ?? ""}:${rows.at(-1)?.id ?? ""}`;
+
   useEffect(() => {
     setColumnFilters([]);
     setGlobalFilter("");
     setSorting(DEFAULT_SORTING);
     setLegendFilter(null);
-  }, [rows]);
+  }, [rowSetId]);
 
   const tableRows = useMemo(() => {
     if (!legendFilter) return rows;
@@ -403,15 +409,16 @@ export function BoxmoverTable({
         cell: (info) => {
           const row = info.row.original;
           return (
-            <StatusPill
+            <EditableResursCell
+              rowId={row.id}
+              value={row.resurs}
+              displayValue={row.resursFormatted}
               tone={toneForReviewColumn(
                 row,
                 row.resurs >= 0 ? "ok" : "bad"
               )}
-              className="tabular-nums"
-            >
-              {row.resursFormatted}
-            </StatusPill>
+              onChange={onResursChange}
+            />
           );
         },
         sortingFn: "basic",
@@ -449,7 +456,7 @@ export function BoxmoverTable({
         },
       },
     ],
-    []
+    [onResursChange]
   );
 
   const table = useReactTable({

@@ -24,6 +24,7 @@ import {
 } from "@/components/narkefrakt/NarkefraktColorLegend";
 import { NarkefraktFilters } from "@/components/narkefrakt/NarkefraktFilters";
 import { StatusPill } from "@/components/narkefrakt/StatusPill";
+import { EditableResursCell } from "@/components/EditableResursCell";
 import { EmptyState } from "@/components/EmptyState";
 import { formatSwedishCurrency } from "@/lib/formatters";
 import type { NarkefraktRow } from "@/lib/narkefrakt/types";
@@ -50,6 +51,7 @@ interface NarkefraktTableProps {
   totalIntakterFormatted: string;
   totalResursFormatted: string;
   rowCount: number;
+  onResursChange: (rowId: string, resurs: number) => void;
 }
 
 const DEFAULT_SORTING: SortingState = [
@@ -218,6 +220,7 @@ export function NarkefraktTable({
   totalIntakterFormatted,
   totalResursFormatted,
   rowCount,
+  onResursChange,
 }: NarkefraktTableProps) {
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -225,12 +228,15 @@ export function NarkefraktTable({
   const [legendFilter, setLegendFilter] =
     useState<NarkefraktLegendFilterKey | null>(null);
 
+  // Reset filters on new upload, not when a single Resurs cell is edited.
+  const rowSetId = `${rowCount}:${rows[0]?.id ?? ""}:${rows.at(-1)?.id ?? ""}`;
+
   useEffect(() => {
     setColumnFilters([]);
     setGlobalFilter("");
     setSorting(DEFAULT_SORTING);
     setLegendFilter(null);
-  }, [rows]);
+  }, [rowSetId]);
 
   const tableRows = useMemo(() => {
     if (!legendFilter) return rows;
@@ -415,15 +421,16 @@ export function NarkefraktTable({
         cell: (info) => {
           const row = info.row.original;
           return (
-            <StatusPill
+            <EditableResursCell
+              rowId={row.id}
+              value={row.resurs}
+              displayValue={row.resursFormatted}
               tone={toneForReviewColumn(
                 row,
                 row.resurs >= 0 ? "ok" : "bad"
               )}
-              className="tabular-nums"
-            >
-              {row.resursFormatted}
-            </StatusPill>
+              onChange={onResursChange}
+            />
           );
         },
         sortingFn: "basic",
@@ -461,7 +468,7 @@ export function NarkefraktTable({
         },
       },
     ],
-    []
+    [onResursChange]
   );
 
   const table = useReactTable({

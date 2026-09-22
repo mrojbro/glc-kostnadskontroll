@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { exportBoxmoverToExcel } from "@/lib/boxmover/exporter";
 import { parseBoxmoverFile } from "@/lib/boxmover/parser";
 import type { BoxmoverParseError, BoxmoverWorkbook } from "@/lib/boxmover/types";
+import { formatSwedishCurrency } from "@/lib/formatters";
 
 type AppState =
   | { status: "idle" }
@@ -40,6 +41,31 @@ export function BoxmoverApp() {
 
   const handleReset = useCallback(() => {
     setState({ status: "idle" });
+  }, []);
+
+  const handleResursChange = useCallback((rowId: string, resurs: number) => {
+    setState((prev) => {
+      if (prev.status !== "success") return prev;
+      const rows = prev.data.rows.map((row) =>
+        row.id === rowId
+          ? {
+              ...row,
+              resurs,
+              resursFormatted: formatSwedishCurrency(resurs),
+            }
+          : row
+      );
+      const totalResurs = rows.reduce((sum, row) => sum + row.resurs, 0);
+      return {
+        ...prev,
+        data: {
+          ...prev.data,
+          rows,
+          totalResurs,
+          totalResursFormatted: formatSwedishCurrency(totalResurs),
+        },
+      };
+    });
   }, []);
 
   return (
@@ -153,6 +179,7 @@ export function BoxmoverApp() {
             totalIntakterFormatted={state.data.totalIntakterFormatted}
             totalResursFormatted={state.data.totalResursFormatted}
             rowCount={state.data.rowCount}
+            onResursChange={handleResursChange}
           />
         </div>
       )}
