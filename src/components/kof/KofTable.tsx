@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Search } from "lucide-react";
 import { CopyableText } from "@/components/CopyableText";
+import { Input } from "@/components/ui/input";
 import type { KofRow } from "@/lib/kof/types";
 import {
   formatSwedishCurrency,
@@ -57,6 +59,26 @@ function sumNullable(rows: KofRow[], key: "pris" | "t5" | "differens"): number {
 function formatT5Draft(value: number | null): string {
   if (value === null) return "";
   return formatSwedishDecimal2(value);
+}
+
+function rowMatchesGlobalSearch(row: KofRow, query: string): boolean {
+  const normalized = query.trim().toLowerCase();
+  if (!normalized) return true;
+  const values = [
+    row.datum,
+    row.fran,
+    row.mottagare,
+    row.frs,
+    row.ordernr,
+    row.kgFormatted,
+    row.pallFormatted,
+    row.prisFormatted,
+    row.t5Formatted,
+    row.differensFormatted,
+  ];
+  return values.some((value) =>
+    String(value).toLowerCase().includes(normalized)
+  );
 }
 
 function EditableT5Cell({
@@ -123,12 +145,25 @@ function EditableT5Cell({
 }
 
 export function KofTable({ rows, onT5Change }: KofTableProps) {
+  const [search, setSearch] = useState("");
+
+  // Reset search on new upload, not when a single T5 cell is edited.
+  const rowSetId = `${rows.length}:${rows[0]?.id ?? ""}:${rows.at(-1)?.id ?? ""}`;
+  useEffect(() => {
+    setSearch("");
+  }, [rowSetId]);
+
+  const filteredRows = useMemo(
+    () => rows.filter((row) => rowMatchesGlobalSearch(row, search)),
+    [rows, search]
+  );
+
   const totals = useMemo(() => {
-    const pris = sumNullable(rows, "pris");
-    const t5 = sumNullable(rows, "t5");
-    const differens = sumNullable(rows, "differens");
-    const t5Count = rows.filter((row) => row.t5 !== null).length;
-    const hasDifferens = rows.some((row) => row.differens !== null);
+    const pris = sumNullable(filteredRows, "pris");
+    const t5 = sumNullable(filteredRows, "t5");
+    const differens = sumNullable(filteredRows, "differens");
+    const t5Count = filteredRows.filter((row) => row.t5 !== null).length;
+    const hasDifferens = filteredRows.some((row) => row.differens !== null);
 
     return {
       prisFormatted: formatSwedishCurrency(pris),
@@ -139,7 +174,7 @@ export function KofTable({ rows, onT5Change }: KofTableProps) {
         ? formatSwedishCurrency(differens)
         : "—",
     };
-  }, [rows]);
+  }, [filteredRows]);
 
   const duplicateOrdernrKeys = useMemo(() => {
     const counts = new Map<string, number>();
@@ -157,13 +192,32 @@ export function KofTable({ rows, onT5Change }: KofTableProps) {
 
   return (
     <section className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div
+          className={`${deckClass} flex items-center sm:col-span-2 xl:col-span-1`}
+        >
+          <div className="relative w-full">
+            <Search
+              className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-[#b8b8b8]"
+              aria-hidden
+            />
+            <Input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Sök i alla kolumner…"
+              className="h-10 border-[#3a3a3a] bg-[#202020] pl-9 text-white placeholder:text-[#b8b8b8] focus-visible:border-[#eb6e08] focus-visible:ring-[#eb6e08]/40"
+            />
+          </div>
+        </div>
         <article className={`${deckClass} border-[#eb6e08]/45 bg-[#2a2218]`}>
           <p className="text-sm text-[#b8b8b8]">Totalt Pris</p>
           <p className="mt-2 text-xl font-bold tabular-nums text-[#eb6e08]">
             {totals.prisFormatted}
           </p>
-          <p className="mt-1 text-xs text-[#b8b8b8]">{rows.length} rader</p>
+          <p className="mt-1 text-xs text-[#b8b8b8]">
+            {filteredRows.length} av {rows.length} rader
+          </p>
         </article>
         <article className={`${deckClass} border-[#eb6e08]/45 bg-[#2a2218]`}>
           <p className="text-sm text-[#b8b8b8]">Totalt T5</p>
@@ -226,17 +280,19 @@ export function KofTable({ rows, onT5Change }: KofTableProps) {
               </tr>
             </thead>
             <tbody>
-              {rows.length === 0 ? (
+              {filteredRows.length === 0 ? (
                 <tr>
                   <td
                     colSpan={COLUMNS.length}
                     className="px-4 py-16 text-center text-sm text-[#b8b8b8]"
                   >
-                    Inga rader att visa.
+                    {rows.length === 0
+                      ? "Inga rader att visa."
+                      : "Inga rader matchar sökningen."}
                   </td>
                 </tr>
               ) : (
-                rows.map((row, index) => {
+                filteredRows.map((row, index) => {
                   const isDuplicateOrdernr = duplicateOrdernrKeys.has(
                     row.ordernr.trim().toLowerCase()
                   );
@@ -335,7 +391,16 @@ export function KofTable({ rows, onT5Change }: KofTableProps) {
         <div className="border-t border-[#3a3a3a] bg-[#202020] px-4 py-3">
           <p className="text-sm text-[#b8b8b8]">
             Visar{" "}
-            <span className="font-medium text-white">{rows.length}</span>{" "}
+            <span className="font-medium text-white">
+              {filteredRows.length}
+            </span>
+            {search.trim() ? (
+              <>
+                {" "}
+                av{" "}
+                <span className="font-medium text-white">{rows.length}</span>
+              </>
+            ) : null}{" "}
             rader
             {duplicateOrdernrKeys.size > 0 ? (
               <>
