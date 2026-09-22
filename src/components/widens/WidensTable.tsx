@@ -48,7 +48,7 @@ const deckClass =
 
 function differensClass(value: number | null): string {
   if (value === null) return "text-[#b8b8b8]";
-  if (value >= 0) return "font-medium text-[#4ade80]";
+  if (Math.round(value * 100) >= 0) return "font-medium text-[#4ade80]";
   return "font-medium text-[#fca5a5]";
 }
 
@@ -222,13 +222,13 @@ export function WidensTable({ rows, onT5Change }: WidensTableProps) {
 
       <div className="overflow-hidden rounded-2xl border border-[#3a3a3a] bg-[#242424] shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
         <div className="h-[min(70vh,720px)] overflow-x-auto overflow-y-auto [scrollbar-gutter:stable]">
-          <table className="w-full min-w-[1580px] table-fixed border-collapse text-left text-xs">
+          <table className="w-full min-w-[1620px] table-fixed border-collapse text-left text-xs">
             <colgroup>
               <col className="w-[7rem]" />
               <col className="w-[8rem]" />
               <col className="w-[10rem]" />
               <col className="w-[5.5rem]" />
-              <col className="w-[5.5rem]" />
+              <col className="w-[8rem]" />
               <col className="w-[10rem]" />
               <col className="w-[5rem]" />
               <col className="w-[5rem]" />

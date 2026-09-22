@@ -61,6 +61,13 @@ export function parseNumericValue(value: unknown): number | null {
 }
 
 /**
+ * Round a currency amount to two decimals (öre), avoiding float noise like -0,00.
+ */
+export function roundCurrency2(value: number): number {
+  return Math.round((value + Number.EPSILON) * 100) / 100;
+}
+
+/**
  * Format a number as Swedish currency: `1 234,56 SEK`
  */
 export function formatSwedishCurrency(value: unknown): string {
@@ -68,7 +75,8 @@ export function formatSwedishCurrency(value: unknown): string {
   if (num === null) {
     return "0,00 SEK";
   }
-  return `${swedishCurrencyNumberFormatter.format(num)} SEK`;
+  const rounded = roundCurrency2(num);
+  return `${swedishCurrencyNumberFormatter.format(rounded)} SEK`;
 }
 
 /**

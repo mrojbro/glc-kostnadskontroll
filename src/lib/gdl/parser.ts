@@ -6,6 +6,7 @@ import {
   formatSwedishDecimal2,
   formatSwedishNumber,
   parseNumericValue,
+  roundCurrency2,
 } from "@/lib/formatters";
 import { cellMatchesResourceCode } from "@/lib/resourceCodeGuard";
 import {
@@ -418,7 +419,7 @@ export function buildT5AndDifferens(
   "t5" | "t5Formatted" | "differens" | "differensFormatted"
 > {
   const differens =
-    t5 === null || summa === null ? null : t5 - summa;
+    t5 === null || summa === null ? null : roundCurrency2(t5 - summa);
 
   return {
     t5,

@@ -6,6 +6,7 @@ import {
   formatSwedishDecimal2,
   formatSwedishNumber,
   parseNumericValue,
+  roundCurrency2,
 } from "@/lib/formatters";
 import { cellMatchesResourceCode } from "@/lib/resourceCodeGuard";
 import {
@@ -381,7 +382,7 @@ export function buildT5AndDifferens(
   t5: number | null,
   pris: number | null
 ): Pick<KofRow, "t5" | "t5Formatted" | "differens" | "differensFormatted"> {
-  const differens = t5 === null || pris === null ? null : t5 - pris;
+  const differens = t5 === null || pris === null ? null : roundCurrency2(t5 - pris);
 
   return {
     t5,

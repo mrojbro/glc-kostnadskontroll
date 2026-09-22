@@ -47,7 +47,7 @@ const deckClass =
 
 function differensClass(value: number | null): string {
   if (value === null) return "text-[#b8b8b8]";
-  if (value >= 0) return "font-medium text-[#4ade80]";
+  if (Math.round(value * 100) >= 0) return "font-medium text-[#4ade80]";
   return "font-medium text-[#fca5a5]";
 }
 
