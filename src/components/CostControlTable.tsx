@@ -17,10 +17,7 @@ import {
   EMPTY_VALUE,
 } from "@/components/ColumnFilterDropdown";
 import { EmptyState } from "@/components/EmptyState";
-import {
-  RowCommentInput,
-  RowStatusButtons,
-} from "@/components/RowReviewControls";
+import { RowCommentInput } from "@/components/RowReviewControls";
 import { TableFilters, type StatusFilterKey } from "@/components/TableFilters";
 import { formatSwedishCurrency } from "@/lib/formatters";
 import type {
@@ -36,7 +33,7 @@ type FilterableColumn = "datum" | "butiksnr" | "butiksnamn" | "postort";
 type ReviewTableMeta = {
   rowStatus: RowStatusMap;
   rowComments: RowCommentMap;
-  setStatus: (rowId: string, status: RowStatus) => void;
+  toggleOk: (rowId: string) => void;
   setComment: (rowId: string, value: string) => void;
 };
 
@@ -133,6 +130,13 @@ export function CostControlTable({
     [onRowStatusChange]
   );
 
+  const toggleOk = useCallback(
+    (rowId: string) => {
+      setStatus(rowId, "ok");
+    },
+    [setStatus]
+  );
+
   const setComment = useCallback(
     (rowId: string, value: string) => {
       const next = { ...rowCommentsRef.current };
@@ -178,9 +182,9 @@ export function CostControlTable({
   const tableRows = useMemo(() => {
     if (!statusFilter) return rows;
     return rows.filter((row) => {
-      const status = rowStatus[row.id];
-      if (statusFilter === "unset") return !status;
-      return status === statusFilter;
+      const isOk = rowStatus[row.id] === "ok";
+      if (statusFilter === "ok") return isOk;
+      return !isOk;
     });
   }, [rows, rowStatus, statusFilter]);
 
@@ -226,15 +230,43 @@ export function CostControlTable({
         cell: (info) => info.getValue<string>(),
       },
       {
+        id: "pall",
+        accessorFn: (row) => row.pall ?? Number.NEGATIVE_INFINITY,
+        header: "Pall",
+        cell: (info) => (
+          <span className="inline-block rounded-md bg-[#eb6e08]/18 px-2 py-0.5 font-medium tabular-nums text-[#f0a35a]">
+            {info.row.original.pallFormatted}
+          </span>
+        ),
+        sortingFn: "basic",
+      },
+      {
         accessorKey: "butiksnamn",
         header: "Butiksnamn",
         filterFn: multiSelectFilter,
-        cell: (info) => {
-          const value = info.getValue<string>();
+        cell: ({ row, table }) => {
+          const value = row.original.butiksnamn;
+          const meta = table.options.meta as ReviewTableMeta;
+          const isOk = meta.rowStatus[row.original.id] === "ok";
           return (
-            <span className="block max-w-[11rem] truncate" title={value}>
+            <button
+              type="button"
+              title={
+                isOk
+                  ? "Klicka för att ta bort OK-markering"
+                  : "Klicka för att markera som OK"
+              }
+              aria-pressed={isOk}
+              onClick={() => meta.toggleOk(row.original.id)}
+              className={cn(
+                "block max-w-[11rem] truncate rounded-md px-1.5 py-0.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#eb6e08]/50",
+                isOk
+                  ? "bg-[#22c55e]/25 font-medium text-[#86efac] hover:bg-[#22c55e]/35"
+                  : "text-white hover:bg-[#2a2a2a]"
+              )}
+            >
               {value}
-            </span>
+            </button>
           );
         },
       },
@@ -250,17 +282,6 @@ export function CostControlTable({
             </span>
           );
         },
-      },
-      {
-        id: "pall",
-        accessorFn: (row) => row.pall ?? Number.NEGATIVE_INFINITY,
-        header: "Pall",
-        cell: (info) => (
-          <span className="inline-block rounded-md bg-[#eb6e08]/18 px-2 py-0.5 font-medium tabular-nums text-[#f0a35a]">
-            {info.row.original.pallFormatted}
-          </span>
-        ),
-        sortingFn: "basic",
       },
       {
         id: "rpu",
@@ -279,21 +300,6 @@ export function CostControlTable({
           <span className="tabular-nums">{info.row.original.sekFormatted}</span>
         ),
         sortingFn: "basic",
-      },
-      {
-        id: "status",
-        header: "Status",
-        enableSorting: false,
-        cell: ({ row, table }) => {
-          const meta = table.options.meta as ReviewTableMeta;
-          return (
-            <RowStatusButtons
-              rowId={row.original.id}
-              status={meta.rowStatus[row.original.id]}
-              onChange={meta.setStatus}
-            />
-          );
-        },
       },
       {
         id: "kommentar",
@@ -320,7 +326,7 @@ export function CostControlTable({
     meta: {
       rowStatus,
       rowComments,
-      setStatus,
+      toggleOk,
       setComment,
     } satisfies ReviewTableMeta,
     state: {
@@ -404,8 +410,7 @@ export function CostControlTable({
   }, [filteredRows, filteredRowCount]);
 
   const okCount = rows.filter((row) => rowStatus[row.id] === "ok").length;
-  const checkCount = rows.filter((row) => rowStatus[row.id] === "check").length;
-  const unsetCount = rows.filter((row) => !rowStatus[row.id]).length;
+  const unsetCount = rows.filter((row) => rowStatus[row.id] !== "ok").length;
 
   const handleReset = () => {
     setGlobalFilter("");
@@ -422,7 +427,6 @@ export function CostControlTable({
         onReset={handleReset}
         typSummary={typSummary}
         okCount={okCount}
-        checkCount={checkCount}
         unsetCount={unsetCount}
         statusTotal={rowCount}
         activeStatusFilter={statusFilter}
@@ -448,12 +452,11 @@ export function CostControlTable({
                 <col className="w-[3.5rem]" />
                 <col className="w-[6rem]" />
                 <col className="w-[4.5rem]" />
+                <col className="w-[4.5rem]" />
                 <col className="w-[11rem]" />
                 <col className="w-[9.5rem]" />
                 <col className="w-[4.5rem]" />
-                <col className="w-[4.5rem]" />
                 <col className="w-[6.5rem]" />
-                <col className="w-[4rem]" />
                 <col className="w-[8rem]" />
               </colgroup>
               <thead className="sticky top-0 z-10">
@@ -536,21 +539,20 @@ export function CostControlTable({
               <tbody>
                 {visibleRows.map((row, index) => {
                   const missingDatum = !row.original.datum;
-                  const status = rowStatus[row.original.id];
+                  const isOk = rowStatus[row.original.id] === "ok";
                   return (
                     <tr
                       key={row.id}
                       className={cn(
                         "border-t border-[#3a3a3a]",
-                        status === "ok" && "bg-[#1a2e22] hover:bg-[#203528]",
-                        status === "check" && "bg-[#2e2a18] hover:bg-[#35301c]",
-                        !status &&
+                        isOk && "bg-[#1a2e22] hover:bg-[#203528]",
+                        !isOk &&
                           missingDatum &&
                           "bg-[#2a1818] hover:bg-[#321c1c]",
-                        !status &&
+                        !isOk &&
                           !missingDatum &&
                           (index % 2 === 0 ? "bg-[#242424]" : "bg-[#202020]"),
-                        !status && !missingDatum && "hover:bg-[#2a2218]"
+                        !isOk && !missingDatum && "hover:bg-[#2a2218]"
                       )}
                     >
                       {row.getVisibleCells().map((cell) => (
@@ -581,9 +583,9 @@ export function CostControlTable({
               {" · "}
               <span className="text-[#4ade80]">OK {okCount}</span>
               {" · "}
-              <span className="text-[#eab308]">Kontroll {checkCount}</span>
-              {" · "}
               <span className="text-[#b8b8b8]">Ej satt {unsetCount}</span>
+              {" · "}
+              Klicka på Butiksnamn för OK
             </p>
             <p className="text-sm">
               <span className="text-[#b8b8b8]">Totalt SEK: </span>

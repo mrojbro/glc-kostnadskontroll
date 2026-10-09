@@ -44,9 +44,6 @@ function buildSummarySheet(
     summary.adjustment.value;
 
   const okCount = Object.values(rowStatus).filter((s) => s === "ok").length;
-  const checkCount = Object.values(rowStatus).filter(
-    (s) => s === "check"
-  ).length;
 
   const rows: (string | number)[][] = [
     ["Referens", summary.reference],
@@ -60,7 +57,6 @@ function buildSummarySheet(
     ["Totalt SEK (fakturarader)", data.totalSek],
     ["Antal rader", data.rowCount],
     ["OK", okCount],
-    ["Kontroll", checkCount],
   ];
 
   const sheet = XLSX.utils.aoa_to_sheet(rows);
@@ -83,9 +79,9 @@ function buildDetailSheet(
     "Typ",
     "Datum",
     "Butiksnr",
+    "Pall",
     "Butiksnamn",
     "Postort",
-    "Pall",
     "RPU",
     "SEK",
     "Status",
@@ -97,12 +93,12 @@ function buildDetailSheet(
     row.typ,
     row.datum,
     row.butiksnr,
+    row.pall ?? "",
     row.butiksnamn,
     row.postort,
-    row.pall ?? "",
     row.rpu ?? "",
     row.sek,
-    formatRowStatus(rowStatus[row.id]),
+    formatRowStatus(rowStatus[row.id] === "ok" ? "ok" : undefined),
     rowComments[row.id] ?? "",
   ]);
 
@@ -113,9 +109,9 @@ function buildDetailSheet(
     { wch: 7 },
     { wch: 11 },
     { wch: 9 },
+    { wch: 8 },
     { wch: 18 },
     { wch: 12 },
-    { wch: 8 },
     { wch: 8 },
     { wch: 14 },
     { wch: 10 },

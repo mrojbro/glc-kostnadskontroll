@@ -10,7 +10,7 @@ export interface TypSummaryItem {
   percent: number;
 }
 
-export type StatusFilterKey = "ok" | "check" | "unset";
+export type StatusFilterKey = "ok" | "unset";
 
 interface TableFiltersProps {
   search: string;
@@ -18,7 +18,6 @@ interface TableFiltersProps {
   onReset: () => void;
   typSummary: TypSummaryItem[];
   okCount: number;
-  checkCount: number;
   unsetCount: number;
   statusTotal: number;
   activeStatusFilter: StatusFilterKey | null;
@@ -41,7 +40,6 @@ export function TableFilters({
   onReset,
   typSummary,
   okCount,
-  checkCount,
   unsetCount,
   statusTotal,
   activeStatusFilter,
@@ -49,7 +47,6 @@ export function TableFilters({
 }: TableFiltersProps) {
   const divisor = statusTotal > 0 ? statusTotal : 1;
   const okPercent = (okCount / divisor) * 100;
-  const checkPercent = (checkCount / divisor) * 100;
   const unsetPercent = (unsetCount / divisor) * 100;
 
   const statusItems: {
@@ -65,13 +62,6 @@ export function TableFilters({
       count: okCount,
       percent: okPercent,
       labelClass: "text-[#4ade80]",
-    },
-    {
-      key: "check",
-      label: "Kontroll",
-      count: checkCount,
-      percent: checkPercent,
-      labelClass: "text-[#eab308]",
     },
     {
       key: "unset",
@@ -101,7 +91,7 @@ export function TableFilters({
         </div>
       </div>
 
-      {/* 2 — Typ summary, one deck split in half */}
+      {/* 2 — Typ summary */}
       <div className={`${deckClass} grid grid-cols-3 divide-x divide-[#3a3a3a]`}>
         {typSummary.map((item) => (
           <article key={item.typ} className="flex flex-col justify-center p-4">
@@ -117,8 +107,8 @@ export function TableFilters({
         ))}
       </div>
 
-      {/* 3 — OK / Kontroll / Ej satt — clickable */}
-      <div className={`${deckClass} grid grid-cols-3 divide-x divide-[#3a3a3a]`}>
+      {/* 3 — OK / Ej satt — clickable */}
+      <div className={`${deckClass} grid grid-cols-2 divide-x divide-[#3a3a3a]`}>
         {statusItems.map((item) => {
           const isActive = activeStatusFilter === item.key;
           return (
