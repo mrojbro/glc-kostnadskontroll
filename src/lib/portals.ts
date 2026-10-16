@@ -84,4 +84,16 @@ export const SECONDARY_PORTALS: PortalItem[] = [
     href: "/widens/",
     enabled: true,
   },
+  {
+    id: "narkefrakt",
+    name: "Närkefrakt",
+    href: "/narkefrakt/",
+    enabled: true,
+  },
+  {
+    id: "axtrans",
+    name: "Axtrans",
+    href: "/axtrans/",
+    enabled: true,
+  },
 ];
