@@ -237,6 +237,95 @@ function toIsoDate(date: Date): string {
 }
 
 /**
+ * Format a time value as HH:mm:ss (24-hour, no AM/PM).
+ * Handles JS Dates, Excel serial times, and text times including am/pm.
+ */
+export function formatTime(value: unknown): string {
+  if (value === null || value === undefined || value === "") {
+    return "";
+  }
+
+  if (value instanceof Date) {
+    if (Number.isNaN(value.getTime())) return "";
+    return toHms(value.getHours(), value.getMinutes(), value.getSeconds());
+  }
+
+  if (typeof value === "number" && Number.isFinite(value)) {
+    // Pure time serial (fraction of a day) or datetime serial
+    const fraction =
+      value >= 0 && value < 1 ? value : value - Math.floor(value);
+    if (fraction < 0) return "";
+    const totalSeconds = Math.round(fraction * 86400) % 86400;
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    return toHms(hours, minutes, seconds);
+  }
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) return "";
+
+    const amPmMatch = trimmed.match(
+      /^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)\s*$/i
+    );
+    if (amPmMatch) {
+      let hours = Number(amPmMatch[1]);
+      const minutes = Number(amPmMatch[2]);
+      const seconds = Number(amPmMatch[3] ?? "0");
+      const isPm = /^p/i.test(amPmMatch[4]);
+      if (hours === 12) hours = isPm ? 12 : 0;
+      else if (isPm) hours += 12;
+      if (
+        hours >= 0 &&
+        hours <= 23 &&
+        minutes >= 0 &&
+        minutes <= 59 &&
+        seconds >= 0 &&
+        seconds <= 59
+      ) {
+        return toHms(hours, minutes, seconds);
+      }
+    }
+
+    const hmsMatch = trimmed.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*$/);
+    if (hmsMatch) {
+      const hours = Number(hmsMatch[1]);
+      const minutes = Number(hmsMatch[2]);
+      const seconds = Number(hmsMatch[3] ?? "0");
+      if (
+        hours >= 0 &&
+        hours <= 23 &&
+        minutes >= 0 &&
+        minutes <= 59 &&
+        seconds >= 0 &&
+        seconds <= 59
+      ) {
+        return toHms(hours, minutes, seconds);
+      }
+    }
+
+    // Datetime strings — take the time portion
+    const date = new Date(trimmed);
+    if (!Number.isNaN(date.getTime())) {
+      return toHms(date.getHours(), date.getMinutes(), date.getSeconds());
+    }
+
+    return trimmed;
+  }
+
+  return String(value);
+}
+
+function toHms(hours: number, minutes: number, seconds: number): string {
+  return [
+    String(hours).padStart(2, "0"),
+    String(minutes).padStart(2, "0"),
+    String(seconds).padStart(2, "0"),
+  ].join(":");
+}
+
+/**
  * Convert Excel serial date to JS Date.
  * Excel's epoch is 1899-12-30 (accounting for the 1900 leap year bug).
  */

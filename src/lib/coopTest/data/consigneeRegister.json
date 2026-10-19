@@ -1,0 +1,1322 @@
+[
+  {
+    "consignee": "126500",
+    "consigneeAddress": "COOP ALINGSÅS / KUNGEGÅRDSGATAN 1A / 44157 ALINGSÅS",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "125600",
+    "consigneeAddress": "COOP AVENYN / KUNGPORTSAVENYEN 26 / 411 36 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126308",
+    "consigneeAddress": "COOP BACKAPLAN / LERÅKERSGATAN 10 / 41730 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "135110",
+    "consigneeAddress": "COOP BENGTSFORS / STORGATAN 9 / 666 30 BENGTSFORS",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136044",
+    "consigneeAddress": "COOP BOHUS / GÖTEBORGSVÄGEN 219 / 445 37 BOHUS",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136023",
+    "consigneeAddress": "COOP BORÅS BYTTORP / KVIBERGSGATAN 1 / 504 67 BORÅS",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136022",
+    "consigneeAddress": "COOP BORÅS SJÖBOTORG / SJÖBO TORG 1 / 506 42 BORÅS",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136594",
+    "consigneeAddress": "COOP BRASTAD / LYSEKILSVÄGEN 3 / 454 31 BRASTAD",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136690",
+    "consigneeAddress": "COOP BÄCKEFORS / TORGGATAN 9 / 668 40 BÄCKEFORS",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "146475",
+    "consigneeAddress": "COOP DALSJÖFORS / STORGATAN 28  / 516 31 DALSJÖFORS",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126314",
+    "consigneeAddress": "COOP DR BEX GATA (E) / DR BEX GATA 4 / 413 24 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126314",
+    "consigneeAddress": "COOP DR BEX GATA (F) / DR BEX GATA 4 / 413 24 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136896",
+    "consigneeAddress": "COOP ED / DELESGATAN 7  / 668 30 ED",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126350",
+    "consigneeAddress": "COOP ERIKSBERG / KOLHAMNSGATAN 7 / 41875 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136741",
+    "consigneeAddress": "COOP FJÄLLBACKA / JASMINVÄGEN 2 / 457 40 FJÄLLBACKA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126310",
+    "consigneeAddress": "COOP FRIGGAGATAN / FRIGGAGATAN 10A / 411 01 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136141",
+    "consigneeAddress": "COOP FÄRGELANDA / CENTRUMVÄGEN  / 458 30 FÄRGELANDA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136033",
+    "consigneeAddress": "COOP GAMLA RIKSVÄGEN / GAMLA RISKVÄGEN 67 / 428 32 KÅLLERED",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126406",
+    "consigneeAddress": "COOP GAMLESTADEN / TRERIKSGATAN 2 / 415 14 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126540",
+    "consigneeAddress": "COOP GASTORP / G:A RIKSVÄGEN 202 / 437 41 LINDOME",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136601",
+    "consigneeAddress": "COOP GREBBESTAD / NEDRE LÅNGGATAN 11 / 457 72 GREBBESTAD",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136034",
+    "consigneeAddress": "COOP GÖTEBORG ANDRA LÅNGGATAN / ANDRA LÅNGGATAN 75 / 413 27 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136027",
+    "consigneeAddress": "COOP GÖTEBORG MARKLANDSGATAN / MARKLANDSGATAN 59 / 414 77 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "146487",
+    "consigneeAddress": "COOP HAJOM / MARIEHÖJD / 511 97 HAJOM",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136251",
+    "consigneeAddress": "COOP HUNNEBOSTRAND / TORGGATAN 17 / 456 61 HUNNEBOSTRAND",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "116574",
+    "consigneeAddress": "COOP HÅSTEN / HÅSTENS TORG  / 432 30 VARBERG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136152",
+    "consigneeAddress": "COOP HÖGSÄTER / GENAVÄGEN 41  / 458 70 HÖGSÄTER",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136775",
+    "consigneeAddress": "COOP HÖRNGATAN / HÖRNGATAN 14  / 461 50 TROLLHÄTTAN",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136031",
+    "consigneeAddress": "COOP KALLEBÄCK / OSTGATAN 11 / 412 75 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136272",
+    "consigneeAddress": "COOP KARLSTADSVÄGEN / KARLSTADSVÄGEN 23 / 662 37 ÅMÅL",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126400",
+    "consigneeAddress": "COOP KOLLA PARKSTAD / KUNGSVÄGEN 42A / 434 51 KUNGSBACKA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "122000",
+    "consigneeAddress": "COOP KONGAHÄLLA / ÄLVEBACKEN 39 / 44248 KUNGÄLV",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "116527",
+    "consigneeAddress": "COOP KONSUM FRILLESÅS / KARL JOHANS VÄG 10 / 439 62 FRILLESÅS",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "133700",
+    "consigneeAddress": "COOP KRONHJORTEN TROLLHÄTTAN / FAKTORSGATAN 10 / 46137 TROLLHÄTTAN",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "135220",
+    "consigneeAddress": "COOP KUNGSHAMN / VÄGGABACKEN / 456 33 KUNGSHAMN",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126822",
+    "consigneeAddress": "COOP KYRKBYTORGET / KYRKBYTORGET 3 / 418 73 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126380",
+    "consigneeAddress": "COOP KÄRINGBERGET / LÅNGEDRAGSVÄGEN 134 / 426 74 VÄSTRA FRÖLUNDA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126307",
+    "consigneeAddress": "COOP LANDALA / KAPELLPLATSEN 4 / 411 31 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "121100",
+    "consigneeAddress": "COOP LUNDBY / WIESELGRENSPLATSEN 8 / 41739 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "135030",
+    "consigneeAddress": "COOP LYSEKIL / EKGATAN 1 / 453 37 LYSEKIL",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136621",
+    "consigneeAddress": "COOP MALMÖN / STRANDVÄGEN 38 / 456 55 BOHUS-MALMÖN",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126398",
+    "consigneeAddress": "COOP MARIAGATAN / MARIAGATAN 12-14 / 414 71 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126436",
+    "consigneeAddress": "COOP MARSTRAND / ARVIDSVIK, RINGPLAN / 442 66 MARSTRAND",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136101",
+    "consigneeAddress": "COOP MASTHUGGSKAJEN / FÖRSTA LÅNGGATAN 11C / 41329 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136000",
+    "consigneeAddress": "COOP MELLERUD / TELEFONGATAN 6 / 464 34 MELLERUD",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136045",
+    "consigneeAddress": "COOP MJÖRNBOTORGET / MJÖRNBOTORGET 6 / 443 42 GRÅBO",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126326",
+    "consigneeAddress": "COOP MUNKEBÄCKSTORG (E) / MUNKEBÄCKSTORGET 1 / 416 73 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126326",
+    "consigneeAddress": "COOP MUNKEBÄCKSTORG (F) / MUNKEBÄCKSTORGET 1 / 416 73 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136641",
+    "consigneeAddress": "COOP MUNKEDAL / STRÖMSTADSVÄGEN 3 / 455 30 MUNKEDAL",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136895",
+    "consigneeAddress": "COOP MUSTADFORS / ENETSVÄGEN / 666 95 DALS-LÅNGED",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136030",
+    "consigneeAddress": "COOP MÖLNDALSVÄGEN / MÖLNDALSVÄGEN 1/ 412 63 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "125200",
+    "consigneeAddress": "COOP MÖLNLYCKE / GUNNAR RUNFORS GRÄND 2 / 43530 MÖLNLYCKE",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136035",
+    "consigneeAddress": "COOP ODINSGATAN / ODINSGATAN 6 / 411 03 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "123200",
+    "consigneeAddress": "COOP PARTILLE / PORTGÅNGEN 1 / 433 38 PARTILLE",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "135010",
+    "consigneeAddress": "COOP ROSVIKSGATAN / ROSVIKSGATAN 3 / 453 30 LYSEKIL",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136769",
+    "consigneeAddress": "COOP SJUNTORP / TROLLHÄTTEVÄGEN 52 / 461 77 SJUNTORP",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "146922",
+    "consigneeAddress": "COOP SKENE / ÖRBYVÄGEN 1 / 511 61 SKENE",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136121",
+    "consigneeAddress": "COOP SKOGSLYCKAN / SUNNANVINDSVÄGEN 10 / 451 60 UDDEVALLA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136026",
+    "consigneeAddress": "COOP SKÅNEGATAN / SKÅNEGATAN 23 / 412 52 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "123000",
+    "consigneeAddress": "COOP STENUNGSUND / ÖSTRA KÖPMANSGATAN 22 / 44430 STENUNGSUND",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136762",
+    "consigneeAddress": "COOP STRÖMSLUND / ALBERTSVÄGEN 77 / 461 58 TROLLHÄTTAN",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "131800",
+    "consigneeAddress": "COOP STRÖMSTAD / OSLOVÄGEN 1 / 452 35 STRÖMSTAD",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136671",
+    "consigneeAddress": "COOP STYRSÖ / HALSVIKSVÄGEN 6 / 430 84 STYRSÖ",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126541",
+    "consigneeAddress": "COOP SURTE / GÖTEBORGSVÄGEN 68 / 445 57 SURTE",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "116572",
+    "consigneeAddress": "COOP SÖDER / RÖDALEDSTIGEN 20 / 432 53 VARBERG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126367",
+    "consigneeAddress": "COOP TRÄTORGET / TRÄTORGET 1 / 416 79 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136041",
+    "consigneeAddress": "COOP UDDEVALLA GÖTEBORGSVÄGEN / GÖTEBORGSVÄGEN 15 / 45142 UDDEVALLA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "116570",
+    "consigneeAddress": "COOP VÄSTRA VALLGATAN / RÅDA MOSSEVÄGEN 2 / 432 44 VARBERG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136042",
+    "consigneeAddress": "COOP ÅBY KATRINEBERGSGATAN / EMIL LINDELLS VÄG 46 / 431 61 MÖLNDAL",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "135120",
+    "consigneeAddress": "COOP ÅMÅL MELLANBROGATAN / MELLANBROGATAN 9 / 662 31 ÅMÅL",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136104",
+    "consigneeAddress": "COOP ÅSENSBRUK / STORVÄGEN 32  / 464 40 ÅSENSBRUK",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "135040",
+    "consigneeAddress": "COOP ÄLVÄNGEN / GARVERIVÄGEN 4 / 44637 ÄLVÄNGEN",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "123300",
+    "consigneeAddress": "COOP ÖJERSJÖ / HELGAS VÄG 6 / 433 51 ÖJERSJÖ",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "252600",
+    "consigneeAddress": "STORA COOP BACKAPLAN / BACKAVÄGEN 2 / 41705 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "252200",
+    "consigneeAddress": "STORA COOP BORÅS / ENEDALSGATAN 10 / 504 52 BORÅS",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "252500",
+    "consigneeAddress": "STORA COOP BÄCKEBOL / TRANSPORTGATAN 19 / 42246 HISINGS BACKA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "255900",
+    "consigneeAddress": "STORA COOP KUNGSBACKA / HANTVERKSGATAN 27 / 43442 KUNGSBACKA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "133900",
+    "consigneeAddress": "STORA COOP KÅLLERED / EKENLEDEN 2P / 42836 KÅLLERED",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "255500",
+    "consigneeAddress": "STORA COOP SISJÖN / HANTVERKSVÄGEN 2 / 43633 ASKIM",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "135060",
+    "consigneeAddress": "STORA COOP TANUMSHEDE / BREHOGSVÄGEN 5 / 457 32 TANUMSHEDE",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "133800",
+    "consigneeAddress": "STORA COOP TORP / TORP 10 / 45176 UDDEVALLA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "112000",
+    "consigneeAddress": "STORA COOP VARBERG / STRÖMGATAN 7 / 432 56 VARBERG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "133100",
+    "consigneeAddress": "STORA COOP ÖVERBY / ÖVERBY CENTRUM / 46170 TROLLHÄTTAN",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136021",
+    "consigneeAddress": "X:-TRA BORÅS / HULTAGATAN 49A / 50750 BORÅS",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136029",
+    "consigneeAddress": "X:-TRA HISINGEN / STACKMOLNSGATAN 2/ 418 42 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136043",
+    "consigneeAddress": "X:-TRA HISINGS BACKA / BACKA KYRKOGATA 1 / 422 58 HISING BACKA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136040",
+    "consigneeAddress": "X:-TRA LILLA EDET / HORSBYVÄGEN 16 / 463 31 LILLA EDET",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136635",
+    "consigneeAddress": "X:-TRA LJUNGSKILE / VÄLLEBERGSVÄGEN / 459 30 LJUNGSKILE",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136028",
+    "consigneeAddress": "X:-TRA SVENLJUNGA / PRÄSTGATAN 12 / 51253 SVENLJUNGA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136039",
+    "consigneeAddress": "X:-TRA TROLLHÄTTAN / LEXTORPSVÄGEN 992 / 46165 TROLLHÄTTAN",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136059",
+    "consigneeAddress": "X:-TRA VÄNERSBORG / WENNERBERGSVÄGEN 27 / 462 51 VÄNERSBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126500",
+    "consigneeAddress": "COOP ALINGSÅS / KUNGEGÅRDSGATAN 1A / 441 57 ALINGSÅS",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "125600",
+    "consigneeAddress": "COOP AVENYN / KUNGPORTSAVENYEN 26 / 411 36 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136023",
+    "consigneeAddress": "COOP BORÅS BYTTORP / BRÅDDGATAN 30 / 504 67 BORÅS",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136022",
+    "consigneeAddress": "COOP BORÅS SJÖBOTORG / KVIBERGSGATAN 1 / 506 42 BORÅS",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126314",
+    "consigneeAddress": "COOP DR BEX GATA / DR BEX GATA 4 / 413 24 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126350",
+    "consigneeAddress": "COOP ERIKSBERG / KOLHAMNSGATAN 7 / 418 75 GÖTEBORG",
+    "littera": "Coop Frukt & Grönt Direkt",
+    "lastningsId": "FHBG",
+    "lastningsnamn": "Nowaste Helsingborg",
+    "lastningsadress": "Landskronavägen 5",
+    "lastningspostnr": "252 32",
+    "lastningspostort": "Helsingborg"
+  },
+  {
+    "consignee": "126310",
+    "consigneeAddress": "COOP FRIGGAGATAN / FRIGGAGATAN 10A / 411 01 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126406",
+    "consigneeAddress": "COOP GAMLESTADEN / TRERIKSGATAN 2 / 415 14 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136034",
+    "consigneeAddress": "COOP GÖTEBORG ANDRA LÅNGGATAN / ANDRA LÅNGGATAN 26 / 413 27 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136027",
+    "consigneeAddress": "COOP GÖTEBORG MARKLANDSGATAN / MARKLANDSGATAN 59 / 414 77 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136031",
+    "consigneeAddress": "COOP KALLEBÄCK / OSTGATAN 12 / 412 75 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "122000",
+    "consigneeAddress": "COOP KONGAHÄLLA / ÄLVEBACKEN 39 / 442 48 KUNGÄLV",
+    "littera": "Coop Frukt & Grönt Direkt",
+    "lastningsId": "FHBG",
+    "lastningsnamn": "Nowaste Helsingborg",
+    "lastningsadress": "Landskronavägen 5",
+    "lastningspostnr": "252 32",
+    "lastningspostort": "Helsingborg"
+  },
+  {
+    "consignee": "133700",
+    "consigneeAddress": "COOP KRONHJORTEN / FAKTORSGATAN 10 / 461 37 TROLLHÄTTAN",
+    "littera": "Coop Frukt & Grönt Direkt",
+    "lastningsId": "FHBG",
+    "lastningsnamn": "Nowaste Helsingborg",
+    "lastningsadress": "Landskronavägen 5",
+    "lastningspostnr": "252 32",
+    "lastningspostort": "Helsingborg"
+  },
+  {
+    "consignee": "126822",
+    "consigneeAddress": "COOP KYRKBYTORGET / KYRKBYTORGET 3 / 418 73 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126380",
+    "consigneeAddress": "COOP KÄRINGBERGET / LÅNGEDRAGSVÄGEN 134 / 426 74 VÄSTRA FRÖLUNDA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126307",
+    "consigneeAddress": "COOP LANDALA / KAPELLPLATSEN 4 / 411 31 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "121100",
+    "consigneeAddress": "COOP LUNDBY / WIESELGRENSPLATSEN 8 / 417 39 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126398",
+    "consigneeAddress": "COOP MARIAGATAN / MARIAGATAN 12-14 / 414 71 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126326",
+    "consigneeAddress": "COOP MUNKEBÄCKSTORG / MUNKEBÄCKSTORGET 1 / 416 73 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136030",
+    "consigneeAddress": "COOP MÖLNDALSVÄGEN / MÖLNDALSVÄGEN 1 / 412 63 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "125200",
+    "consigneeAddress": "COOP MÖLNLYCKE / GUNNAR RUNFORS GRÄND 2 / 435 30 MÖLNLYCKE",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136035",
+    "consigneeAddress": "COOP ODINSGATAN / ODINSGATAN 6 / 411 03 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "123200",
+    "consigneeAddress": "COOP PARTILLE / PORTGÅNGEN 1 / 433 38 PARTILLE",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136026",
+    "consigneeAddress": "COOP SKÅNEGATAN / ALBREKTSVÄGEN 79-81 / 412 52 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "126367",
+    "consigneeAddress": "COOP TRÄTORGET / TRÄTORGET 1 / 416 79 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136041",
+    "consigneeAddress": "COOP UDDEVALLA GÖTEBORGSVÄGEN / PRÄSTGATAN 12 / 451 42 UDDEVALLA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136042",
+    "consigneeAddress": "COOP ÅBY KATRINEBERGSGATAN / LEDUNGSVÄGEN 7 / 431 61 MÖLNDAL",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "135040",
+    "consigneeAddress": "COOP ÄLVÄNGEN / GARVERIVÄGEN 4 / 446 37 ÄLVÄNGEN",
+    "littera": "Coop Frukt & Grönt Direkt",
+    "lastningsId": "FHBG",
+    "lastningsnamn": "Nowaste Helsingborg",
+    "lastningsadress": "Landskronavägen 5",
+    "lastningspostnr": "252 32",
+    "lastningspostort": "Helsingborg"
+  },
+  {
+    "consignee": "252600",
+    "consigneeAddress": "STORA COOP BACKAPLAN / BACKAVÄGEN 2 / 417 30 GÖTEBORG",
+    "littera": "Coop Frukt & Grönt Direkt",
+    "lastningsId": "FHBG",
+    "lastningsnamn": "Nowaste Helsingborg",
+    "lastningsadress": "Landskronavägen 5",
+    "lastningspostnr": "252 32",
+    "lastningspostort": "Helsingborg"
+  },
+  {
+    "consignee": "252500",
+    "consigneeAddress": "STORA COOP BÄCKEBOL / TRANSPORTGATAN 19 / 422 46 HISINGS BACKA",
+    "littera": "Coop Frukt & Grönt Direkt",
+    "lastningsId": "FHBG",
+    "lastningsnamn": "Nowaste Helsingborg",
+    "lastningsadress": "Landskronavägen 5",
+    "lastningspostnr": "252 32",
+    "lastningspostort": "Helsingborg"
+  },
+  {
+    "consignee": "255900",
+    "consigneeAddress": "STORA COOP KUNGSBACKA / HATNVERKSGATAN 27 / 434 42 KUNGSBACKA",
+    "littera": "Coop Frukt & Grönt Direkt",
+    "lastningsId": "FHBG",
+    "lastningsnamn": "Nowaste Helsingborg",
+    "lastningsadress": "Landskronavägen 5",
+    "lastningspostnr": "252 32",
+    "lastningspostort": "Helsingborg"
+  },
+  {
+    "consignee": "1837",
+    "consigneeAddress": "STORA COOP KÅLLERED / EKENLEDEN 2P / 428 36 KÅLLERED",
+    "littera": "Coop Frukt & Grönt Direkt",
+    "lastningsId": "FHBG",
+    "lastningsnamn": "Nowaste Helsingborg",
+    "lastningsadress": "Landskronavägen 5",
+    "lastningspostnr": "252 32",
+    "lastningspostort": "Helsingborg"
+  },
+  {
+    "consignee": "133900",
+    "consigneeAddress": "STORA COOP KÅLLERED / EKENLEDEN 2P / 428 36 KÅLLERED",
+    "littera": "Coop Frukt & Grönt Direkt",
+    "lastningsId": "FHBG",
+    "lastningsnamn": "Nowaste Helsingborg",
+    "lastningsadress": "Landskronavägen 5",
+    "lastningspostnr": "252 32",
+    "lastningspostort": "Helsingborg"
+  },
+  {
+    "consignee": "255500",
+    "consigneeAddress": "STORA COOP SISJÖN / HANTVERKSVÄGEN 2 / 436 33 ASKIM",
+    "littera": "Coop Frukt & Grönt Direkt",
+    "lastningsId": "FHBG",
+    "lastningsnamn": "Nowaste Helsingborg",
+    "lastningsadress": "Landskronavägen 5",
+    "lastningspostnr": "252 32",
+    "lastningspostort": "Helsingborg"
+  },
+  {
+    "consignee": "133800",
+    "consigneeAddress": "STORA COOP TORP / TORP 10 / 451 76 UDDEVALLA",
+    "littera": "Coop Frukt & Grönt Direkt",
+    "lastningsId": "FHBG",
+    "lastningsnamn": "Nowaste Helsingborg",
+    "lastningsadress": "Landskronavägen 5",
+    "lastningspostnr": "252 32",
+    "lastningspostort": "Helsingborg"
+  },
+  {
+    "consignee": "133100",
+    "consigneeAddress": "STORA COOP ÖVERBY / ÖVERBY CENTRUM / 461 70 TROLLHÄTTAN",
+    "littera": "Coop Frukt & Grönt Direkt",
+    "lastningsId": "FHBG",
+    "lastningsnamn": "Nowaste Helsingborg",
+    "lastningsadress": "Landskronavägen 5",
+    "lastningspostnr": "252 32",
+    "lastningspostort": "Helsingborg"
+  },
+  {
+    "consignee": "136021",
+    "consigneeAddress": "X:-TRA BORÅS / JÄRAVÄGEN 2 / 507 50 BORÅS",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136029",
+    "consigneeAddress": "X:-TRA HISINGEN / STACKMOLNSGATAN 2 / 418 42 GÖTEBORG",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136043",
+    "consigneeAddress": "X:-TRA HISINGS BACKA / BACKA KYRKOGATA 1 / 422 58 HISING BACKA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCF",
+    "lastningsnamn": "Flytten GLC",
+    "lastningsadress": "Gårdstens Industriväg 4",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136028",
+    "consigneeAddress": "X:-TRA SVENLJUNGA / PRÄSTGATAN 12 / 512 53 SVENLJUNGA",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  },
+  {
+    "consignee": "136039",
+    "consigneeAddress": "X:-TRA TROLLHÄTTAN / LEXTORPSVÄGEN 922 / 461 65 TROLLHÄTTAN",
+    "littera": "Coop Göteborg Distribution",
+    "lastningsId": "GLCT",
+    "lastningsnamn": "GLC Terminal",
+    "lastningsadress": "Gårdstens Industriväg 6",
+    "lastningspostnr": "424 38",
+    "lastningspostort": "Agnesberg"
+  }
+]

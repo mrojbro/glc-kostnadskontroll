@@ -57,10 +57,10 @@ export const PORTALS: PortalItem[] = [
     enabled: true,
   },
   {
-    id: "mystery",
-    name: "",
-    enabled: false,
-    kind: "easter-egg",
+    id: "coop-test",
+    name: "COOP TEST",
+    href: "/coop-test/",
+    enabled: true,
   },
 ];
 
