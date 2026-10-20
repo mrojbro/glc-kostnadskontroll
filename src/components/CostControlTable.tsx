@@ -45,6 +45,8 @@ interface CostControlTableProps {
   onRowStatusChange: (next: RowStatusMap) => void;
   rowComments: RowCommentMap;
   onRowCommentsChange: (next: RowCommentMap) => void;
+  /** Called whenever the overview’s visible (filtered/sorted) rows change. */
+  onVisibleRowsChange?: (rows: CostControlRow[]) => void;
 }
 
 const DEFAULT_SORTING: SortingState = [
@@ -97,6 +99,7 @@ export function CostControlTable({
   onRowStatusChange,
   rowComments,
   onRowCommentsChange,
+  onVisibleRowsChange,
 }: CostControlTableProps) {
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORTING);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -367,6 +370,25 @@ export function CostControlTable({
 
   const visibleRows = table.getRowModel().rows;
   const filteredRows = table.getFilteredRowModel().rows;
+
+  const visibleOriginalRows = useMemo(
+    () => visibleRows.map((row) => row.original),
+    // Row model updates when data, filters, or sort change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally keyed
+    [
+      tableRows,
+      sorting,
+      globalFilter,
+      columnFilters,
+      statusFilter,
+      rowComments,
+    ]
+  );
+
+  useEffect(() => {
+    onVisibleRowsChange?.(visibleOriginalRows);
+  }, [visibleOriginalRows, onVisibleRowsChange]);
+
   const filteredRowCount = filteredRows.length;
   const filteredTotalSek = filteredRows.reduce(
     (sum, row) => sum + row.original.sek,

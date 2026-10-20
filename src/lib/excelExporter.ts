@@ -5,6 +5,7 @@ import {
 } from "./formatters";
 import {
   formatRowStatus,
+  type CostControlRow,
   type ParsedWorkbook,
   type RowCommentMap,
   type RowStatusMap,
@@ -12,18 +13,20 @@ import {
 
 /**
  * Export processed cost-control data to a downloadable .xlsx file.
+ * When `rows` is provided (e.g. current overview filters), only those
+ * rows are written to the detail sheet — in the given order.
  */
 export function exportToExcel(
   data: ParsedWorkbook,
   rowStatus: RowStatusMap = {},
-  rowComments: RowCommentMap = {}
+  rowComments: RowCommentMap = {},
+  rows?: CostControlRow[]
 ): void {
   const workbook = XLSX.utils.book_new();
+  const detailRows = rows ?? data.rows;
 
-  const summarySheet = buildSummarySheet(data, rowStatus);
-  const detailSheet = buildDetailSheet(data, rowStatus, rowComments);
+  const detailSheet = buildDetailSheet(detailRows, rowStatus, rowComments);
 
-  XLSX.utils.book_append_sheet(workbook, summarySheet, "Sammanfattning");
   XLSX.utils.book_append_sheet(workbook, detailSheet, "Kostnadskontroll");
 
   const safeRef = sanitizeFilename(data.summary.reference);
@@ -32,45 +35,8 @@ export function exportToExcel(
   XLSX.writeFile(workbook, filename);
 }
 
-function buildSummarySheet(
-  data: ParsedWorkbook,
-  rowStatus: RowStatusMap
-): XLSX.WorkSheet {
-  const { summary } = data;
-  const summaryTotalSek =
-    summary.freightByRpu.value +
-    summary.shunting.value +
-    summary.fuelSurcharge.value +
-    summary.adjustment.value;
-
-  const okCount = Object.values(rowStatus).filter((s) => s === "ok").length;
-
-  const rows: (string | number)[][] = [
-    ["Referens", summary.reference],
-    [],
-    [summary.freightByRpu.label, summary.freightByRpu.value],
-    [summary.shunting.label, summary.shunting.value],
-    [summary.fuelSurcharge.label, summary.fuelSurcharge.value],
-    [summary.adjustment.label, summary.adjustment.value],
-    ["Totalt SEK (sammanfattning)", summaryTotalSek],
-    [],
-    ["Totalt SEK (fakturarader)", data.totalSek],
-    ["Antal rader", data.rowCount],
-    ["OK", okCount],
-  ];
-
-  const sheet = XLSX.utils.aoa_to_sheet(rows);
-
-  sheet["!cols"] = [{ wch: 32 }, { wch: 18 }];
-
-  styleHeaderCell(sheet, "A1");
-  styleHeaderCell(sheet, "B1");
-
-  return sheet;
-}
-
 function buildDetailSheet(
-  data: ParsedWorkbook,
+  detailRows: CostControlRow[],
   rowStatus: RowStatusMap,
   rowComments: RowCommentMap
 ): XLSX.WorkSheet {
@@ -88,7 +54,7 @@ function buildDetailSheet(
     "Kommentar",
   ];
 
-  const body = data.rows.map((row) => [
+  const body = detailRows.map((row) => [
     row.foNummer,
     row.typ,
     row.datum,

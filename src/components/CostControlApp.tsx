@@ -13,6 +13,7 @@ import { SummaryHeader } from "@/components/SummaryHeader";
 import { Button } from "@/components/ui/button";
 import { parseExcelFile } from "@/lib/excelParser";
 import type {
+  CostControlRow,
   ParseError,
   ParsedWorkbook,
   RowCommentMap,
@@ -37,11 +38,13 @@ export function CostControlApp({
   const [state, setState] = useState<AppState>({ status: "idle" });
   const [rowStatus, setRowStatus] = useState<RowStatusMap>({});
   const [rowComments, setRowComments] = useState<RowCommentMap>({});
+  const [visibleRows, setVisibleRows] = useState<CostControlRow[]>([]);
 
   const handleFile = useCallback(async (file: File) => {
     setState({ status: "loading" });
     setRowStatus({});
     setRowComments({});
+    setVisibleRows([]);
 
     const result = await parseExcelFile(file);
 
@@ -61,6 +64,7 @@ export function CostControlApp({
     setState({ status: "idle" });
     setRowStatus({});
     setRowComments({});
+    setVisibleRows([]);
   }, []);
 
   return (
@@ -90,6 +94,7 @@ export function CostControlApp({
               data={state.data}
               rowStatus={rowStatus}
               rowComments={rowComments}
+              rows={visibleRows}
             />
             <Button
               type="button"
@@ -152,6 +157,7 @@ export function CostControlApp({
             onRowStatusChange={setRowStatus}
             rowComments={rowComments}
             onRowCommentsChange={setRowComments}
+            onVisibleRowsChange={setVisibleRows}
           />
         </div>
       )}
