@@ -262,7 +262,7 @@ export function CostControlTable({
               aria-pressed={isOk}
               onClick={() => meta.toggleOk(row.original.id)}
               className={cn(
-                "block max-w-[11rem] truncate rounded-md px-1.5 py-0.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#eb6e08]/50",
+                "block h-full w-full max-w-[11rem] truncate px-3 py-1.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#eb6e08]/50",
                 isOk
                   ? "bg-[#22c55e]/25 font-medium text-[#86efac] hover:bg-[#22c55e]/35"
                   : "text-white hover:bg-[#2a2a2a]"
@@ -468,7 +468,7 @@ export function CostControlTable({
       ) : (
         <div className="overflow-hidden rounded-2xl border border-[#3a3a3a] bg-[#242424] shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
           <div className="max-h-[min(70vh,720px)] overflow-x-auto overflow-y-scroll [scrollbar-gutter:stable]">
-            <table className="w-full min-w-[1000px] table-fixed border-collapse text-left text-sm">
+            <table className="w-full min-w-[1000px] table-fixed border-collapse text-left text-xs">
               <colgroup>
                 <col className="w-[5.75rem]" />
                 <col className="w-[3.5rem]" />
@@ -577,17 +577,23 @@ export function CostControlTable({
                         !isOk && !missingDatum && "hover:bg-[#2a2218]"
                       )}
                     >
-                      {row.getVisibleCells().map((cell) => (
-                        <td
-                          key={cell.id}
-                          className="px-3 py-1.5 whitespace-nowrap text-white"
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
+                      {row.getVisibleCells().map((cell) => {
+                        const isButiksnamn = cell.column.id === "butiksnamn";
+                        return (
+                          <td
+                            key={cell.id}
+                            className={cn(
+                              "whitespace-nowrap text-white",
+                              isButiksnamn ? "p-0" : "px-3 py-1.5"
+                            )}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </td>
+                        );
+                      })}
                     </tr>
                   );
                 })}
