@@ -11,6 +11,7 @@ export const NARKEFRAKT_PORTAL_INPUT1_REQUIRED_HEADERS = [
 export const NARKEFRAKT_PORTAL_INPUT2_REQUIRED_HEADERS = [
   "Ordernr",
   "Mott Namn",
+  "Betalare",
   "Resurs 1",
   "Resurs 1 kostn",
   "Resurs 2",
@@ -27,7 +28,10 @@ export interface NarkefraktPortalRow {
   datum: string;
   frs: string;
   ordernr: string;
+  /** Kept for Input 1 merge; not shown in overview. */
   lastort: string;
+  /** Filled via Input 2 from Betalare — blank after Input 1. */
+  betalare: string;
   /** Filled later via Input 2 / manual edit — blank after Input 1. */
   mottagare: string;
   lossort: string;
@@ -62,6 +66,7 @@ export interface NarkefraktPortalWorkbook {
 export interface NarkefraktPortalInput2Row {
   ordernr: string;
   mottNamn: string;
+  betalare: string;
   resurs1: string;
   resurs1Kostn: number | null;
   resurs2: string;

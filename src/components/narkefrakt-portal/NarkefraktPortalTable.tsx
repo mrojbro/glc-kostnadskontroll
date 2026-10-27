@@ -21,7 +21,7 @@ const COLUMNS: Array<{
   { key: "datum", label: "Datum" },
   { key: "frs", label: "FRS" },
   { key: "ordernr", label: "Ordernr" },
-  { key: "lastort", label: "Lastort" },
+  { key: "betalare", label: "Betalare" },
   { key: "mottagare", label: "Mottagare" },
   { key: "lossort", label: "Lossort" },
   { key: "prisFormatted", label: "Pris", align: "right" },
@@ -75,7 +75,7 @@ function rowMatchesGlobalSearch(
     row.datum,
     row.frs,
     row.ordernr,
-    row.lastort,
+    row.betalare,
     row.mottagare,
     row.lossort,
     row.prisFormatted,
@@ -337,7 +337,7 @@ export function NarkefraktPortalTable({
                         column.key === "datum" ||
                         column.key === "frs" ||
                         column.key === "ordernr" ||
-                        column.key === "lastort" ||
+                        column.key === "betalare" ||
                         column.key === "mottagare" ||
                         column.key === "lossort";
 

@@ -186,6 +186,7 @@ function tryParseInput1Sheet(
         frs,
         ordernr,
         lastort,
+        betalare: "",
         mottagare: "",
         lossort,
         pris: null,
@@ -335,6 +336,7 @@ function tryParseInput2Sheet(
   const col = {
     ordernr: findColumnIndex(headerMap, "Ordernr")!,
     mottNamn: findColumnIndex(headerMap, "Mott Namn")!,
+    betalare: findColumnIndex(headerMap, "Betalare")!,
     resurs1: findColumnIndex(headerMap, "Resurs 1")!,
     resurs1Kostn: findColumnIndex(headerMap, "Resurs 1 kostn")!,
     resurs2: findColumnIndex(headerMap, "Resurs 2")!,
@@ -366,6 +368,9 @@ function tryParseInput2Sheet(
       ordernr,
       mottNamn: formatIdentifier(
         formatted[col.mottNamn] ?? row[col.mottNamn]
+      ),
+      betalare: formatIdentifier(
+        formatted[col.betalare] ?? row[col.betalare]
       ),
       resurs1: formatIdentifier(formatted[col.resurs1] ?? row[col.resurs1]),
       resurs1Kostn: parseNumericValue(row[col.resurs1Kostn]),
@@ -408,8 +413,8 @@ export function buildT5AndDifferens(
 
 /**
  * Match Input 1 Ordernr against Input 2: fill Mottagare from Mott Namn,
- * and T5 from the Resurs kostn whose Resurs cell contains 3028.
- * Matched blank cost → T5 = 0.
+ * Betalare from Betalare, and T5 from the Resurs kostn whose Resurs
+ * cell contains 3028. Matched blank cost → T5 = 0.
  */
 export function applyNarkefraktPortalInput2ToWorkbook(
   workbook: NarkefraktPortalWorkbook,
@@ -430,6 +435,7 @@ export function applyNarkefraktPortalInput2ToWorkbook(
       return {
         ...row,
         mottagare: "",
+        betalare: "",
         ...buildT5AndDifferens(null, row.summa),
       };
     }
@@ -438,6 +444,7 @@ export function applyNarkefraktPortalInput2ToWorkbook(
     return {
       ...row,
       mottagare: match.mottNamn,
+      betalare: match.betalare,
       ...buildT5AndDifferens(resolveT5FromInput2Row(match), row.summa),
     };
   });
