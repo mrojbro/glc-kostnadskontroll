@@ -45,6 +45,7 @@ type ReviewTableMeta = {
   rowStatus: RowStatusMap;
   rowComments: RowCommentMap;
   setStatus: (rowId: string, status: RowStatus) => void;
+  toggleOk: (rowId: string) => void;
   setComment: (rowId: string, value: string) => void;
 };
 
@@ -232,6 +233,13 @@ export function CoopFruktTable({
     [onRowStatusChange]
   );
 
+  const toggleOk = useCallback(
+    (rowId: string) => {
+      setStatus(rowId, "ok");
+    },
+    [setStatus]
+  );
+
   const setComment = useCallback(
     (rowId: string, value: string) => {
       const next = { ...rowCommentsRef.current };
@@ -309,12 +317,31 @@ export function CoopFruktTable({
         accessorKey: "ekipage",
         header: "Ekipage",
         filterFn: multiSelectFilter,
-        cell: (info) => {
-          const value = info.getValue<string>();
-          return value ? (
-            value
-          ) : (
-            <span className="text-[#6a6a6a]">—</span>
+        cell: ({ row, table }) => {
+          const value = row.original.ekipage;
+          const meta = table.options.meta as ReviewTableMeta;
+          const isOk = meta.rowStatus[row.original.id] === "ok";
+          return (
+            <button
+              type="button"
+              title={
+                isOk
+                  ? "Klicka för att ta bort OK-markering"
+                  : "Klicka för att markera som OK"
+              }
+              aria-pressed={isOk}
+              onClick={() => meta.toggleOk(row.original.id)}
+              className={cn(
+                "block h-full w-full truncate px-2 py-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#eb6e08]/50",
+                isOk
+                  ? "bg-[#22c55e]/25 font-medium text-[#86efac] hover:bg-[#22c55e]/35"
+                  : value
+                    ? "text-white hover:bg-[#2a2a2a]"
+                    : "text-[#6a6a6a] hover:bg-[#2a2a2a]"
+              )}
+            >
+              {value || "—"}
+            </button>
           );
         },
       },
@@ -335,12 +362,29 @@ export function CoopFruktTable({
         accessorKey: "butiksnamn",
         header: "Butiksnamn",
         filterFn: multiSelectFilter,
-        cell: (info) => {
-          const value = info.getValue<string>();
+        cell: ({ row, table }) => {
+          const value = row.original.butiksnamn;
+          const meta = table.options.meta as ReviewTableMeta;
+          const isOk = meta.rowStatus[row.original.id] === "ok";
           return (
-            <span className="block max-w-[12rem] truncate" title={value}>
+            <button
+              type="button"
+              title={
+                isOk
+                  ? "Klicka för att ta bort OK-markering"
+                  : "Klicka för att markera som OK"
+              }
+              aria-pressed={isOk}
+              onClick={() => meta.toggleOk(row.original.id)}
+              className={cn(
+                "block h-full w-full max-w-[12rem] truncate px-2 py-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#eb6e08]/50",
+                isOk
+                  ? "bg-[#22c55e]/25 font-medium text-[#86efac] hover:bg-[#22c55e]/35"
+                  : "text-white hover:bg-[#2a2a2a]"
+              )}
+            >
               {value}
-            </span>
+            </button>
           );
         },
       },
@@ -433,6 +477,7 @@ export function CoopFruktTable({
       rowStatus,
       rowComments,
       setStatus,
+      toggleOk,
       setComment,
     } satisfies ReviewTableMeta,
     state: { sorting, globalFilter, columnFilters },
@@ -636,17 +681,25 @@ export function CoopFruktTable({
                           !status && "hover:bg-[#2a2218]"
                         )}
                       >
-                        {row.getVisibleCells().map((cell) => (
-                          <td
-                            key={cell.id}
-                            className="px-2 py-2 whitespace-nowrap text-white"
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </td>
-                        ))}
+                        {row.getVisibleCells().map((cell) => {
+                          const isOkClickable =
+                            cell.column.id === "ekipage" ||
+                            cell.column.id === "butiksnamn";
+                          return (
+                            <td
+                              key={cell.id}
+                              className={cn(
+                                "whitespace-nowrap text-white",
+                                isOkClickable ? "p-0" : "px-2 py-2"
+                              )}
+                            >
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </td>
+                          );
+                        })}
                       </tr>
                     );
                   })
@@ -665,6 +718,8 @@ export function CoopFruktTable({
               <span className="text-[#4ade80]">OK {okCount}</span>
               {" · "}
               <span className="text-[#eab308]">Kontroll {checkCount}</span>
+              {" · "}
+              Klicka på Ekipage eller Butiksnamn för OK
             </p>
             <p className="text-sm">
               <span className="text-[#b8b8b8]">Totalt Summa: </span>
