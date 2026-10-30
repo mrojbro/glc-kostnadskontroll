@@ -28,6 +28,12 @@ export const GDL_INPUT2_REQUIRED_HEADERS = [
 /** Resource codes that feed the T5 cost column. */
 export const GDL_T5_RESOURCE_CODES = [3024, 3032] as const;
 
+/**
+ * When Pris utan DMT is this amount (often a duplicate Ordernr line),
+ * T5 is forced to 0 after Input 2.
+ */
+export const GDL_ZERO_T5_PRIS_UTAN_DMT = 192;
+
 export interface GdlRow {
   id: string;
   fakturanummer: string;

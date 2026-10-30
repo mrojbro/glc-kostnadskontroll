@@ -2,15 +2,26 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
+import {
+  ColumnFilterDropdown,
+  EMPTY_VALUE,
+} from "@/components/ColumnFilterDropdown";
 import { CopyableText } from "@/components/CopyableText";
 import { Input } from "@/components/ui/input";
-import type { GdlRow } from "@/lib/gdl/types";
+import { GDL_ZERO_T5_PRIS_UTAN_DMT, type GdlRow } from "@/lib/gdl/types";
 import {
   formatSwedishCurrency,
   formatSwedishDecimal2,
   parseNumericValue,
 } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
+
+function isZeroT5PrisUtanDmt(value: number | null): boolean {
+  return (
+    value !== null &&
+    Math.round(value * 100) === Math.round(GDL_ZERO_T5_PRIS_UTAN_DMT * 100)
+  );
+}
 
 function buildColumns(input2Applied: boolean): Array<{
   key: keyof GdlRow;
@@ -98,6 +109,31 @@ function rowMatchesGlobalSearch(row: GdlRow, query: string): boolean {
   );
 }
 
+function avsandareFilterKey(row: GdlRow): string {
+  const raw = row.avsandare.trim();
+  return raw === "" ? EMPTY_VALUE : raw;
+}
+
+function rowMatchesBetalareFilter(
+  row: GdlRow,
+  selected: string[]
+): boolean {
+  if (selected.length === 0) return true;
+  return selected.includes(avsandareFilterKey(row));
+}
+
+function uniqueBetalareOptions(rows: GdlRow[]): string[] {
+  const values = new Set<string>();
+  for (const row of rows) {
+    values.add(avsandareFilterKey(row));
+  }
+  return Array.from(values).sort((a, b) => {
+    if (a === EMPTY_VALUE) return -1;
+    if (b === EMPTY_VALUE) return 1;
+    return a.localeCompare(b, "sv", { numeric: true, sensitivity: "base" });
+  });
+}
+
 function EditableT5Cell({
   rowId,
   value,
@@ -168,16 +204,40 @@ export function GdlTable({
 }: GdlTableProps) {
   const COLUMNS = useMemo(() => buildColumns(input2Applied), [input2Applied]);
   const [search, setSearch] = useState("");
+  const [betalareFilter, setBetalareFilter] = useState<string[]>([]);
+  const betalareLabel = input2Applied ? "Betalare" : "Avsändare";
 
-  // Reset search on new upload, not when a single T5 cell is edited.
+  // Reset search/filters on new upload, not when a single T5 cell is edited.
   const rowSetId = `${rows.length}:${rows[0]?.id ?? ""}:${rows.at(-1)?.id ?? ""}`;
   useEffect(() => {
     setSearch("");
+    setBetalareFilter([]);
   }, [rowSetId]);
 
+  const betalareOptions = useMemo(() => {
+    const scoped = rows.filter((row) => rowMatchesGlobalSearch(row, search));
+    const available = uniqueBetalareOptions(scoped);
+    // Keep current selections visible even if they no longer appear in scoped data.
+    return Array.from(new Set([...available, ...betalareFilter])).sort(
+      (a, b) => {
+        if (a === EMPTY_VALUE) return -1;
+        if (b === EMPTY_VALUE) return 1;
+        return a.localeCompare(b, "sv", {
+          numeric: true,
+          sensitivity: "base",
+        });
+      }
+    );
+  }, [rows, search, betalareFilter]);
+
   const filteredRows = useMemo(
-    () => rows.filter((row) => rowMatchesGlobalSearch(row, search)),
-    [rows, search]
+    () =>
+      rows.filter(
+        (row) =>
+          rowMatchesGlobalSearch(row, search) &&
+          rowMatchesBetalareFilter(row, betalareFilter)
+      ),
+    [rows, search, betalareFilter]
   );
 
   const totals = useMemo(() => {
@@ -301,7 +361,19 @@ export function GdlTable({
                       column.align === "right" ? "text-right" : "text-left"
                     }`}
                   >
-                    {column.label}
+                    {column.key === "avsandare" ? (
+                      <div className="flex items-center gap-0.5">
+                        <span>{column.label}</span>
+                        <ColumnFilterDropdown
+                          label={betalareLabel}
+                          options={betalareOptions}
+                          selected={betalareFilter}
+                          onChange={setBetalareFilter}
+                        />
+                      </div>
+                    ) : (
+                      column.label
+                    )}
                   </th>
                 ))}
               </tr>
@@ -313,8 +385,8 @@ export function GdlTable({
                     colSpan={COLUMNS.length}
                     className="px-4 py-16 text-center text-sm text-[#b8b8b8]"
                   >
-                    {search.trim()
-                      ? "Inga rader matchar sökningen."
+                    {search.trim() || betalareFilter.length > 0
+                      ? "Inga rader matchar sökningen eller filtret."
                       : "Inga rader att visa."}
                   </td>
                 </tr>
@@ -323,21 +395,29 @@ export function GdlTable({
                   const isDuplicateOrdernr = duplicateOrdernrKeys.has(
                     row.ordernr.trim().toLowerCase()
                   );
+                  const is192Pris = isZeroT5PrisUtanDmt(row.prisUtanDmt);
+                  const isHighlighted192Duplicate =
+                    isDuplicateOrdernr && is192Pris;
 
                   return (
                     <tr
                       key={row.id}
-                      className={`border-t border-[#3a3a3a] ${
-                        isDuplicateOrdernr
-                          ? "bg-[#2a2218]"
-                          : index % 2 === 0
-                            ? "bg-[#242424]"
-                            : "bg-[#202020]"
-                      }`}
+                      className={cn(
+                        "border-t border-[#3a3a3a]",
+                        isHighlighted192Duplicate &&
+                          "bg-[#5c2e12] ring-1 ring-inset ring-[#eb6e08]/55",
+                        isDuplicateOrdernr &&
+                          !isHighlighted192Duplicate &&
+                          "bg-[#2a2218]",
+                        !isDuplicateOrdernr &&
+                          (index % 2 === 0 ? "bg-[#242424]" : "bg-[#202020]")
+                      )}
                       title={
-                        isDuplicateOrdernr
-                          ? "Ordernr förekommer flera gånger"
-                          : undefined
+                        isHighlighted192Duplicate
+                          ? `Ordernr förekommer flera gånger · Pris utan DMT ${GDL_ZERO_T5_PRIS_UTAN_DMT} → T5 = 0`
+                          : isDuplicateOrdernr
+                            ? "Ordernr förekommer flera gånger"
+                            : undefined
                       }
                     >
                       {COLUMNS.map((column) => {
@@ -380,9 +460,11 @@ export function GdlTable({
                                 : "max-w-0",
                               isDifferens
                                 ? differensClass(row.differens)
-                                : isDuplicateOrdernr
-                                  ? "font-medium text-[#f0a35a]"
-                                  : "text-white"
+                                : isHighlighted192Duplicate
+                                  ? "font-semibold text-[#fdba74]"
+                                  : isDuplicateOrdernr
+                                    ? "font-medium text-[#f0a35a]"
+                                    : "text-white"
                             )}
                             title={
                               isDifferens && row.differens !== null
@@ -423,7 +505,7 @@ export function GdlTable({
             <span className="font-medium text-white">
               {filteredRows.length}
             </span>
-            {search.trim() ? (
+            {search.trim() || betalareFilter.length > 0 ? (
               <>
                 {" "}
                 av{" "}

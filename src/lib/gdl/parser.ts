@@ -18,6 +18,7 @@ import {
   GDL_INPUT1_REQUIRED_HEADERS,
   GDL_INPUT2_REQUIRED_HEADERS,
   GDL_T5_RESOURCE_CODES,
+  GDL_ZERO_T5_PRIS_UTAN_DMT,
   type GdlInput2ParseResult,
   type GdlInput2Row,
   type GdlParseResult,
@@ -397,6 +398,13 @@ function isT5ResourceCode(value: unknown): boolean {
   );
 }
 
+function isZeroT5PrisUtanDmt(value: number | null): boolean {
+  return (
+    value !== null &&
+    Math.round(value * 100) === Math.round(GDL_ZERO_T5_PRIS_UTAN_DMT * 100)
+  );
+}
+
 function resolveT5FromInput2Row(row: GdlInput2Row): number {
   const pairs: Array<{ resurs: string; kostn: number | null }> = [
     { resurs: row.resurs1, kostn: row.resurs1Kostn },
@@ -438,6 +446,7 @@ export function buildT5AndDifferens(
  * Match Input 1 Ordernr against Input 2: replace Avsändare with Betalare,
  * and fill T5 from Resurs kostn when Resurs 1–3 contains 3024 or 3032.
  * Matched orders with blank cost/data get T5 = 0.
+ * Rows with Pris utan DMT = 192 always get T5 = 0 (duplicate-line rule).
  */
 export function applyGdlInput2ToWorkbook(
   workbook: GdlWorkbook,
@@ -462,7 +471,9 @@ export function applyGdlInput2ToWorkbook(
       };
     }
 
-    const t5 = resolveT5FromInput2Row(match);
+    const t5 = isZeroT5PrisUtanDmt(row.prisUtanDmt)
+      ? 0
+      : resolveT5FromInput2Row(match);
     t5MatchCount += 1;
 
     return {
