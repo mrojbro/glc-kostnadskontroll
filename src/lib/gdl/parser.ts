@@ -309,6 +309,7 @@ function tryParseInput2Sheet(
 
   const col = {
     ordernr: findColumnIndex(headerMap, "Ordernr")!,
+    betalare: findColumnIndex(headerMap, "Betalare")!,
     resurs1: findColumnIndex(headerMap, "Resurs 1")!,
     resurs1Kostn: findColumnIndex(headerMap, "Resurs 1 kostn")!,
     resurs2: findColumnIndex(headerMap, "Resurs 2")!,
@@ -338,6 +339,9 @@ function tryParseInput2Sheet(
 
     result.push({
       ordernr,
+      betalare: formatIdentifier(
+        formatted[col.betalare] ?? row[col.betalare]
+      ),
       resurs1: formatIdentifier(formatted[col.resurs1] ?? row[col.resurs1]),
       resurs1Kostn: parseNumericValue(row[col.resurs1Kostn]),
       resurs2: formatIdentifier(formatted[col.resurs2] ?? row[col.resurs2]),
@@ -431,9 +435,9 @@ export function buildT5AndDifferens(
 }
 
 /**
- * Match Input 1 Ordernr against Input 2 and fill T5 from Resurs kostn
- * when Resurs 1–3 contains 3024 or 3032. Matched orders with blank
- * cost/data get T5 = 0.
+ * Match Input 1 Ordernr against Input 2: replace Avsändare with Betalare,
+ * and fill T5 from Resurs kostn when Resurs 1–3 contains 3024 or 3032.
+ * Matched orders with blank cost/data get T5 = 0.
  */
 export function applyGdlInput2ToWorkbook(
   workbook: GdlWorkbook,
@@ -451,7 +455,11 @@ export function applyGdlInput2ToWorkbook(
   const rows = workbook.rows.map((row) => {
     const match = lookup.get(normalizeOrdernrKey(row.ordernr));
     if (!match) {
-      return { ...row, ...buildT5AndDifferens(null, row.summa) };
+      return {
+        ...row,
+        avsandare: "",
+        ...buildT5AndDifferens(null, row.summa),
+      };
     }
 
     const t5 = resolveT5FromInput2Row(match);
@@ -459,6 +467,7 @@ export function applyGdlInput2ToWorkbook(
 
     return {
       ...row,
+      avsandare: match.betalare,
       ...buildT5AndDifferens(t5, row.summa),
     };
   });

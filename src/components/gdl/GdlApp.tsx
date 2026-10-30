@@ -216,7 +216,7 @@ export function GdlApp() {
               disabled={state.mergingInput2}
               className="h-10 gap-2 rounded-lg bg-[#eb6e08] px-4 text-white hover:bg-[#d46207] disabled:opacity-40 focus-visible:border-[#eb6e08] focus-visible:ring-[#eb6e08]/40"
               onClick={() => input2Ref.current?.click()}
-              title="Ladda upp Input 2 med Ordernr och Resurs 1–3"
+              title="Ladda upp Input 2 med Ordernr, Betalare och Resurs 1–3"
             >
               {state.mergingInput2 ? (
                 <Loader2 className="size-4 animate-spin" aria-hidden />
@@ -329,7 +329,11 @@ export function GdlApp() {
             )}
           </div>
 
-          <GdlTable rows={state.data.rows} onT5Change={handleT5Change} />
+          <GdlTable
+            rows={state.data.rows}
+            onT5Change={handleT5Change}
+            input2Applied={Boolean(state.data.input2FileName)}
+          />
         </div>
       )}
 

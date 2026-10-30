@@ -12,37 +12,44 @@ import {
 } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 
-const COLUMNS: Array<{
+function buildColumns(input2Applied: boolean): Array<{
   key: keyof GdlRow;
   label: string;
   align?: "left" | "right";
   title?: string;
-}> = [
-  { key: "fakturanummer", label: "Fakturanummer" },
-  { key: "ordernr", label: "Ordernr" },
-  { key: "frs", label: "FRS" },
-  { key: "leveransdatum", label: "Leveransdatum" },
-  { key: "avsandare", label: "Avsändare" },
-  { key: "mottagare", label: "Mottagare" },
-  { key: "postort", label: "Postort" },
-  { key: "kolliFormatted", label: "Kolli", align: "right" },
-  { key: "viktFormatted", label: "Vikt", align: "right" },
-  { key: "pallFormatted", label: "Pall", align: "right" },
-  { key: "prisUtanDmtFormatted", label: "Pris utan DMT", align: "right" },
-  { key: "dmtFormatted", label: "DMT", align: "right" },
-  { key: "summaFormatted", label: "Summa", align: "right" },
-  { key: "t5Formatted", label: "T5", align: "right" },
-  {
-    key: "differensFormatted",
-    label: "Differens",
-    align: "right",
-    title: "T5 − Summa",
-  },
-];
+}> {
+  return [
+    { key: "fakturanummer", label: "Fakturanummer" },
+    { key: "ordernr", label: "Ordernr" },
+    { key: "frs", label: "FRS" },
+    { key: "leveransdatum", label: "Leveransdatum" },
+    {
+      key: "avsandare",
+      label: input2Applied ? "Betalare" : "Avsändare",
+    },
+    { key: "mottagare", label: "Mottagare" },
+    { key: "postort", label: "Postort" },
+    { key: "kolliFormatted", label: "Kolli", align: "right" },
+    { key: "viktFormatted", label: "Vikt", align: "right" },
+    { key: "pallFormatted", label: "Pall", align: "right" },
+    { key: "prisUtanDmtFormatted", label: "Pris utan DMT", align: "right" },
+    { key: "dmtFormatted", label: "DMT", align: "right" },
+    { key: "summaFormatted", label: "Summa", align: "right" },
+    { key: "t5Formatted", label: "T5", align: "right" },
+    {
+      key: "differensFormatted",
+      label: "Differens",
+      align: "right",
+      title: "T5 − Summa",
+    },
+  ];
+}
 
 interface GdlTableProps {
   rows: GdlRow[];
   onT5Change: (rowId: string, t5: number | null) => void;
+  /** After Input 2: show Betalare instead of Avsändare. */
+  input2Applied?: boolean;
 }
 
 const deckClass =
@@ -154,7 +161,12 @@ function EditableT5Cell({
   );
 }
 
-export function GdlTable({ rows, onT5Change }: GdlTableProps) {
+export function GdlTable({
+  rows,
+  onT5Change,
+  input2Applied = false,
+}: GdlTableProps) {
+  const COLUMNS = useMemo(() => buildColumns(input2Applied), [input2Applied]);
   const [search, setSearch] = useState("");
 
   // Reset search on new upload, not when a single T5 cell is edited.

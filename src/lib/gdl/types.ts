@@ -16,6 +16,7 @@ export const GDL_INPUT1_REQUIRED_HEADERS = [
 
 export const GDL_INPUT2_REQUIRED_HEADERS = [
   "Ordernr",
+  "Betalare",
   "Resurs 1",
   "Resurs 1 kostn",
   "Resurs 2",
@@ -66,6 +67,7 @@ export interface GdlWorkbook {
 
 export interface GdlInput2Row {
   ordernr: string;
+  betalare: string;
   resurs1: string;
   resurs1Kostn: number | null;
   resurs2: string;
