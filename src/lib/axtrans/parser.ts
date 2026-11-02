@@ -373,7 +373,7 @@ export function buildT5AndDifferens(
 }
 
 /**
- * Match Input 1 Ordernr against Input 2: fill Kund from Betalare,
+ * Match Input 1 Ordernr against Input 2: fill Betalare (kund) from Betalare,
  * Mottagare from Mott Namn when present, and T5 from the Resurs kostn
  * whose Resurs cell contains 3068. Matched blank cost → T5 = 0.
  */

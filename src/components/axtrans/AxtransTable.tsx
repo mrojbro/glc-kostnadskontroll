@@ -2,6 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
+import {
+  ColumnFilterDropdown,
+  EMPTY_VALUE,
+} from "@/components/ColumnFilterDropdown";
 import { CopyableText } from "@/components/CopyableText";
 import { Input } from "@/components/ui/input";
 import type { AxtransRow } from "@/lib/axtrans/types";
@@ -21,7 +25,7 @@ const COLUMNS: Array<{
   { key: "datum", label: "Datum" },
   { key: "ordernr", label: "Ordernr" },
   { key: "frs", label: "FRS" },
-  { key: "kund", label: "Kund" },
+  { key: "kund", label: "Betalare" },
   { key: "lastort", label: "Lastort" },
   { key: "mottagare", label: "Mottagare" },
   { key: "lossort", label: "Lossort" },
@@ -88,6 +92,31 @@ function rowMatchesGlobalSearch(row: AxtransRow, query: string): boolean {
   );
 }
 
+function betalareFilterKey(row: AxtransRow): string {
+  const raw = row.kund.trim();
+  return raw === "" ? EMPTY_VALUE : raw;
+}
+
+function rowMatchesBetalareFilter(
+  row: AxtransRow,
+  selected: string[]
+): boolean {
+  if (selected.length === 0) return true;
+  return selected.includes(betalareFilterKey(row));
+}
+
+function uniqueBetalareOptions(rows: AxtransRow[]): string[] {
+  const values = new Set<string>();
+  for (const row of rows) {
+    values.add(betalareFilterKey(row));
+  }
+  return Array.from(values).sort((a, b) => {
+    if (a === EMPTY_VALUE) return -1;
+    if (b === EMPTY_VALUE) return 1;
+    return a.localeCompare(b, "sv", { numeric: true, sensitivity: "base" });
+  });
+}
+
 function EditableT5Cell({
   rowId,
   value,
@@ -151,16 +180,39 @@ function EditableT5Cell({
 
 export function AxtransTable({ rows, onT5Change }: AxtransTableProps) {
   const [search, setSearch] = useState("");
+  const [betalareFilter, setBetalareFilter] = useState<string[]>([]);
 
-  // Reset search on new upload, not when a single T5 cell is edited.
+  // Reset search/filters on new upload, not when a single T5 cell is edited.
   const rowSetId = `${rows.length}:${rows[0]?.id ?? ""}:${rows.at(-1)?.id ?? ""}`;
   useEffect(() => {
     setSearch("");
+    setBetalareFilter([]);
   }, [rowSetId]);
 
+  const betalareOptions = useMemo(() => {
+    const scoped = rows.filter((row) => rowMatchesGlobalSearch(row, search));
+    const available = uniqueBetalareOptions(scoped);
+    // Keep current selections visible even if they no longer appear in scoped data.
+    return Array.from(new Set([...available, ...betalareFilter])).sort(
+      (a, b) => {
+        if (a === EMPTY_VALUE) return -1;
+        if (b === EMPTY_VALUE) return 1;
+        return a.localeCompare(b, "sv", {
+          numeric: true,
+          sensitivity: "base",
+        });
+      }
+    );
+  }, [rows, search, betalareFilter]);
+
   const filteredRows = useMemo(
-    () => rows.filter((row) => rowMatchesGlobalSearch(row, search)),
-    [rows, search]
+    () =>
+      rows.filter(
+        (row) =>
+          rowMatchesGlobalSearch(row, search) &&
+          rowMatchesBetalareFilter(row, betalareFilter)
+      ),
+    [rows, search, betalareFilter]
   );
 
   const totals = useMemo(() => {
@@ -267,7 +319,19 @@ export function AxtransTable({ rows, onT5Change }: AxtransTableProps) {
                       column.align === "right" ? "text-right" : "text-left"
                     }`}
                   >
-                    {column.label}
+                    {column.key === "kund" ? (
+                      <div className="flex items-center gap-0.5">
+                        <span>{column.label}</span>
+                        <ColumnFilterDropdown
+                          label="Betalare"
+                          options={betalareOptions}
+                          selected={betalareFilter}
+                          onChange={setBetalareFilter}
+                        />
+                      </div>
+                    ) : (
+                      column.label
+                    )}
                   </th>
                 ))}
               </tr>
@@ -279,8 +343,8 @@ export function AxtransTable({ rows, onT5Change }: AxtransTableProps) {
                     colSpan={COLUMNS.length}
                     className="px-4 py-16 text-center text-sm text-[#b8b8b8]"
                   >
-                    {search.trim()
-                      ? "Inga rader matchar sökningen."
+                    {search.trim() || betalareFilter.length > 0
+                      ? "Inga rader matchar sökningen eller filtret."
                       : "Inga rader att visa."}
                   </td>
                 </tr>
@@ -373,7 +437,7 @@ export function AxtransTable({ rows, onT5Change }: AxtransTableProps) {
             <span className="font-medium text-white">
               {filteredRows.length}
             </span>
-            {search.trim() ? (
+            {search.trim() || betalareFilter.length > 0 ? (
               <>
                 {" "}
                 av{" "}

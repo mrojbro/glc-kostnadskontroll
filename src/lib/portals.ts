@@ -96,4 +96,9 @@ export const SECONDARY_PORTALS: PortalItem[] = [
     href: "/axtrans/",
     enabled: true,
   },
+  {
+    id: "secondary-spacer",
+    name: "",
+    enabled: false,
+  },
 ];

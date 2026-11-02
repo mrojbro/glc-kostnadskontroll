@@ -30,7 +30,7 @@ export interface AxtransRow {
   datum: string;
   ordernr: string;
   frs: string;
-  /** Filled via Input 2 from Betalare. */
+  /** Shown as Betalare; filled via Input 2 from Betalare. */
   kund: string;
   lastort: string;
   mottagare: string;
