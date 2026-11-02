@@ -156,6 +156,17 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
   const [butikFilters, setButikFilters] = useState<
     FilterState<ButikFilterColumn>
   >({});
+  // Local OK toggles for summary rows (visual review aid).
+  const [okIds, setOkIds] = useState<Set<string>>(() => new Set());
+
+  const toggleOk = useCallback((id: string) => {
+    setOkIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
 
   const ekipageSummaries = useMemo(
     () => buildDateEkipageSummaries(rows),
@@ -292,7 +303,7 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
     <div className="grid gap-4 xl:grid-cols-2">
       <SummaryCard
         title="Per dag och ekipage"
-        description="Total Vikt och Summa för varje Avgångsdatum och Ekipage. Använd kolumnfilter för att begränsa."
+        description="Total Vikt och Summa för varje Avgångsdatum och Ekipage. Klicka på en rad för OK."
       >
         <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
           <thead className="sticky top-0 z-10 bg-[#eb6e08]">
@@ -337,28 +348,70 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
                 </td>
               </tr>
             ) : (
-              filteredEkipage.map((item) => (
-                <tr
-                  key={`${item.avgangsdatum}-${item.ekipage}`}
-                  className="border-t border-[#3a3a3a] even:bg-[#202020] odd:bg-[#242424]"
-                >
-                  <td className="px-3 py-2.5 whitespace-nowrap text-white">
-                    {item.avgangsdatum}
-                  </td>
-                  <td className="px-3 py-2.5 whitespace-nowrap text-white">
-                    {item.vecka}
-                  </td>
-                  <td className="px-3 py-2.5 whitespace-nowrap text-white">
-                    {item.ekipage}
-                  </td>
-                  <td className="px-3 py-2.5 text-right text-white">
-                    <CopyableVikt value={formatVikt(item.totalVikt)} />
-                  </td>
-                  <td className="px-3 py-2.5 text-right tabular-nums text-white">
-                    {formatSwedishCurrency(item.totalSumma)}
-                  </td>
-                </tr>
-              ))
+              filteredEkipage.map((item) => {
+                const okId = `ekipage-${item.avgangsdatum}-${item.ekipage}`;
+                const isOk = okIds.has(okId);
+                return (
+                  <tr
+                    key={`${item.avgangsdatum}-${item.ekipage}`}
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={isOk}
+                    title={
+                      isOk
+                        ? "Klicka för att ta bort OK-markering"
+                        : "Klicka för att markera som OK"
+                    }
+                    onClick={() => toggleOk(okId)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        toggleOk(okId);
+                      }
+                    }}
+                    className={`border-t border-[#3a3a3a] cursor-pointer transition-colors ${
+                      isOk
+                        ? "bg-[#1a3a24] hover:bg-[#203528]"
+                        : "even:bg-[#202020] odd:bg-[#242424] hover:bg-[#2a2218]"
+                    }`}
+                  >
+                    <td
+                      className={`px-3 py-2.5 whitespace-nowrap ${
+                        isOk ? "font-medium text-[#86efac]" : "text-white"
+                      }`}
+                    >
+                      {item.avgangsdatum}
+                    </td>
+                    <td
+                      className={`px-3 py-2.5 whitespace-nowrap ${
+                        isOk ? "font-medium text-[#86efac]" : "text-white"
+                      }`}
+                    >
+                      {item.vecka}
+                    </td>
+                    <td
+                      className={`px-3 py-2.5 whitespace-nowrap ${
+                        isOk ? "font-medium text-[#86efac]" : "text-white"
+                      }`}
+                    >
+                      {item.ekipage}
+                    </td>
+                    <td className="px-3 py-2.5 text-right text-white">
+                      <CopyableVikt
+                        value={formatVikt(item.totalVikt)}
+                        className={isOk ? "text-[#86efac]" : undefined}
+                      />
+                    </td>
+                    <td
+                      className={`px-3 py-2.5 text-right tabular-nums ${
+                        isOk ? "font-medium text-[#86efac]" : "text-white"
+                      }`}
+                    >
+                      {formatSwedishCurrency(item.totalSumma)}
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
           <tfoot>
@@ -386,7 +439,7 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
       {ekipage3Summaries.length > 0 && (
         <SummaryCard
           title="Ekipage 3 per butik"
-          description="Total Vikt och Summa för Ekipage 3, uppdelat per Avgångsdatum och Butiksnamn."
+          description="Total Vikt och Summa för Ekipage 3 per butik. Klicka på en rad för OK."
         >
           <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
             <thead className="sticky top-0 z-10 bg-[#eb6e08]">
@@ -431,28 +484,70 @@ export function CoopFruktGroupSummary({ rows }: CoopFruktGroupSummaryProps) {
                   </td>
                 </tr>
               ) : (
-                filteredButik.map((item) => (
-                  <tr
-                    key={`${item.avgangsdatum}-${item.butiksnamn}`}
-                    className="border-t border-[#3a3a3a] even:bg-[#202020] odd:bg-[#242424]"
-                  >
-                    <td className="px-3 py-2.5 whitespace-nowrap text-white">
-                      {item.avgangsdatum}
-                    </td>
-                    <td className="px-3 py-2.5 whitespace-nowrap text-white">
-                      {item.vecka}
-                    </td>
-                    <td className="px-3 py-2.5 whitespace-nowrap text-white">
-                      {item.butiksnamn}
-                    </td>
-                    <td className="px-3 py-2.5 text-right text-white">
-                      <CopyableVikt value={formatVikt(item.totalVikt)} />
-                    </td>
-                    <td className="px-3 py-2.5 text-right tabular-nums text-white">
-                      {formatSwedishCurrency(item.totalSumma)}
-                    </td>
-                  </tr>
-                ))
+                filteredButik.map((item) => {
+                  const okId = `butik-${item.avgangsdatum}-${item.butiksnamn}`;
+                  const isOk = okIds.has(okId);
+                  return (
+                    <tr
+                      key={`${item.avgangsdatum}-${item.butiksnamn}`}
+                      role="button"
+                      tabIndex={0}
+                      aria-pressed={isOk}
+                      title={
+                        isOk
+                          ? "Klicka för att ta bort OK-markering"
+                          : "Klicka för att markera som OK"
+                      }
+                      onClick={() => toggleOk(okId)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          toggleOk(okId);
+                        }
+                      }}
+                      className={`border-t border-[#3a3a3a] cursor-pointer transition-colors ${
+                        isOk
+                          ? "bg-[#1a3a24] hover:bg-[#203528]"
+                          : "even:bg-[#202020] odd:bg-[#242424] hover:bg-[#2a2218]"
+                      }`}
+                    >
+                      <td
+                        className={`px-3 py-2.5 whitespace-nowrap ${
+                          isOk ? "font-medium text-[#86efac]" : "text-white"
+                        }`}
+                      >
+                        {item.avgangsdatum}
+                      </td>
+                      <td
+                        className={`px-3 py-2.5 whitespace-nowrap ${
+                          isOk ? "font-medium text-[#86efac]" : "text-white"
+                        }`}
+                      >
+                        {item.vecka}
+                      </td>
+                      <td
+                        className={`px-3 py-2.5 whitespace-nowrap ${
+                          isOk ? "font-medium text-[#86efac]" : "text-white"
+                        }`}
+                      >
+                        {item.butiksnamn}
+                      </td>
+                      <td className="px-3 py-2.5 text-right text-white">
+                        <CopyableVikt
+                          value={formatVikt(item.totalVikt)}
+                          className={isOk ? "text-[#86efac]" : undefined}
+                        />
+                      </td>
+                      <td
+                        className={`px-3 py-2.5 text-right tabular-nums ${
+                          isOk ? "font-medium text-[#86efac]" : "text-white"
+                        }`}
+                      >
+                        {formatSwedishCurrency(item.totalSumma)}
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
             <tfoot>

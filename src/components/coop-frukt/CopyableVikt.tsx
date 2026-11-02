@@ -57,7 +57,10 @@ export function CopyableVikt({ value, className }: CopyableViktProps) {
   return (
     <button
       type="button"
-      onClick={() => void handleClick()}
+      onClick={(event) => {
+        event.stopPropagation();
+        void handleClick();
+      }}
       title={copied ? "Kopierad" : "Klicka för att kopiera"}
       aria-label={copied ? `Vikt ${value} kopierad` : `Kopiera vikt ${value}`}
       className={cn(
