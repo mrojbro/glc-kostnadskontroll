@@ -561,12 +561,15 @@ export function CoopFruktTable({
         <CoopFruktGroupSummary key={summaryResetKey} rows={summaryRows} />
       )}
 
-      {rows.length === 0 ? (
+      {rows.length === 0 && (
         <EmptyState
           title="Inga rader"
           description="Inga rader hittades i arbetsbladet Grunddata."
         />
-      ) : (
+      )}
+
+      {/* Detail overview hidden — Coop Frukt UI is summary-only. */}
+      {false && (
         <div className="overflow-hidden rounded-2xl border border-[#3a3a3a] bg-[#242424] shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
           <div className="h-[min(70vh,720px)] overflow-x-auto overflow-y-auto [scrollbar-gutter:stable]">
             <table className="w-full min-w-[1360px] table-fixed border-collapse text-left text-sm">
