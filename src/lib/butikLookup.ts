@@ -36,3 +36,17 @@ export function lookupButikByNumber(
   if (!key) return undefined;
   return lookupByNumber.get(key);
 }
+
+/** Display-name aliases for known long invoice Butiksnamn values. */
+const BUTIKSNAMN_ALIASES: Record<string, string> = {
+  "COOP MÖLNDAL ÅBY KATRINEBERGSGATAN": "COOP ÅBY KATRINEBERGSGATAN",
+  "COOP GÖTEBORG MÖLNDALSVÄGEN": "COOP MÖLNDALSVÄGEN",
+};
+
+/** Apply known Butiksnamn display aliases (case-insensitive). */
+export function normalizeButiksnamnDisplay(butiksnamn: string): string {
+  const trimmed = butiksnamn.trim();
+  if (!trimmed) return trimmed;
+  const alias = BUTIKSNAMN_ALIASES[trimmed.toUpperCase()];
+  return alias ?? trimmed;
+}

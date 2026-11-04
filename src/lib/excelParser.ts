@@ -1,5 +1,8 @@
 import * as XLSX from "xlsx";
-import { lookupButikByNumber } from "./butikLookup";
+import {
+  lookupButikByNumber,
+  normalizeButiksnamnDisplay,
+} from "./butikLookup";
 import {
   formatDate,
   formatIdentifier,
@@ -360,8 +363,9 @@ function parseInvoiceSheet(
     const pallValue =
       rpuValue === null ? null : Number((rpuValue / RPU_PER_PALL).toFixed(2));
     const registerButik = lookupButikByNumber(butiksnr);
-    const butiksnamn =
-      registerButik?.butiksnamn ?? formatIdentifier(row[col.butiksnamn]);
+    const butiksnamn = normalizeButiksnamnDisplay(
+      registerButik?.butiksnamn ?? formatIdentifier(row[col.butiksnamn])
+    );
 
     rowId += 1;
     result.push({
