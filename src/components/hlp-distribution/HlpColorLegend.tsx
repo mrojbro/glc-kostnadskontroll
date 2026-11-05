@@ -25,6 +25,30 @@ const LEGEND_ITEMS = [
   },
 ] as const;
 
+const MANUAL_ADJUSTMENT_NOTES = [
+  <>
+    <strong className="font-semibold text-white">Linas</strong> kommer endast
+    att ha fel pris på{" "}
+    <strong className="font-semibold text-white">Skövde Slakteri</strong>, där{" "}
+    <strong className="font-semibold text-white">HLP</strong> däremot har rätt
+    pris. Eftersom <strong className="font-semibold text-white">HLP</strong> inte
+    kommer kunna boka detta korrekt justerar jag priset manuellt.
+  </>,
+  <>
+    Det är ungefär samma situation med{" "}
+    <strong className="font-semibold text-white">Mixum</strong>-dragningarna, där
+    de ofta bokar fel antal pallplatser. Därför brukar jag justera antalet
+    pallplatser manuellt så att priset blir rätt.
+  </>,
+  <>
+    De kan exempelvis boka 8 pall men bara ange 1 pallplats. Då ändrar jag det
+    till 8 pall och 8 pallplatser för att få korrekt debitering.
+  </>,
+] as const;
+
+const CLOSING_NOTE =
+  "Det är ingen större idé att fortsätta påtala behovet av förändringar för dem, eftersom vi redan vet att det inte kommer att ske. Därför är det enklare att vi hanterar dessa avvikelser manuellt.";
+
 export function HlpColorLegend() {
   return (
     <div className="rounded-2xl border border-[#3a3a3a] bg-[#242424] px-4 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
@@ -45,6 +69,19 @@ export function HlpColorLegend() {
           </li>
         ))}
       </ul>
+      <div className="mt-3 space-y-2 border-t border-[#3a3a3a] pt-3">
+        {MANUAL_ADJUSTMENT_NOTES.map((paragraph, index) => (
+          <p
+            key={index}
+            className="text-xs leading-relaxed text-[#b8b8b8]"
+          >
+            {paragraph}
+          </p>
+        ))}
+        <p className="text-xs font-bold leading-relaxed text-white">
+          {CLOSING_NOTE}
+        </p>
+      </div>
     </div>
   );
 }
