@@ -10,6 +10,7 @@ export const KOF_INPUT1_REQUIRED_HEADERS = [
 
 export const KOF_INPUT2_REQUIRED_HEADERS = [
   "Ordernr",
+  "Betalare",
   "Resurs 1",
   "Resurs 1 kostn",
   "Resurs 2",
@@ -25,6 +26,8 @@ export interface KofRow {
   id: string;
   datum: string;
   fran: string;
+  /** Filled via Input 2 from Betalare — blank after Input 1. */
+  betalare: string;
   mottagare: string;
   /** First part of Ref (before /). */
   frs: string;
@@ -56,6 +59,7 @@ export interface KofWorkbook {
 
 export interface KofInput2Row {
   ordernr: string;
+  betalare: string;
   resurs1: string;
   resurs1Kostn: number | null;
   resurs2: string;

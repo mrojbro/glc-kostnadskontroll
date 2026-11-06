@@ -20,6 +20,7 @@ const COLUMNS: Array<{
 }> = [
   { key: "datum", label: "Datum" },
   { key: "fran", label: "Från" },
+  { key: "betalare", label: "Betalare" },
   { key: "mottagare", label: "Mottagare" },
   { key: "frs", label: "FRS" },
   { key: "ordernr", label: "Ordernr" },
@@ -67,6 +68,7 @@ function rowMatchesGlobalSearch(row: KofRow, query: string): boolean {
   const values = [
     row.datum,
     row.fran,
+    row.betalare,
     row.mottagare,
     row.frs,
     row.ordernr,
@@ -251,10 +253,11 @@ export function KofTable({ rows, onT5Change }: KofTableProps) {
 
       <div className="overflow-hidden rounded-2xl border border-[#3a3a3a] bg-[#242424] shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
         <div className="h-[min(70vh,720px)] overflow-x-auto overflow-y-auto [scrollbar-gutter:stable]">
-          <table className="w-full min-w-[1180px] table-fixed border-collapse text-left text-xs">
+          <table className="w-full min-w-[1280px] table-fixed border-collapse text-left text-xs">
             <colgroup>
               <col className="w-[7rem]" />
               <col className="w-[8rem]" />
+              <col className="w-[10rem]" />
               <col className="w-[12rem]" />
               <col className="w-[9rem]" />
               <col className="w-[7rem]" />
@@ -336,6 +339,7 @@ export function KofTable({ rows, onT5Change }: KofTableProps) {
                         const isTextColumn =
                           column.key === "datum" ||
                           column.key === "fran" ||
+                          column.key === "betalare" ||
                           column.key === "mottagare" ||
                           column.key === "frs" ||
                           column.key === "ordernr";

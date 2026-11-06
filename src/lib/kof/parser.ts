@@ -173,6 +173,7 @@ function tryParseInput1Sheet(
       // Prefer raw Avsdatum: values like 901 mean month 9 / day 01 (not Excel serial).
       datum: formatKofAvsdatum(row[col.avsdatum] ?? formatted[col.avsdatum]),
       fran: formatIdentifier(formatted[col.franOrt] ?? row[col.franOrt]),
+      betalare: "",
       mottagare: formatIdentifier(formatted[col.till] ?? row[col.till]),
       frs,
       ordernr,
@@ -301,6 +302,7 @@ function tryParseInput2Sheet(
 
   const col = {
     ordernr: findColumnIndex(headerMap, "Ordernr")!,
+    betalare: findColumnIndex(headerMap, "Betalare")!,
     resurs1: findColumnIndex(headerMap, "Resurs 1")!,
     resurs1Kostn: findColumnIndex(headerMap, "Resurs 1 kostn")!,
     resurs2: findColumnIndex(headerMap, "Resurs 2")!,
@@ -330,6 +332,9 @@ function tryParseInput2Sheet(
 
     result.push({
       ordernr,
+      betalare: formatIdentifier(
+        formatted[col.betalare] ?? row[col.betalare]
+      ),
       resurs1: formatIdentifier(formatted[col.resurs1] ?? row[col.resurs1]),
       resurs1Kostn: parseNumericValue(row[col.resurs1Kostn]),
       resurs2: formatIdentifier(formatted[col.resurs2] ?? row[col.resurs2]),
@@ -394,8 +399,9 @@ export function buildT5AndDifferens(
 }
 
 /**
- * Match Input 1 Ordernr against Input 2 and fill T5 from Resurs kostn
- * when Resurs 1–3 contains 3006. Matched orders with blank cost get T5 = 0.
+ * Match Input 1 Ordernr against Input 2: fill Betalare from Betalare,
+ * and fill T5 from Resurs kostn when Resurs 1–3 contains 3006.
+ * Matched orders with blank cost get T5 = 0.
  */
 export function applyKofInput2ToWorkbook(
   workbook: KofWorkbook,
@@ -413,7 +419,11 @@ export function applyKofInput2ToWorkbook(
   const rows = workbook.rows.map((row) => {
     const match = lookup.get(normalizeOrdernrKey(row.ordernr));
     if (!match) {
-      return { ...row, ...buildT5AndDifferens(null, row.pris) };
+      return {
+        ...row,
+        betalare: "",
+        ...buildT5AndDifferens(null, row.pris),
+      };
     }
 
     const t5 = resolveT5FromInput2Row(match);
@@ -421,6 +431,7 @@ export function applyKofInput2ToWorkbook(
 
     return {
       ...row,
+      betalare: match.betalare,
       ...buildT5AndDifferens(t5, row.pris),
     };
   });
